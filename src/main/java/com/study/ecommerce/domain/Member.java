@@ -1,5 +1,6 @@
 package com.study.ecommerce.domain;
 
+import com.study.ecommerce.request.MemberSignUp;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,8 @@ public class Member {
         this.name = name;
         this.password = password;
     }
+
+
 
 
 }
