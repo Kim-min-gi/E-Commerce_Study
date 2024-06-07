@@ -1,20 +1,23 @@
-package com.study.ecommerce.domain;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-
-@Entity
-public class Category {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
-    @NotBlank(message = "카테고리명은 필수입니다.")
-    private String categoryName;
-
-
-}
+//package com.study.ecommerce.domain;
+//
+//import jakarta.persistence.*;
+//import jakarta.validation.constraints.NotBlank;
+//
+//import java.util.ArrayList;
+//import java.util.List;
+//
+//@Entity
+//public class Category {
+//
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private long id;
+//
+//    @Column(nullable = false)
+//    private String categoryName;
+//
+//    @OneToMany(mappedBy = "category")
+//    private List<Product> products = new ArrayList<>();
+//
+//
+//}

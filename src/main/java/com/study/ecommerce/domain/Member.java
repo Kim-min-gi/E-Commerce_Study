@@ -1,7 +1,6 @@
 package com.study.ecommerce.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 
@@ -12,16 +11,17 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
-    @NotBlank(message = "이메일은 필수입니다.")
+
     @Column(unique = true,length = 50)
     private String email;
 
-    @NotBlank(message = "이름은 필수입니다.")
+    @Column(nullable = false)
     private String name;
 
-    @NotBlank(message = "비밀번호는 필수입니다.")
+    @Column(nullable = false)
     private String password;
 
     @Builder
