@@ -17,8 +17,8 @@ public class AuthController {
 
 
     @PostMapping("/signup")
-    void signup(@RequestBody MemberSignUp memberSignUp){
-        authService.signup(memberSignUp);
+    long signup(@RequestBody MemberSignUp memberSignUp){
+        return authService.signup(memberSignUp);
     }
 
     @GetMapping("/login")
@@ -26,9 +26,9 @@ public class AuthController {
 
     }
 
-    @GetMapping("/resign")
-    void resign(){
-
+    @PostMapping("/resign")
+    void resign(@RequestBody long id){
+        authService.resign(id);
     }
 
 

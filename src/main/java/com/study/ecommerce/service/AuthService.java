@@ -1,6 +1,7 @@
 package com.study.ecommerce.service;
 
 import com.study.ecommerce.domain.Member;
+import com.study.ecommerce.exception.AlreadyExistsEmailException;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.request.MemberSignUp;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,16 @@ public class AuthService {
 
     public long signup(MemberSignUp memberSignUp){
 
+
+        Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
+
         //중복체크
+        if (findMember.isPresent()){
+            throw new AlreadyExistsEmailException();
+        }
 
 
-        //security passwordEncoder 설정
+        //security passwordEncoder 설정 Spring Security
 
         Member member = memberRepository.save(memberSignUp.toEntity());
 
