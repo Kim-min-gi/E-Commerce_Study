@@ -16,17 +16,17 @@ public class AuthController {
     private final AuthService authService;
 
 
-    @PostMapping("/signup")
+    @PostMapping("/auth/signup")
     long signup(@RequestBody MemberSignUp memberSignUp){
         return authService.signup(memberSignUp);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/auth/login")
     void login(){
 
     }
 
-    @PostMapping("/resign")
+    @PostMapping("/auth/resign")
     void resign(@RequestBody long id){
         authService.resign(id);
     }
