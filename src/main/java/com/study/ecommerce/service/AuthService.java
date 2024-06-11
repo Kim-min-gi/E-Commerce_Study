@@ -5,6 +5,7 @@ import com.study.ecommerce.exception.AlreadyExistsEmailException;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.request.MemberSignUp;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class AuthService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public long signup(MemberSignUp memberSignUp){
@@ -29,9 +31,17 @@ public class AuthService {
         }
 
 
-        //security passwordEncoder 설정 Spring Security
+        String encryptedPassword = passwordEncoder.encode(memberSignUp.getPassword());
 
-        Member member = memberRepository.save(memberSignUp.toEntity());
+
+        MemberSignUp saveMember = MemberSignUp.builder()
+                .name(memberSignUp.getName())
+                .email(memberSignUp.getEmail())
+                .password(encryptedPassword)
+                .build();
+
+
+        Member member = memberRepository.save(saveMember.toEntity());
 
         return member.getId();
 
