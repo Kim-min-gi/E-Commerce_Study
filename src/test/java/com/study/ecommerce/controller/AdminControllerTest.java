@@ -3,7 +3,6 @@ package com.study.ecommerce.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.repository.MemberRepository;
-import com.study.ecommerce.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +15,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
-class MainPageControllerTest {
+class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -28,14 +25,12 @@ class MainPageControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
 
-    @BeforeEach
-    void clean(){
-        memberRepository.deleteAll();
-    }
+//    @BeforeEach
+//    void clean(){
+//        memberRepository.deleteAll();
+//    }
 
 
     @Test
