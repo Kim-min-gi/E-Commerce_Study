@@ -15,12 +15,17 @@ public class AdminController {
 
     private final AdminService memberService;
 
-    @GetMapping("/member")
-    public List<AdminResponse> member() throws Exception{
-        return memberService.getMember();
+//    @GetMapping("/member")
+//    public List<AdminResponse> member() throws Exception{
+//        return memberService.getMember();
+//    }
+
+    @GetMapping("/admin/member")
+    public String member() throws Exception{
+        return "관리자 페이지입니다.";
     }
 
-    @GetMapping("/member/{id}")
+    @GetMapping("/admin/member/{id}")
     public List<AdminResponse> member(@RequestParam long id) throws Exception{
         return memberService.getMember();
     }

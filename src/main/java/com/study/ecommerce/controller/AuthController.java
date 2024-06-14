@@ -17,17 +17,19 @@ public class AuthController {
 
 
     @PostMapping("/auth/signup")
-    long signup(@RequestBody MemberSignUp memberSignUp){
+    public long signup(@RequestBody MemberSignUp memberSignUp){
         return authService.signup(memberSignUp);
     }
 
-    @PostMapping("/auth/login")
-    void login(){
 
+    @GetMapping("/auth/login")
+    public String login(){
+        return "로그인페이지입니다.";
     }
 
+
     @PostMapping("/auth/resign")
-    void resign(@RequestBody long id){
+    public void resign(@RequestBody long id){
         authService.resign(id);
     }
 

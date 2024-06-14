@@ -1,7 +1,9 @@
 package com.study.ecommerce.controller;
 
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -9,8 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainPageController {
 
 
+    @GetMapping("/")
+    public String main(){
+        return "mainPage입니다.";
+    }
 
 
+    @GetMapping("/user")
+    public String userPage(){
+        return "userpage입니다.";
+    }
 
 
 
