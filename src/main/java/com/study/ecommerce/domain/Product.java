@@ -25,15 +25,15 @@ public class Product {
     private int bill;
 
     @Column(nullable = false)
-    private int count;
+    private int amount;
 
 
 
     @Builder
-    public Product(String name, int bill, int count) {
+    public Product(String name, int bill, int amount) {
         this.name = name;
         this.bill = bill;
-        this.count = count;
+        this.amount = amount;
     }
 
 
