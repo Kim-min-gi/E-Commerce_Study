@@ -1,4 +1,7 @@
 spring:
+  profiles:
+    include: jwt
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -31,3 +34,5 @@ server:
 logging:
   level:
     org.hibernate.sql: debug
+
+
