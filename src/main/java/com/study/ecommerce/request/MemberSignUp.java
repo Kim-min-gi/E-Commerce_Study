@@ -12,6 +12,7 @@ public class MemberSignUp {
     private String email;
     private String name;
     private String password;
+    private String role;
 
 
     public Member toEntity(){
@@ -19,6 +20,7 @@ public class MemberSignUp {
                 .email(this.getEmail())
                 .name(this.getName())
                 .password(this.getPassword())
+                .role("ROLE_USER")
                 .build();
     }
 

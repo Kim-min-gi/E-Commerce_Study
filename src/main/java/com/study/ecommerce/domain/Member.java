@@ -25,11 +25,15 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String role;
+
     @Builder
-    public Member(String email, String name, String password) {
+    public Member(String email, String name, String password,String role) {
         this.email = email;
         this.name = name;
         this.password = password;
+        this.role = role;
     }
 
 

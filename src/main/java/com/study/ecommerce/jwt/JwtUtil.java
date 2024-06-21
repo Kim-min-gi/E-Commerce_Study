@@ -1,4 +1,4 @@
-package com.study.ecommerce.config;
+package com.study.ecommerce.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -42,13 +42,13 @@ public class JwtUtil {
 
 
 
-    public String createToken(String email, Long expiredMs){
+    public String createToken(String email,String role){
 
         return Jwts.builder()
                 .claim("email", email)
-                //.claim("role", role)
+                .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiredMs))
+                .expiration(new Date(System.currentTimeMillis() + 6000 * 6000 * 10L))
                 .signWith(secretKey)
                 .compact();
     }
