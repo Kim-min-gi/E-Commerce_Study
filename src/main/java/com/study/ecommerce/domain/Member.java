@@ -4,6 +4,8 @@ import com.study.ecommerce.request.MemberSignUp;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -28,12 +30,26 @@ public class Member {
     @Column(nullable = false)
     private String role;
 
+    @OneToMany(mappedBy ="member")
+    private List<Order> orders;
+
     @Builder
     public Member(String email, String name, String password,String role) {
         this.email = email;
         this.name = name;
         this.password = password;
         this.role = role;
+    }
+
+
+    @Builder
+    public static Member from(MemberSignUp memberSignUp, String encodePassword, String role){
+        return Member.builder()
+                .email(memberSignUp.getEmail())
+                .password(encodePassword)
+                .name(memberSignUp.getName())
+                .role(role)
+                .build();
     }
 
 

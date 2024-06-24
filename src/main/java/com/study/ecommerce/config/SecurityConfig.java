@@ -66,7 +66,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/auth/login","auth/signup","/").permitAll()
+                        .requestMatchers("/auth/login","auth/signup","/","auth/signup/admin").permitAll()
                         .requestMatchers("/user").hasAnyRole("USER","ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()

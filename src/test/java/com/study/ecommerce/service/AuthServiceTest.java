@@ -1,13 +1,12 @@
 package com.study.ecommerce.service;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.study.ecommerce.domain.Member;
+import com.study.ecommerce.exception.AdminCodeNotMatch;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.request.MemberSignUp;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,7 +28,7 @@ class AuthServiceTest {
 
 
     @Test
-    @DisplayName("signup")
+    @DisplayName("회원가입")
     void signup() throws Exception{
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
@@ -57,6 +56,7 @@ class AuthServiceTest {
         Assertions.assertEquals(true,bCryptPasswordEncoder.matches("1234",findMember.get().getPassword()));
     }
 
+
     @Test
     @DisplayName("회원탙퇴")
     @Transactional
@@ -64,14 +64,14 @@ class AuthServiceTest {
 
         //create
 
-        MemberSignUp member = MemberSignUp.builder()
+        Member member = Member.builder()
                 .email("Testing@naver.com")
                 .name("Testing")
                 .password("1234")
+                .role("ROLE_USER")
                 .build();
 
-        memberRepository.save(member.toEntity());
-
+        memberRepository.save(member);
 
 
         //delete

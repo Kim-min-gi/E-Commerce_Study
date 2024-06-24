@@ -20,8 +20,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public long signup(MemberSignUp memberSignUp){
-
+    public void signup(MemberSignUp memberSignUp){
 
         Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
 
@@ -30,18 +29,29 @@ public class AuthService {
             throw new AlreadyExistsEmailException();
         }
 
+        String encryptedPassword = passwordEncoder.encode(memberSignUp.getPassword());
+
+        Member saveMember = Member.from(memberSignUp,encryptedPassword,"ROLE_USER");
+
+        memberRepository.save(saveMember);
+
+    }
+
+
+    public long adminSignup(MemberSignUp memberSignUp){
+
+        Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
+
+        //중복체크
+        if (findMember.isPresent()){
+            throw new AlreadyExistsEmailException();
+        }
 
         String encryptedPassword = passwordEncoder.encode(memberSignUp.getPassword());
 
+        Member saveMember = Member.from(memberSignUp,encryptedPassword,"ROLE_ADMIN");
 
-        MemberSignUp saveMember = MemberSignUp.builder()
-                .name(memberSignUp.getName())
-                .email(memberSignUp.getEmail())
-                .password(encryptedPassword)
-                .build();
-
-
-        Member member = memberRepository.save(saveMember.toEntity());
+        Member member = memberRepository.save(saveMember);
 
         return member.getId();
 

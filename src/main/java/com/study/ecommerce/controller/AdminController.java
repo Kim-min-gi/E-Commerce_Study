@@ -1,24 +1,48 @@
 package com.study.ecommerce.controller;
 
+import com.study.ecommerce.exception.AdminCodeNotMatch;
+import com.study.ecommerce.request.MemberSignUp;
 import com.study.ecommerce.response.AdminResponse;
 import com.study.ecommerce.service.AdminService;
+import com.study.ecommerce.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class AdminController {
 
     private final AdminService memberService;
+    private final AuthService authService;
+
+    @Value("${spring.adminCode}")
+    private String adminCode;
+
+
 
 //    @GetMapping("/member")
 //    public List<AdminResponse> member() throws Exception{
 //        return memberService.getMember();
 //    }
+
+
+    @PostMapping("/auth/signup/admin")
+    public ResponseEntity<Void> signup(@RequestBody MemberSignUp memberSignUp){
+
+        if (!memberSignUp.getCode().equals(adminCode)){
+            throw new AdminCodeNotMatch();
+        }
+
+        authService.signup(memberSignUp);
+
+        return ResponseEntity.status(200).build();
+    }
 
     @GetMapping("/admin/member")
     public String member() throws Exception{

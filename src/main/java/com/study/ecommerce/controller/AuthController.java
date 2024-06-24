@@ -3,7 +3,7 @@ package com.study.ecommerce.controller;
 import com.study.ecommerce.request.MemberSignUp;
 import com.study.ecommerce.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,8 +17,9 @@ public class AuthController {
 
 
     @PostMapping("/auth/signup")
-    public long signup(@RequestBody MemberSignUp memberSignUp){
-        return authService.signup(memberSignUp);
+    public ResponseEntity<Void> signup(@RequestBody MemberSignUp memberSignUp){
+        authService.signup(memberSignUp);
+        return ResponseEntity.status(200).build();
     }
 
     @PostMapping("/auth/resign")

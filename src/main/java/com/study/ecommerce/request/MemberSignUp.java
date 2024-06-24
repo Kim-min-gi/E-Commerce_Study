@@ -1,10 +1,12 @@
 package com.study.ecommerce.request;
 
 import com.study.ecommerce.domain.Member;
+import com.study.ecommerce.exception.AdminCodeNotMatch;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @Builder
 public class MemberSignUp {
 
@@ -12,7 +14,7 @@ public class MemberSignUp {
     private String email;
     private String name;
     private String password;
-    private String role;
+    private String code;
 
 
     public Member toEntity(){
@@ -20,8 +22,10 @@ public class MemberSignUp {
                 .email(this.getEmail())
                 .name(this.getName())
                 .password(this.getPassword())
-                .role("ROLE_USER")
                 .build();
     }
+
+
+
 
 }
