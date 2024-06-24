@@ -1,8 +1,24 @@
 # E-commerce-Study
 
-## 프로젝트 설명
+## [프로젝트 설명]
 
-이 프로젝트는 Spring Boot를 사용하여 구현된 온라인 전자상거래 플랫폼입니다. 주요 기능은 다음과 같습니다:
+이 프로젝트는 Spring Boot를 사용하여 E-commerce를 만들어보는 프로젝트입니다.
+
+## [사용한 기술 스택 및 라이브러리]
+<div align="center"> 
+
+<img height="30" src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat-square&logo=Spring%20Boot&logoColor=white"/>
+<img height="30" src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=java&logoColor=white"/>
+<img height="30" src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=Hibernate&logoColor=white"/>
+<img height="30" src="https://img.shields.io/badge/JPA-007396?style=flat-square&logo=JPA&logoColor=white"/>
+<br/>
+<img height="30" src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white"/>
+<img height="30" src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=Postman&logoColor=white"/>
+<img height="30" src="https://img.shields.io/badge/GitHub-black?style=flat-square&logo=GitHub&logoColor=white"/>
+
+</div>
+
+## [프로그램 주요 기능]
 
 ### 회원기능
 - **회원가입**: 새로운 회원을 등록합니다.
@@ -24,7 +40,7 @@
 - **배송 정보 입력**: 상품 주문 시 배송 정보를 입력할 수 있습니다.
 
 
-## API
+## [API]
 
 | Domain      | URL                                                                        | Http Method                 | description       | 접근 권한 |
 |:------------|:---------------------------------------------------------------------------|:----------------------------|:------------------|:------|
