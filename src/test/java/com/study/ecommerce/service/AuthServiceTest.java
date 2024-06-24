@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,13 +49,12 @@ class AuthServiceTest {
 
         int count = memberRepository.findAll().size();
         Optional<Member> findMember = memberRepository.findByEmail("Testing@naver.com");
-
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
         Assertions.assertEquals(2,count);
         Assertions.assertEquals("Testing@naver.com",findMember.get().getEmail());
         Assertions.assertEquals("Testing",findMember.get().getName());
-        Assertions.assertEquals("1234",findMember.get().getPassword());
-
+        Assertions.assertEquals(true,bCryptPasswordEncoder.matches("1234",findMember.get().getPassword()));
     }
 
     @Test

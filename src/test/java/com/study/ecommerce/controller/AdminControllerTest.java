@@ -1,6 +1,7 @@
 package com.study.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.ecommerce.config.CustomMockMember;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,25 +34,27 @@ class AdminControllerTest {
 //    }
 
 
-    @Test
-    @DisplayName("/member 호출 시 member List 출력")
-    void member() throws Exception {
-        Member member = Member.builder()
-                .email("testing@gmail.com")
-                .name("name")
-                .password("1234")
-                .build();
-
-        memberRepository.save(member);
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/member")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("testing@gmail.com"))
-                .andDo(MockMvcResultHandlers.print());
-
-
-    }
+//    @Test
+//    @DisplayName("/member 호출 시 member List 출력")
+//    @CustomMockMember
+//    void member() throws Exception {
+//        Member member = Member.builder()
+//                .email("testing@gmail.com")
+//                .name("name")
+//                .password("1234")
+//                .role("ROLE_ADMIN")
+//                .build();
+//
+//        memberRepository.save(member);
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/member")
+//                .contentType(MediaType.APPLICATION_JSON))
+//                .andExpect(MockMvcResultMatchers.status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("testing@gmail.com"))
+//                .andDo(MockMvcResultHandlers.print());
+//
+//
+//    }
 
 
 

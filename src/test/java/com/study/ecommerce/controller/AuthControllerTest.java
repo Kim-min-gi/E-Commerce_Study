@@ -2,6 +2,7 @@ package com.study.ecommerce.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.ecommerce.config.CustomMockMember;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.request.MemberSignUp;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -33,13 +37,14 @@ class AuthControllerTest {
     private MemberRepository memberRepository;
 
 
-    @BeforeEach
-    void clean(){
-        memberRepository.deleteAll();
-    }
+//    @BeforeEach
+//    void clean(){
+//        memberRepository.deleteAll();
+//    }
 
     @Test
     @DisplayName("회원가입")
+    @WithMockUser
     void signup() throws Exception {
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
@@ -47,13 +52,11 @@ class AuthControllerTest {
                 .password("1234")
                 .build();
 
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/signup")
+        mockMvc.perform(MockMvcRequestBuilders.post("/auth/signup")
                     .content(objectMapper.writeValueAsString(member))
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
-
 
     }
 }

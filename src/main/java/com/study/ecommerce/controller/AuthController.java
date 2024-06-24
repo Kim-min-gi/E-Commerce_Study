@@ -21,13 +21,6 @@ public class AuthController {
         return authService.signup(memberSignUp);
     }
 
-
-    @GetMapping("/auth/login")
-    public String login(){
-        return "로그인페이지입니다.";
-    }
-
-
     @PostMapping("/auth/resign")
     public void resign(@RequestBody long id){
         authService.resign(id);
