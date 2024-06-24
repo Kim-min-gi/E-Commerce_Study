@@ -89,9 +89,9 @@
 | Domain      | URL                                                                        | Http Method                 | description       | 접근 권한 |
 |:------------|:---------------------------------------------------------------------------|:----------------------------|:------------------|:------|
 | **Auth**    | auth/signup                                                                | `POST`                      | 사용자 회원가입          | -     |
-|             | auth/login                                                                 | `POST`                      | 사용자/관리자 로그인       | -     |
-<!-- 
 |             | auth/signup/admin                                                          | `POST`                      | 관리자 회원가입          | -     |
+|             | auth/login                                                                 | `POST`                      | 사용자/관리자 로그인       | -     |
+<!--
 | **Product** | /product/list/{categoryId}                                                 | `GET`                       | 카테고리 별 상품 목록 조회   | -     |
 |             | /product/best-list                                                         | `GET`                       | 베스트 상품 목록 조회      | -     |
 |             | /product/{productId}                                                       | `GET`                       | 상품 상세 조회          | -     |
