@@ -4,6 +4,9 @@
 
 이 프로젝트는 Spring Boot를 사용하여 E-commerce를 만들어보는 프로젝트입니다.
 
+<br/>
+<br/>
+
 ## [사용한 기술 스택 및 라이브러리]
 <div align="center"> 
 
@@ -17,6 +20,9 @@
 <img height="30" src="https://img.shields.io/badge/GitHub-black?style=flat-square&logo=GitHub&logoColor=white"/>
 
 </div>
+
+<br/>
+<br/>
 
 ## [프로그램 주요 기능]
 
@@ -38,6 +44,9 @@
 - **상품 종류**: 다양한 종류의 상품을 관리합니다.
 - **상품 카테고리 구분**: 상품을 카테고리로 구분할 수 있습니다.
 - **배송 정보 입력**: 상품 주문 시 배송 정보를 입력할 수 있습니다.
+
+<br/>
+<br/>
 
 
 ## [API]
