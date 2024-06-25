@@ -5,6 +5,7 @@ import com.study.ecommerce.request.MemberSignUp;
 import com.study.ecommerce.response.AdminResponse;
 import com.study.ecommerce.service.AdminService;
 import com.study.ecommerce.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,7 +34,7 @@ public class AdminController {
 
 
     @PostMapping("/auth/signup/admin")
-    public ResponseEntity<Void> signup(@RequestBody MemberSignUp memberSignUp){
+    public ResponseEntity<Void> signup(@Valid @RequestBody MemberSignUp memberSignUp){
 
         if (!memberSignUp.getCode().equals(adminCode)){
             throw new AdminCodeNotMatch();

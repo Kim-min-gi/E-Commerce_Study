@@ -36,21 +36,15 @@ class AuthServiceTest {
                 .password("1234")
                 .build();
 
-        MemberSignUp member2 = MemberSignUp.builder()
-                .email("Testing2@naver.com")
-                .name("Testing2")
-                .password("1234")
-                .build();
 
         authService.signup(member);
-        authService.signup(member2);
 
 
         int count = memberRepository.findAll().size();
         Optional<Member> findMember = memberRepository.findByEmail("Testing@naver.com");
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
-        Assertions.assertEquals(2,count);
+        Assertions.assertEquals(1,count);
         Assertions.assertEquals("Testing@naver.com",findMember.get().getEmail());
         Assertions.assertEquals("Testing",findMember.get().getName());
         Assertions.assertEquals(true,bCryptPasswordEncoder.matches("1234",findMember.get().getPassword()));

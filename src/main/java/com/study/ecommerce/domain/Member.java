@@ -2,6 +2,7 @@ package com.study.ecommerce.domain;
 
 import com.study.ecommerce.request.MemberSignUp;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.List;
@@ -18,16 +19,17 @@ public class Member {
     private Long id;
 
 
+    @NotNull
     @Column(unique = true,length = 50)
     private String email;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false)
+    @NotNull
     private String password;
 
-    @Column(nullable = false)
+    @NotNull
     private String role;
 
     @OneToMany(mappedBy ="member")
