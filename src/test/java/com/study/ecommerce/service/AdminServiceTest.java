@@ -3,11 +3,10 @@ package com.study.ecommerce.service;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.response.AdminResponse;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +16,16 @@ import java.util.Optional;
 class AdminServiceTest {
 
     @Autowired
+    private AdminService adminService;
+
+    @Autowired
     private MemberRepository memberRepository;
+
+
+    @BeforeEach
+    void clean(){
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("member List 확인")
@@ -25,7 +33,8 @@ class AdminServiceTest {
         Member member = Member.builder()
                 .email("testing@gmail.com")
                 .name("name")
-                .password("1234")
+                .password("!Aa123456")
+                .role("ROLE_USER")
                 .build();
 
         memberRepository.save(member);
@@ -49,18 +58,20 @@ class AdminServiceTest {
         Member member = Member.builder()
                 .email("testing@gmail.com")
                 .name("name")
-                .password("1234")
+                .password("!Aa123456")
+                .role("ROLE_USER")
                 .build();
 
         memberRepository.save(member);
 
 
-        Optional<Member> findMember = memberRepository.findById(1L);
+       AdminResponse findMember = adminService.getMeber(member.getId());
 
 
-        Assertions.assertEquals(1L,findMember.get().getId());
-        Assertions.assertEquals("testing@gmail.com",findMember.get().getEmail());
-        Assertions.assertEquals("name",findMember.get().getName());
+
+        Assertions.assertEquals(member.getId(),findMember.getId());
+        Assertions.assertEquals("testing@gmail.com",findMember.getEmail());
+        Assertions.assertEquals("name",findMember.getName());
 
     }
 

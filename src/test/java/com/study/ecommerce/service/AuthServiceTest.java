@@ -26,6 +26,11 @@ class AuthServiceTest {
     @Autowired
     private AuthService authService;
 
+    @BeforeEach
+    void clean(){
+        memberRepository.deleteAll();
+    }
+
 
     @Test
     @DisplayName("회원가입")

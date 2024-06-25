@@ -1,6 +1,7 @@
 package com.study.ecommerce.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "orders")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Order {
 
@@ -23,7 +24,6 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Member member;
-
 
     //주소
 

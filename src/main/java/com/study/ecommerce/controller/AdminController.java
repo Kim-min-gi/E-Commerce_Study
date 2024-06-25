@@ -27,10 +27,10 @@ public class AdminController {
 
 
 
-//    @GetMapping("/member")
-//    public List<AdminResponse> member() throws Exception{
-//        return memberService.getMember();
-//    }
+    @GetMapping("/admin/member")
+    public List<AdminResponse> member() throws Exception{
+        return memberService.getMember();
+    }
 
 
     @PostMapping("/auth/signup/admin")
@@ -40,18 +40,18 @@ public class AdminController {
             throw new AdminCodeNotMatch();
         }
 
-        authService.signup(memberSignUp);
+        authService.adminSignup(memberSignUp);
 
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/admin/member")
-    public String member() throws Exception{
-        return "관리자 페이지입니다.";
-    }
+//    @GetMapping("/admin/member")
+//    public String member() throws Exception{
+//        return "관리자 페이지입니다.";
+//    }
 
     @GetMapping("/admin/member/{id}")
-    public List<AdminResponse> member(@RequestParam long id) throws Exception{
+    public List<AdminResponse> getmembers(@RequestParam long id) throws Exception{
         return memberService.getMember();
     }
 }

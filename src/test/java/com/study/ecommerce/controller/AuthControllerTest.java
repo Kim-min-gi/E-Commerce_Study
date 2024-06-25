@@ -54,7 +54,7 @@ class AuthControllerTest {
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
                 .name("Testing")
-                .password("1234")
+                .password("!Aa123456")
                 .build();
 
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/signup")
@@ -73,7 +73,7 @@ class AuthControllerTest {
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
                 .name("Testing")
-                .password("1234")
+                .password("!Aa123456")
                 .code(adminCode)
                 .build();
 
@@ -92,7 +92,7 @@ class AuthControllerTest {
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
                 .name("Testing")
-                .password("1234")
+                .password("!Aa1234")
                 .code("adminCode")
                 .build();
 
