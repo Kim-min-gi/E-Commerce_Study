@@ -20,12 +20,12 @@ public class AdminService {
     private final MemberRepository memberRepository;
 
 
-    public List<AdminResponse> getMember(){
+    public List<AdminResponse> getMembers(){
             return memberRepository.findAll().stream().map(AdminResponse::new).collect(Collectors.toList());
     }
 
 
-    public AdminResponse getMeber(long id){
+    public AdminResponse getMember(long id){
         Optional<Member> findMember = memberRepository.findById(id);
 
         return AdminResponse.builder()
@@ -34,6 +34,7 @@ public class AdminService {
                 .name(findMember.get().getName())
                 .build();
     }
+
 
 
 

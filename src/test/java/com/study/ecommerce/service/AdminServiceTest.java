@@ -65,7 +65,7 @@ class AdminServiceTest {
         memberRepository.save(member);
 
 
-       AdminResponse findMember = adminService.getMeber(member.getId());
+       AdminResponse findMember = adminService.getMember(member.getId());
 
 
 
