@@ -13,7 +13,6 @@ import java.util.List;
 @Entity
 @Getter
 @RequiredArgsConstructor
-@Builder
 public class ProductCategory extends BaseTimeEntity {
 
     @Id
@@ -31,6 +30,11 @@ public class ProductCategory extends BaseTimeEntity {
         this.name = name;
     }
 
+    @Builder
+    public ProductCategory(String name, List<Product> product) {
+        this.name = name;
+        this.product = product;
+    }
 
     public static ProductCategory form(CategoryRequest categoryRequest){
         return ProductCategory.builder()
