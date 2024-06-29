@@ -9,6 +9,7 @@ import com.study.ecommerce.request.ProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,19 @@ public class ProductService {
         productRepository.save(product);
 
     }
+
+
+    public List<Product> getProducts() {
+        return productRepository.findAll();
+    }
+
+    public Optional<Product> getProduct(long id){
+        return productRepository.findById(id);
+    }
+
+
+
+
 
 
 

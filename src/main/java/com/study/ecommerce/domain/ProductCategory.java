@@ -23,7 +23,7 @@ public class ProductCategory extends BaseTimeEntity {
     private String name;
 
     @OneToMany(mappedBy = "productCategory",fetch = FetchType.LAZY)
-    private List<Product> product;
+    private List<Product> product = new ArrayList<>();
 
 
     public void modifyProductCategoryName(String name){
@@ -33,7 +33,7 @@ public class ProductCategory extends BaseTimeEntity {
     @Builder
     public ProductCategory(String name, List<Product> product) {
         this.name = name;
-        this.product = product;
+        this.product = product == null ? new ArrayList<>() : product;
     }
 
     public static ProductCategory form(CategoryRequest categoryRequest){
@@ -44,7 +44,6 @@ public class ProductCategory extends BaseTimeEntity {
 
     public void addProduct(Product product){
         this.product.add(product);
-        product.addCategory(this);
     }
 
 

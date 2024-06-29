@@ -45,7 +45,6 @@ public class Product extends BaseTimeEntity {
         this.productCategory =  productCategory;
     }
 
-
     public static Product form(ProductRequest productRequest){
         return  Product.builder()
                 .name(productRequest.getName())
@@ -57,6 +56,7 @@ public class Product extends BaseTimeEntity {
 
     public void addCategory(ProductCategory productCategory){
         this.productCategory = productCategory;
+        productCategory.addProduct(this);
     }
 
 }
