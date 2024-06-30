@@ -7,6 +7,7 @@ import com.study.ecommerce.request.CategoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,6 +15,11 @@ import java.util.Optional;
 public class ProductCategoryService {
 
     private final ProductCategoryRepository productCategoryRepository;
+
+
+    public List<ProductCategory> getCategory(){
+        return productCategoryRepository.findAll();
+    }
 
     public void addCategory(CategoryRequest categoryRequest){
 
@@ -28,6 +34,14 @@ public class ProductCategoryService {
         productCategoryRepository.save(ProductCategory.form(categoryRequest));
 
     }
+
+    public void modifyCategory(long id){
+        ProductCategory productCategory = productCategoryRepository.findById(id)
+                .orElseThrow(AlreadyExistsCategory::new);
+
+    }
+
+
 
 
 }
