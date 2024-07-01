@@ -60,7 +60,7 @@ class AuthControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/signup")
                     .content(objectMapper.writeValueAsString(member))
                     .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andDo(MockMvcResultHandlers.print());
 
     }
@@ -80,7 +80,7 @@ class AuthControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/signup/admin")
                         .content(objectMapper.writeValueAsString(member))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andDo(MockMvcResultHandlers.print());
 
     }
@@ -125,7 +125,7 @@ class AuthControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/auth/resign")
                         .content(objectMapper.writeValueAsString(memberId))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());
 
     }
