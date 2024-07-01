@@ -30,8 +30,9 @@ public class AdminController {
 
 
     @GetMapping("/admin/member")
-    public List<AdminResponse> member() throws Exception{
-        return memberService.getMembers();
+    public ResponseEntity<List<AdminResponse>> member() throws Exception{
+        List<AdminResponse> adminResponses = memberService.getMembers();
+        return ResponseEntity.ok(adminResponses);
     }
 
     @GetMapping("/admin/member/{id}")
