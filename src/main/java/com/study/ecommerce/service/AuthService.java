@@ -37,7 +37,7 @@ public class AuthService {
     }
 
 
-    public long adminSignup(MemberSignUp memberSignUp){
+    public void adminSignup(MemberSignUp memberSignUp){
 
         Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
 
@@ -50,9 +50,7 @@ public class AuthService {
 
         Member saveMember = Member.from(memberSignUp,encryptedPassword,"ROLE_ADMIN");
 
-        Member member = memberRepository.save(saveMember);
-
-        return member.getId();
+        memberRepository.save(saveMember);
 
     }
 
