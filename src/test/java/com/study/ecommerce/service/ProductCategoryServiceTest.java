@@ -88,6 +88,11 @@ class ProductCategoryServiceTest {
 
         productCategoryService.addCategory(categoryRequest);
 
+        Optional<ProductCategory> productCategory = productCategoryRepository.findByName("카테고리1");
+
+        productCategoryRepository.delete(productCategory.get());
+
+        Assertions.assertEquals(0,productCategoryRepository.findAll().size());
 
 
     }
