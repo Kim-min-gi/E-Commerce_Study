@@ -9,6 +9,7 @@ import lombok.Getter;
 @Builder
 public class CategoryRequest {
 
+    private long id;
     @NotNull(message = "카테고리명은 필수 입니다.")
     private String name;
 

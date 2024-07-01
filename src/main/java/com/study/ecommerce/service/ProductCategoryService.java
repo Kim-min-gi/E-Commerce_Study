@@ -2,6 +2,7 @@ package com.study.ecommerce.service;
 
 import com.study.ecommerce.domain.ProductCategory;
 import com.study.ecommerce.exception.AlreadyExistsCategory;
+import com.study.ecommerce.exception.NotFoundCategory;
 import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.request.CategoryRequest;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,17 @@ public class ProductCategoryService {
 
     }
 
-    public void modifyCategory(long id){
-        ProductCategory productCategory = productCategoryRepository.findById(id)
-                .orElseThrow(AlreadyExistsCategory::new);
+    public void modifyCategory(CategoryRequest categoryRequest){
+        ProductCategory productCategory = productCategoryRepository.findById(categoryRequest.getId())
+                .orElseThrow(NotFoundCategory::new);
 
+        productCategory.modifyCategory(categoryRequest);
+
+        productCategoryRepository.save(productCategory);
+    }
+
+    public void removeCategory(CategoryRequest categoryRequest){
+        productCategoryRepository.deleteById(categoryRequest.getId());
     }
 
 

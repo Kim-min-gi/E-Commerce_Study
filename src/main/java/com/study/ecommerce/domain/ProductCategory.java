@@ -46,8 +46,8 @@ public class ProductCategory extends BaseTimeEntity {
         this.product.add(product);
     }
 
-    public void modifyCategory(ProductCategory productCategory){
-        this.name = productCategory.getName();
+    public void modifyCategory(CategoryRequest categoryRequest){
+        this.name = categoryRequest.getName();
     }
 
 
