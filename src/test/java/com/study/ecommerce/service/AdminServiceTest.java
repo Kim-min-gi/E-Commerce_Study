@@ -13,6 +13,7 @@ import java.util.Optional;
 
 
 @SpringBootTest
+@Transactional
 class AdminServiceTest {
 
     @Autowired

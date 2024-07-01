@@ -90,11 +90,12 @@ class ProductServiceTest {
 
         productService.addProduct(productRequest);
 
+        Optional<Product> product = productRepository.findByName("물품1");
 
-        Optional<Product> product = productService.getProduct(1L);
+        Optional<Product> product2 = productService.getProduct(product.get().getId());
 
-        Assertions.assertEquals(product.get().getName(),"물품1");
-        Assertions.assertEquals(product.get().getAmount(),99);
+        Assertions.assertEquals(product2.get().getName(),"물품1");
+        Assertions.assertEquals(product2.get().getAmount(),99);
 
     }
 

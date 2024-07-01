@@ -70,7 +70,6 @@ class AdminControllerTest {
 
         memberRepository.save(member);
 
-
         mockMvc.perform(MockMvcRequestBuilders.get("/admin/member/{id}",member.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())

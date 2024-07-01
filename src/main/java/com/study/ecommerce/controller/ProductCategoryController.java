@@ -5,9 +5,7 @@ import com.study.ecommerce.service.ProductCategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +22,23 @@ public class ProductCategoryController {
         return ResponseEntity.status(200).build();
     }
 
+    @PatchMapping("/admin/category/{id}")
+    public ResponseEntity<Void> modifyCategory(
+            @PathVariable long id
+            ,@Valid @RequestBody CategoryRequest categoryRequest){
+
+        categoryService.modifyCategory(categoryRequest);
+
+        return ResponseEntity.status(200).build();
+    }
+
+    @DeleteMapping("/admin/category/{id}")
+    public ResponseEntity<Void> removeCategory(@PathVariable long id){
+
+        categoryService.removeCategory(id);
+
+        return ResponseEntity.status(200).build();
+    }
 
 
 

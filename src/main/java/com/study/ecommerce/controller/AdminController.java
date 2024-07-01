@@ -36,8 +36,9 @@ public class AdminController {
     }
 
     @GetMapping("/admin/member/{id}")
-    public AdminResponse getmembers(@RequestParam long id) throws Exception{
-        return memberService.getMember(id);
+    public ResponseEntity<AdminResponse> getmember(@PathVariable long id) throws Exception{
+        AdminResponse adminResponse = memberService.getMember(id);
+        return ResponseEntity.ok(adminResponse);
     }
 
 

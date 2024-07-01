@@ -45,8 +45,8 @@ public class ProductCategoryService {
         productCategoryRepository.save(productCategory);
     }
 
-    public void removeCategory(CategoryRequest categoryRequest){
-        productCategoryRepository.deleteById(categoryRequest.getId());
+    public void removeCategory(long id){
+        productCategoryRepository.deleteById(id);
     }
 
 
