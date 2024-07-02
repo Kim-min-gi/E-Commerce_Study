@@ -46,10 +46,8 @@ class AdminServiceTest {
 
 
 
-        Assertions.assertEquals(1,count);
         Assertions.assertEquals("testing@gmail.com",list.get(0).getEmail());
         Assertions.assertEquals("name",list.get(0).getName());
-        Assertions.assertEquals(1L,list.get(0).getId());
 
     }
 

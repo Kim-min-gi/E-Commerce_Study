@@ -64,13 +64,16 @@ class ProductCategoryServiceTest {
         productCategoryService.addCategory(categoryRequest);
 
 
+        ProductCategory productCategory = productCategoryRepository.findByName("카테고리1").get();
+
+
 
         CategoryRequest categoryRequest2 = CategoryRequest.builder()
-                .id(1L)
                 .name("카테고리1121212")
                 .build();
 
-        productCategoryService.modifyCategory(categoryRequest2);
+        productCategoryService.modifyCategory(productCategory.getId(),categoryRequest2);
+
         Optional<ProductCategory> findCategory = productCategoryRepository.findById(1L);
 
 

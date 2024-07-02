@@ -28,7 +28,7 @@ public class ProductCategoryController {
             @PathVariable long id
             ,@Valid @RequestBody CategoryRequest categoryRequest){
 
-        categoryService.modifyCategory(categoryRequest);
+        categoryService.modifyCategory(id,categoryRequest);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

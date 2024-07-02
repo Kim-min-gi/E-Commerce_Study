@@ -36,8 +36,8 @@ public class ProductCategoryService {
 
     }
 
-    public void modifyCategory(CategoryRequest categoryRequest){
-        ProductCategory productCategory = productCategoryRepository.findById(categoryRequest.getId())
+    public void modifyCategory(long id,CategoryRequest categoryRequest){
+        ProductCategory productCategory = productCategoryRepository.findById(id)
                 .orElseThrow(NotFoundCategory::new);
 
         productCategory.modifyCategory(categoryRequest);
