@@ -26,7 +26,7 @@ public class ProductController {
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/admin/product")
+    @GetMapping("/admin/products")
     public ResponseEntity<Void> getProducts(){   //페이징 작업
 
         productService.getProducts();
@@ -34,10 +34,10 @@ public class ProductController {
         return ResponseEntity.status(200).build();
     }
 
-    @GetMapping("/admin/product")
-    public ResponseEntity<Void> getProduct(@Valid @RequestBody ProductRequest productRequest){
+    @GetMapping("/admin/product/{id}")
+    public ResponseEntity<Void> getProduct(long id,@Valid @RequestBody ProductRequest productRequest){
 
-        productService.addProduct(productRequest);
+//        productService.addProduct(productRequest);
 
         return ResponseEntity.status(200).build();
     }
