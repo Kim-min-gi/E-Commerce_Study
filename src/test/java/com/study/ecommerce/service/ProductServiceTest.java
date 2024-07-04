@@ -142,13 +142,71 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 수정")
+    @Transactional
     void test4() throws Exception {
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("물품1")
+                .price(161000)
+                .productCategory(productCategory)
+                .amount(99)
+                .build();
+
+        productService.addProduct(productRequest);
+
+        Product product = productRepository.findByName("물품1").get();
+
+        ProductRequest productRequest2 = ProductRequest.builder()
+                .name("물품2")
+                .price(16100)
+                .productCategory(productCategory)
+                .amount(9)
+                .build();
+
+        product.modifyProduct(productRequest2);
+
+
+        Assertions.assertEquals(product.getName(), productRequest2.getName());
+        Assertions.assertEquals(product.getPrice(), productRequest2.getPrice());
+        Assertions.assertEquals(product.getAmount(), productRequest2.getAmount());
+        Assertions.assertEquals(product.getProductCategory(), productRequest2.getProductCategory());
 
     }
 
     @Test
     @DisplayName("상품 삭제")
+    @Transactional
     void test5() throws Exception{
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("물품1")
+                .price(161000)
+                .productCategory(productCategory)
+                .amount(99)
+                .build();
+
+        productService.addProduct(productRequest);
+
+
+        Product product = productRepository.findByName("물품1").get();
+
+        productService.removeProduct(product.getId());
+
+
+        //Assertions.assertThrows() 변경??
+        Assertions.assertEquals(0,productRepository.findAll().size());
 
     }
 

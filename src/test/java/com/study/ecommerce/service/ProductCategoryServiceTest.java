@@ -74,7 +74,7 @@ class ProductCategoryServiceTest {
 
         productCategoryService.modifyCategory(productCategory.getId(),categoryRequest2);
 
-        Optional<ProductCategory> findCategory = productCategoryRepository.findById(1L);
+        Optional<ProductCategory> findCategory = productCategoryRepository.findById(productCategory.getId());
 
 
 
