@@ -140,6 +140,18 @@ class ProductServiceTest {
     }
 
 
+    @Test
+    @DisplayName("상품 수정")
+    void test4() throws Exception {
+
+    }
+
+    @Test
+    @DisplayName("상품 삭제")
+    void test5() throws Exception{
+
+    }
+
 
 
 

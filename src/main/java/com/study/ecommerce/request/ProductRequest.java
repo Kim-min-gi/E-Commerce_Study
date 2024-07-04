@@ -14,10 +14,10 @@ public class ProductRequest {
     private String name;
 
     @NotBlank(message = "상품가격은 필수 입니다.")
-    private int price;
+    private Integer price;
 
     @NotBlank(message = "수량은 필수 입니다.")
-    private int amount;
+    private Integer amount;
 
     @NotBlank(message = "카테고리는 필수 입니다.")
     private ProductCategory productCategory;

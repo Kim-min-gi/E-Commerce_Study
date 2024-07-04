@@ -59,4 +59,26 @@ public class Product extends BaseTimeEntity {
         productCategory.addProduct(this);
     }
 
+
+    public void modifyProduct(ProductRequest productRequest){
+        if (productRequest.getName() != null){
+            this.name = productRequest.getName();
+        }
+
+        if (productRequest.getPrice() != null){
+            this.price = productRequest.getPrice();
+        }
+
+        if (productRequest.getAmount() != null){
+            this.amount = productRequest.getAmount();
+        }
+
+        if (productRequest.getProductCategory() != null){
+            this.productCategory = productRequest.getProductCategory();
+        }
+
+    }
+
+
+
 }

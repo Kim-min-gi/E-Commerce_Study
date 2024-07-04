@@ -46,6 +46,8 @@ public class ProductCategoryService {
     }
 
     public void removeCategory(long id){
+        productCategoryRepository.findById(id).orElseThrow(NotFoundCategory::new);
+
         productCategoryRepository.deleteById(id);
     }
 
