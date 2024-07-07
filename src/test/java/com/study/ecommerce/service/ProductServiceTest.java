@@ -6,17 +6,22 @@ import com.study.ecommerce.domain.ProductCategory;
 import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.repository.ProductRepository;
 import com.study.ecommerce.request.ProductRequest;
+import com.study.ecommerce.response.ProductResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.convert.DataSizeUnit;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -101,7 +106,7 @@ class ProductServiceTest {
 
 
     @Test
-    @DisplayName("상품 여러개 조화")
+    @DisplayName("상품 여러개 조회")
     @Transactional
     void test3(){
 
@@ -112,30 +117,22 @@ class ProductServiceTest {
         productCategoryRepository.save(productCategory);
 
 
-        ProductRequest productRequest = ProductRequest.builder()
-                .name("물품1")
-                .price(161000)
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
+                .name("물품" + i)
+                .amount(i)
+                .price(i)
                 .productCategory(productCategory)
-                .amount(99)
-                .build();
+                .build()).toList();
 
-        productService.addProduct(productRequest);
+        productRepository.saveAll(requestProduct);
 
-        ProductRequest productRequest2 = ProductRequest.builder()
-                .name("물품2")
-                .price(16100)
-                .productCategory(productCategory)
-                .amount(9)
-                .build();
-
-        productService.addProduct(productRequest2);
-
-        List<Product> products = productRepository.findAll();
+        Pageable pageable = PageRequest.of(0,10);
 
 
-        Assertions.assertEquals(2,products.size());
-        Assertions.assertEquals(productRequest.getName(),products.get(0).getName());
-        Assertions.assertEquals(productRequest2.getName(),products.get(1).getName());
+        List<ProductResponse> productResponses = productService.getProducts(pageable);
+
+        Assertions.assertEquals(10,productResponses.size());
+        Assertions.assertEquals("물품1",productResponses.get(0).getName());
 
     }
 

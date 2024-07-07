@@ -10,16 +10,12 @@ import lombok.Getter;
 @Builder
 public class ProductRequest {
 
-    @NotBlank(message = "상품명은 필수 입니다.")
     private String name;
 
-    @NotBlank(message = "상품가격은 필수 입니다.")
     private Integer price;
 
-    @NotBlank(message = "수량은 필수 입니다.")
     private Integer amount;
 
-    @NotBlank(message = "카테고리는 필수 입니다.")
     private ProductCategory productCategory;
 
 
