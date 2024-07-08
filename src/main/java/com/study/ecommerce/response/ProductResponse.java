@@ -15,7 +15,7 @@ public class ProductResponse {
     private String name;
     private int price;
     private int amount;
-    private ProductCategory productCategory;
+    private String productCategory;
 
 
     public static ProductResponse from(Product product) {
@@ -24,7 +24,7 @@ public class ProductResponse {
                 .name(product.getName())
                 .price(product.getPrice())
                 .amount(product.getAmount())
-                .productCategory(product.getProductCategory())
+                .productCategory(product.getProductCategory().getName())
                 .build();
     }
 
