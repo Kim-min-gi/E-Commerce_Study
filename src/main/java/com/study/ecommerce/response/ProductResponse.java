@@ -11,7 +11,7 @@ import java.util.Optional;
 @Builder
 public class ProductResponse {
 
-    private long id;
+    private Long id;
     private String name;
     private int price;
     private int amount;
