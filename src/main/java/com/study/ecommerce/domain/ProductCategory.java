@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductCategory extends BaseTimeEntity {
 
     @Id
@@ -22,7 +22,7 @@ public class ProductCategory extends BaseTimeEntity {
     @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "productCategory",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "productCategory")
     private List<Product> products = new ArrayList<>();
 
 

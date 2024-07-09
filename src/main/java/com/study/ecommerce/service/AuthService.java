@@ -56,6 +56,7 @@ public class AuthService {
 
 
 
+    @Transactional
     public void resign(long id){
 
         Optional<Member> member = memberRepository.findById(id);

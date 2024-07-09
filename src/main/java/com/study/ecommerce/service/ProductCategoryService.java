@@ -7,6 +7,7 @@ import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.request.CategoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,13 +37,13 @@ public class ProductCategoryService {
 
     }
 
+    @Transactional
     public void modifyCategory(long id,CategoryRequest categoryRequest){
         ProductCategory productCategory = productCategoryRepository.findById(id)
                 .orElseThrow(NotFoundCategory::new);
 
         productCategory.modifyCategory(categoryRequest);
 
-        productCategoryRepository.save(productCategory);
     }
 
     public void removeCategory(long id){

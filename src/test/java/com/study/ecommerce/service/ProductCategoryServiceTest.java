@@ -3,12 +3,10 @@ package com.study.ecommerce.service;
 import com.study.ecommerce.domain.ProductCategory;
 import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.request.CategoryRequest;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +14,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Transactional
 class ProductCategoryServiceTest {
 
     @Autowired
@@ -24,7 +23,13 @@ class ProductCategoryServiceTest {
     @Autowired
     private ProductCategoryService productCategoryService;
 
+
     @BeforeEach
+    void cleanUp(){
+        productCategoryRepository.deleteAll();
+    }
+
+    @AfterEach
     void clean(){
         productCategoryRepository.deleteAll();
     }
