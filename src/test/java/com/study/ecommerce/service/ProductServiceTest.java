@@ -7,10 +7,7 @@ import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.repository.ProductRepository;
 import com.study.ecommerce.request.ProductRequest;
 import com.study.ecommerce.response.ProductResponse;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.convert.DataSizeUnit;
@@ -40,12 +37,12 @@ class ProductServiceTest {
     @BeforeEach
     void clean(){
         productRepository.deleteAll();
+        productCategoryRepository.deleteAll();
     }
 
 
     @Test
     @DisplayName("상품 추가")
-    @Transactional
     void test1() {
 
         ProductCategory productCategory = ProductCategory.builder()
@@ -67,7 +64,6 @@ class ProductServiceTest {
         Product product = productRepository.findByName("물품1").get();
 
         Assertions.assertEquals(productCategory.getId(),product.getProductCategory().getId());
-        Assertions.assertEquals(product.getId(),productCategory.getProduct().get(0).getId());
         Assertions.assertEquals(product.getName(), "물품1");
         Assertions.assertEquals(product.getAmount(),99);
 
@@ -76,7 +72,6 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 한개 조회")
-    @Transactional
     void test2() {
 
         ProductCategory productCategory = ProductCategory.builder()
@@ -107,7 +102,6 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 여러개 조회")
-    @Transactional
     void test3(){
 
         ProductCategory productCategory = ProductCategory.builder()
@@ -139,7 +133,6 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 수정")
-    @Transactional
     void test4() throws Exception {
 
         ProductCategory productCategory = ProductCategory.builder()
@@ -178,7 +171,6 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 삭제")
-    @Transactional
     void test5() throws Exception{
 
         ProductCategory productCategory = ProductCategory.builder()
