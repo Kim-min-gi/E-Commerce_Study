@@ -41,7 +41,15 @@ public class ProductController {
     }
 
     @GetMapping("/admin/product/{id}")
-    public ResponseEntity<Void> getProduct(long id,@Valid @RequestBody ProductRequest productRequest){
+    public ResponseEntity<Void> getProduct(@PathVariable long id,@Valid @RequestBody ProductRequest productRequest){
+
+//        productService.addProduct(productRequest);
+
+        return ResponseEntity.status(200).build();
+    }
+
+    @PatchMapping("/admin/product/{id}")
+    public ResponseEntity<Void> modifyProduct(@PathVariable long id,@Valid @RequestBody ProductRequest productRequest){
 
 //        productService.addProduct(productRequest);
 

@@ -16,7 +16,7 @@ public class ProductRequest {
 
     private Integer amount;
 
-    private ProductCategory productCategory;
+    private String categoryName;
 
 
 }

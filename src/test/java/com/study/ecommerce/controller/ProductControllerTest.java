@@ -68,7 +68,7 @@ class ProductControllerTest {
         ProductRequest productRequest = ProductRequest.builder()
                 .name("물품1")
                 .price(161000)
-                .productCategory(productCategory)
+                .categoryName(productCategory.getName())
                 .amount(99)
                 .build();
 
@@ -98,7 +98,7 @@ class ProductControllerTest {
                 .name("물품" + i)
                 .amount(i)
                 .price(i)
-                .productCategory(productCategory)
+               // .productCategory(productCategory)
                 .build()).toList();
 
         productRepository.saveAll(requestProduct);

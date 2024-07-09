@@ -10,9 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -38,11 +36,10 @@ public class Product extends BaseTimeEntity {
 
 
     @Builder
-    public Product(String name, int price, int amount,ProductCategory productCategory) {
+    public Product(String name, int price, int amount) {
         this.name = name;
         this.price = price;
         this.amount = amount;
-        this.productCategory =  productCategory;
     }
 
     public static Product form(ProductRequest productRequest){
@@ -50,17 +47,15 @@ public class Product extends BaseTimeEntity {
                 .name(productRequest.getName())
                 .price(productRequest.getPrice())
                 .amount(productRequest.getAmount())
-                .productCategory(productRequest.getProductCategory())
                 .build();
     }
 
-    public void addCategory(ProductCategory productCategory){
+    public void setCategory(ProductCategory productCategory){
         this.productCategory = productCategory;
-        productCategory.addProduct(this);
     }
 
 
-    public void modifyProduct(ProductRequest productRequest){
+    public void modifyProduct(ProductRequest productRequest,ProductCategory productCategory){
         if (productRequest.getName() != null){
             this.name = productRequest.getName();
         }
@@ -73,8 +68,8 @@ public class Product extends BaseTimeEntity {
             this.amount = productRequest.getAmount();
         }
 
-        if (productRequest.getProductCategory() != null){
-            this.productCategory = productRequest.getProductCategory();
+        if (productCategory != null){
+            this.productCategory = productCategory;
         }
 
     }

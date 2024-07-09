@@ -2,9 +2,7 @@ package com.study.ecommerce.domain;
 
 import com.study.ecommerce.common.BaseTimeEntity;
 import com.study.ecommerce.request.CategoryRequest;
-import com.study.ecommerce.request.ProductRequest;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -19,10 +17,10 @@ public class ProductCategory extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column(nullable = false,unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "productCategory")
+    @OneToMany(mappedBy = "productCategory" , cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
 
@@ -43,13 +41,12 @@ public class ProductCategory extends BaseTimeEntity {
     }
 
     public void addProduct(Product product){
+        product.setCategory(this);
         this.products.add(product);
     }
 
-    public void modifyCategory(CategoryRequest categoryRequest){
+    public void modifyCategoryName(CategoryRequest categoryRequest){
         this.name = categoryRequest.getName();
     }
-
-
 
 }

@@ -31,25 +31,25 @@ public class ProductService {
     public void addProduct(ProductRequest productRequest){
 
         Optional<Product> findProduct = productRepository.findByName(productRequest.getName());
-        Optional<ProductCategory> findProductCategory = productCategoryRepository.findById(productRequest.getProductCategory().getId());
 
-        var product = Product.form(productRequest);
-        product.addCategory(findProductCategory.get());
-
-
+        //중복체크
         if (findProduct.isPresent()){
             throw new AlreadyExistsProduct();
         }
 
-        productRepository.save(product);
+        ProductCategory findProductCategory = productCategoryRepository.findByName(productRequest.getCategoryName())
+                .orElseThrow(NotFoundCategory::new);
+
+        var product = Product.form(productRequest);
+        findProductCategory.addProduct(product);
 
     }
 
 
     public List<ProductResponse> getProducts(Pageable pageable) {
-        return productRepository.findAll(pageable).stream().map(ProductResponse::from).collect(Collectors.toList());
 
-
+        return productRepository.findAllWithCategory(pageable).stream().map(ProductResponse::from).
+                toList();
     }
 
     public Optional<Product> getProduct(long id){
@@ -62,7 +62,15 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(NotFoundProduct::new);
 
-        product.modifyProduct(productRequest);
+        ProductCategory productCategory = null;
+
+        if (!productRequest.getCategoryName().isEmpty()){
+            productCategory = productCategoryRepository.findByName(productRequest.getCategoryName())
+                    .orElseThrow(NotFoundCategory::new);
+        }
+
+
+        product.modifyProduct(productRequest,productCategory);
 
 
     }

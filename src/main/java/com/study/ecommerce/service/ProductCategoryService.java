@@ -42,7 +42,7 @@ public class ProductCategoryService {
         ProductCategory productCategory = productCategoryRepository.findById(id)
                 .orElseThrow(NotFoundCategory::new);
 
-        productCategory.modifyCategory(categoryRequest);
+        productCategory.modifyCategoryName(categoryRequest);
 
     }
 
