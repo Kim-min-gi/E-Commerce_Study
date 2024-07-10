@@ -9,16 +9,16 @@
 
 ## [사용한 기술 스택 및 라이브러리]
 <div align="center"> 
-
 <img height="30" src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat-square&logo=Spring%20Boot&logoColor=white"/>
+<img height="30" src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat-square&logo=Spring%20Security&logoColor=white"/>
 <img height="30" src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=java&logoColor=white"/>
+<img height="30" src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=JSON%20Web%20Tokens&logoColor=white"/>
 <img height="30" src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=Hibernate&logoColor=white"/>
 <img height="30" src="https://img.shields.io/badge/JPA-007396?style=flat-square&logo=JPA&logoColor=white"/>
 <br/>
 <img height="30" src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white"/>
 <img height="30" src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=Postman&logoColor=white"/>
 <img height="30" src="https://img.shields.io/badge/GitHub-black?style=flat-square&logo=GitHub&logoColor=white"/>
-
 </div>
 
 <br/>
@@ -50,6 +50,13 @@
 - **로그인**
   - 회원가입 시 사용한 이메일과 비밀번호를 이용해 로그인할 수 있다.
     
+<br/>
+
+### 카테고리
+- **카테고리 등록**
+  - 관리자는 카테고리를 등록할 수 있다.
+- **카테고리 수징 및 삭제**
+  - 관리자는 카테고리를 수정 및 삭제할 수 있다.
 <br/>
 
 ### 상품기능
@@ -84,23 +91,24 @@
 <br/>
 
 
-## [API]
+## [API] (개발할때마다 추가될 예정)
 
 | Domain       | URL                                                                          | Http Method | description   | 접근 권한 |
 |:-------------|:-----------------------------------------------------------------------------|:------------|:--------------|:------|
 | **Auth**     | auth/signup                                                                  | `POST`      | 사용자 회원가입      | -     |
 |              | auth/signup/admin                                                            | `POST`      | 관리자 회원가입      | -     |
 |              | auth/login                                                                   | `POST`      | 사용자/관리자 로그인   | -     |
-| **Admin**    | admin/member                                                                 | `GET`       | 사용자 전체 조회     | ADMIN |
+| **MEMBER**   | admin/member                                                                 | `GET`       | 사용자 전체 조회     | ADMIN |
 |              | admin/member/{id}                                                            | `GET`       | 사용자 조회        | ADMIN |
 | **Category** | admin/category                                                               | `POST`      | 물품 카테고리 생성    | ADMIN |
-|              | admin/category/{id}                                                          | `PATCH` `DELETE`    | 물품 카테고리 수정,삭제 | ADMIN |
+|              | admin/category/{id}                                                          | `PATCH` `DELETE`    | 물품 카테고리 수정,삭제    | ADMIN |
+| **Product**  | /admin/product                                                               | `POST`              | 상품 등록                 | ADMIN |
+|              | /admin/products                                                              | `GET`              | 상품 리스트 조회 (관리용)   | ADMIN |
+|              | /admin/product/{productId}                                                   | `GET` `PATCH` `DELETE`  | 상품 조회, 수정, 삭제  | ADMIN |
 <!--
 | **Product** | /product/list/{categoryId}                                                 | `GET`                       | 카테고리 별 상품 목록 조회   | -     |
 |             | /product/best-list                                                         | `GET`                       | 베스트 상품 목록 조회      | -     |
 |             | /product/{productId}                                                       | `GET`                       | 상품 상세 조회          | -     |
-|             | /admin/product                                                             | `POST`                      | 상품 등록             | ADMIN |
-|             | /admin/product/{productId}                                                 | `GET` `PUT` `DELETE`        | 상품 조회, 수정, 삭제     | ADMIN |
 |             | /admin/product?productId={productId}&soldout={soldOutStatus}               | `PUT`                       | 상품 품절 여부 수정       | ADMIN |
 |             | /admin/option/{optionId}                                                   | `GET` `PUT` `POST` `DELETE` | 상품 옵션 CRUD        | ADMIN |
 |             | /admin/category/{categoryId}                                               | `GET` `PUT` `POST` `DELETE` | 상품 카테고리 CRUD      | ADMIN |
