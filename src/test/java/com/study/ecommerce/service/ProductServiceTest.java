@@ -40,6 +40,12 @@ class ProductServiceTest {
         productCategoryRepository.deleteAll();
     }
 
+    @AfterEach
+    void cleanup(){
+        productRepository.deleteAll();
+        productCategoryRepository.deleteAll();
+    }
+
 
     @Test
     @DisplayName("상품 추가")
@@ -90,12 +96,12 @@ class ProductServiceTest {
 
         productService.addProduct(productRequest);
 
-        Optional<Product> product = productRepository.findByName("물품1");
+        Product product = productRepository.findByName("물품1").get();
 
-        Optional<Product> product2 = productService.getProduct(product.get().getId());
+        ProductResponse product2 = productService.getProduct(product.getId());
 
-        Assertions.assertEquals(product2.get().getName(),"물품1");
-        Assertions.assertEquals(product2.get().getAmount(),99);
+        Assertions.assertEquals(product2.getName(),"물품1");
+        Assertions.assertEquals(product2.getAmount(),99);
 
     }
 
@@ -117,7 +123,7 @@ class ProductServiceTest {
                 .build()
         ).toList();
 
-        requestProduct.forEach(productCategory::addProduct);
+        requestProduct.forEach(product -> product.setCategory(productCategory));
 
         productCategoryRepository.save(productCategory);
 
@@ -134,40 +140,52 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("상품 수정")
+    @Transactional
     void test4() throws Exception {
 
-//        ProductCategory productCategory = ProductCategory.builder()
-//                .name("카테고리1")
-//                .build();
-//
-//        productCategoryRepository.save(productCategory);
-//
-//        ProductRequest productRequest = ProductRequest.builder()
-//                .name("물품1")
-//                .price(161000)
-//                .amount(99)
-//                .categoryName(productCategory.getName())
-//                .build();
-//
-//
-//        productService.addProduct(productRequest);
-//
-//        Product product = productRepository.findByName("물품1").get();
-//
-//        ProductRequest productRequest2 = ProductRequest.builder()
-//                .name(null)
-//                .price(null)
-//                .categoryName(productCategory.getName())
-//                .amount(9)
-//                .build();
-//
-//        productService.modifyProduct(product.getId(),productRequest2);
-//
-//
-//        Assertions.assertEquals(product.getName(), productRequest2.getName());
-//        Assertions.assertEquals(product.getPrice(), productRequest2.getPrice());
-//        Assertions.assertEquals(product.getAmount(), productRequest2.getAmount());
-//        Assertions.assertEquals(product.getProductCategory().getName(), productRequest2.getCategoryName());
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        ProductCategory productCategory2 = ProductCategory.builder()
+                .name("카테고리2")
+                .build();
+
+        productCategoryRepository.save(productCategory2);
+
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("물품1")
+                .price(161000)
+                .amount(99)
+                .categoryName(productCategory.getName())
+                .build();
+
+
+        productService.addProduct(productRequest);
+
+        Product product = productRepository.findByName("물품1").get();
+
+        ProductRequest productRequest2 = ProductRequest.builder()
+                .name("바뀐물품1")
+                .price(220)
+                .categoryName(productCategory2.getName())
+                .amount(9)
+                .build();
+
+        productService.modifyProduct(product.getId(),productRequest2);
+
+        Product product2 = productRepository.findByName("바뀐물품1").get();
+
+
+
+
+        Assertions.assertEquals(product2.getId(), product.getId());
+        Assertions.assertEquals(product2.getName(), productRequest2.getName());
+        Assertions.assertEquals(product2.getPrice(), productRequest2.getPrice());
+        Assertions.assertEquals(product2.getAmount(), productRequest2.getAmount());
+        Assertions.assertEquals(product2.getProductCategory().getName(), productRequest2.getCategoryName());
 
     }
 

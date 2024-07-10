@@ -98,8 +98,9 @@ class ProductControllerTest {
                 .name("물품" + i)
                 .amount(i)
                 .price(i)
-               // .productCategory(productCategory)
                 .build()).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
 
         productRepository.saveAll(requestProduct);
 
@@ -116,19 +117,99 @@ class ProductControllerTest {
 
     @Test
     @DisplayName("상품 한개 조회")
+    @CustomMockMember
     void getProduct() throws Exception{
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
+                .name("물품" + i)
+                .amount(i)
+                .price(i)
+                .build()).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productRepository.saveAll(requestProduct);
+
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/admin/product/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("물품1"))
+                .andDo(MockMvcResultHandlers.print());
+
 
     }
 
     @Test
     @DisplayName("상품 수정")
+    @CustomMockMember
     void modifyProduct() throws Exception {
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
 
+        productCategoryRepository.save(productCategory);
+
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
+                .name("물품" + i)
+                .amount(i)
+                .price(i)
+                .build()).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productRepository.saveAll(requestProduct);
+
+        ProductRequest productRequest = ProductRequest.builder()
+                .categoryName(productCategory.getName())
+                .name("바뀐물품1")
+                .amount(123)
+                .price(1211)
+                        .build();
+
+
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/admin/product/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(productRequest)))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
     @DisplayName("상품 삭제")
+    @CustomMockMember
     void removeProduct() throws Exception{
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
+                .name("물품" + i)
+                .amount(i)
+                .price(i)
+                .build()).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productRepository.saveAll(requestProduct);
+
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/product/{id}",1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcResultHandlers.print());
 
     }
 

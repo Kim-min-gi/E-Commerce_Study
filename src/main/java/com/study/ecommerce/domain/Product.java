@@ -51,6 +51,7 @@ public class Product extends BaseTimeEntity {
     }
 
     public void setCategory(ProductCategory productCategory){
+        productCategory.getProducts().add(this);
         this.productCategory = productCategory;
     }
 
@@ -69,7 +70,8 @@ public class Product extends BaseTimeEntity {
         }
 
         if (productCategory != null){
-            this.productCategory = productCategory;
+            this.productCategory.getProducts().remove(this);
+            setCategory(productCategory);
         }
 
     }

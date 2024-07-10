@@ -34,26 +34,33 @@ public class ProductController {
     @GetMapping("/admin/products")
     public ResponseEntity<List<ProductResponse>> getProducts(@PageableDefault Pageable pageable){
 
-         List<ProductResponse> products =  productService.getProducts(pageable);
-
+        List<ProductResponse> products =  productService.getProducts(pageable);
 
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/admin/product/{id}")
-    public ResponseEntity<Void> getProduct(@PathVariable long id,@Valid @RequestBody ProductRequest productRequest){
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable long id){
 
-//        productService.addProduct(productRequest);
+        ProductResponse product = productService.getProduct(id);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.ok(product);
     }
 
     @PatchMapping("/admin/product/{id}")
     public ResponseEntity<Void> modifyProduct(@PathVariable long id,@Valid @RequestBody ProductRequest productRequest){
 
-//        productService.addProduct(productRequest);
+        productService.modifyProduct(id,productRequest);
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/admin/product/{id}")
+    public ResponseEntity<Void> removeProduct(@PathVariable long id){
+
+        productService.removeProduct(id);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 

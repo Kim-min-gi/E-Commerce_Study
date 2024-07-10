@@ -41,10 +41,9 @@ public class ProductService {
                 .orElseThrow(NotFoundCategory::new);
 
         var product = Product.form(productRequest);
-        findProductCategory.addProduct(product);
+        product.setCategory(findProductCategory);
 
     }
-
 
     public List<ProductResponse> getProducts(Pageable pageable) {
 
@@ -52,8 +51,11 @@ public class ProductService {
                 toList();
     }
 
-    public Optional<Product> getProduct(long id){
-        return productRepository.findById(id);
+    @Transactional(readOnly = true)
+    public ProductResponse getProduct(long id){
+        Product product  = productRepository.findById(id).orElseThrow(NotFoundProduct::new);
+
+        return ProductResponse.from(product);
     }
 
 
@@ -71,7 +73,6 @@ public class ProductService {
 
 
         product.modifyProduct(productRequest,productCategory);
-
 
     }
 
