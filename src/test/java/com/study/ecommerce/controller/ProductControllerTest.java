@@ -9,6 +9,7 @@ import com.study.ecommerce.repository.ProductRepository;
 import com.study.ecommerce.request.ProductRequest;
 import com.study.ecommerce.service.ProductService;
 import jakarta.persistence.Access;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,12 @@ class ProductControllerTest {
 
     @BeforeEach
     void clean(){
+        productRepository.deleteAll();
+        productCategoryRepository.deleteAll();
+    }
+
+    @AfterEach
+    void cleanup(){
         productRepository.deleteAll();
         productCategoryRepository.deleteAll();
     }
@@ -125,20 +132,19 @@ class ProductControllerTest {
 
         productCategoryRepository.save(productCategory);
 
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("물품1")
+                .price(161000)
+                .categoryName(productCategory.getName())
+                .amount(99)
+                .build();
 
-        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
-                .name("물품" + i)
-                .amount(i)
-                .price(i)
-                .build()).toList();
+        productService.addProduct(productRequest);
 
-        requestProduct.forEach(product -> product.setCategory(productCategory));
-
-        productRepository.saveAll(requestProduct);
+        Product product = productRepository.findByName("물품1").get();
 
 
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/product/{id}",1L)
+        mockMvc.perform(MockMvcRequestBuilders.get("/admin/product/{id}",product.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("물품1"))
@@ -194,19 +200,19 @@ class ProductControllerTest {
 
         productCategoryRepository.save(productCategory);
 
+        ProductRequest productRequest = ProductRequest.builder()
+                .name("물품1")
+                .price(161000)
+                .categoryName(productCategory.getName())
+                .amount(99)
+                .build();
 
-        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
-                .name("물품" + i)
-                .amount(i)
-                .price(i)
-                .build()).toList();
+        productService.addProduct(productRequest);
 
-        requestProduct.forEach(product -> product.setCategory(productCategory));
-
-        productRepository.saveAll(requestProduct);
+        Product product = productRepository.findByName("물품1").get();
 
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/product/{id}",1L)
+        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/product/{id}",product.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(MockMvcResultHandlers.print());

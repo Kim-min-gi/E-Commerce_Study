@@ -43,6 +43,8 @@ public class ProductService {
         var product = Product.form(productRequest);
         product.setCategory(findProductCategory);
 
+        productRepository.save(product);
+
     }
 
     public List<ProductResponse> getProducts(Pageable pageable) {
