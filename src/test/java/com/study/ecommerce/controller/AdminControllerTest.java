@@ -16,6 +16,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class AdminControllerTest {
@@ -38,19 +41,21 @@ class AdminControllerTest {
     @DisplayName("member List 출력")
     @CustomMockMember
     void test1() throws Exception {
-        Member member = Member.builder()
-                .email("testing@gmail.com")
-                .name("name")
-                .password("1234")
-                .role("ROLE_USER")
-                .build();
+        List<Member> members = IntStream.range(1,31).mapToObj(i ->
+                Member.builder()
+                        .email("testing" + i + "@gmail.com")
+                        .name("사용자이름" + i)
+                        .password("!Aa123456")
+                        .role("ROLE_USER")
+                        .build()
+        ).toList();
 
-        memberRepository.save(member);
+        memberRepository.saveAll(members);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/member")
+        mockMvc.perform(MockMvcRequestBuilders.get("/admin/member?page=1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("testing@gmail.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("testing1@gmail.com"))
                 .andDo(MockMvcResultHandlers.print());
 
 

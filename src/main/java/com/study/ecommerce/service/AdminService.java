@@ -6,6 +6,7 @@ import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.request.MemberSignUp;
 import com.study.ecommerce.response.AdminResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,8 @@ public class AdminService {
     private final MemberRepository memberRepository;
 
 
-    public List<AdminResponse> getMembers(){
-            return memberRepository.findAll().stream().map(AdminResponse::new).collect(Collectors.toList());
+    public List<AdminResponse> getMembers(Pageable pageable){
+            return memberRepository.findAll(pageable).stream().map(AdminResponse::from).toList();
     }
 
 

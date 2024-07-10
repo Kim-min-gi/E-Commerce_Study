@@ -1,15 +1,16 @@
 package com.study.ecommerce.response;
 
 import com.study.ecommerce.domain.Member;
+import com.study.ecommerce.domain.Product;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class AdminResponse {
 
-    private final Long id;
-    private final String email;
-    private final String name;
+    private Long id;
+    private String email;
+    private String name;
 
     public AdminResponse(Member member) {
         this.id = member.getId();
@@ -23,6 +24,15 @@ public class AdminResponse {
         this.email = email;
         this.name = name;
     }
+    public static AdminResponse from(Member member) {
+        return AdminResponse.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .name(member.getName())
+                .build();
+    }
+
+
 
 
 }
