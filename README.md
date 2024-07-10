@@ -98,7 +98,7 @@
 | **Auth**     | auth/signup                                                                  | `POST`      | 사용자 회원가입      | -     |
 |              | auth/signup/admin                                                            | `POST`      | 관리자 회원가입      | -     |
 |              | auth/login                                                                   | `POST`      | 사용자/관리자 로그인   | -     |
-| **Admin**    | admin/member                                                                 | `GET`       | 사용자 전체 조회     | ADMIN |
+| **MEMBER**   | admin/member                                                                 | `GET`       | 사용자 전체 조회     | ADMIN |
 |              | admin/member/{id}                                                            | `GET`       | 사용자 조회        | ADMIN |
 | **Category** | admin/category                                                               | `POST`      | 물품 카테고리 생성    | ADMIN |
 |              | admin/category/{id}                                                          | `PATCH` `DELETE`    | 물품 카테고리 수정,삭제    | ADMIN |
