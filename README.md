@@ -94,13 +94,14 @@
 | **Admin**    | admin/member                                                                 | `GET`       | 사용자 전체 조회     | ADMIN |
 |              | admin/member/{id}                                                            | `GET`       | 사용자 조회        | ADMIN |
 | **Category** | admin/category                                                               | `POST`      | 물품 카테고리 생성    | ADMIN |
-|              | admin/category/{id}                                                          | `PATCH` `DELETE`    | 물품 카테고리 수정,삭제 | ADMIN |
+|              | admin/category/{id}                                                          | `PATCH` `DELETE`    | 물품 카테고리 수정,삭제    | ADMIN |
+| **Product**  | /admin/product                                                               | `POST`              | 상품 등록                 | ADMIN |
+|              | /admin/products                                                              | `GET`              | 상품 리스트 조회 (관리용)   | ADMIN |
+|              | /admin/product/{productId}                                                   | `GET` `PATCH` `DELETE`  | 상품 조회, 수정, 삭제  | ADMIN |
 <!--
 | **Product** | /product/list/{categoryId}                                                 | `GET`                       | 카테고리 별 상품 목록 조회   | -     |
 |             | /product/best-list                                                         | `GET`                       | 베스트 상품 목록 조회      | -     |
 |             | /product/{productId}                                                       | `GET`                       | 상품 상세 조회          | -     |
-|             | /admin/product                                                             | `POST`                      | 상품 등록             | ADMIN |
-|             | /admin/product/{productId}                                                 | `GET` `PUT` `DELETE`        | 상품 조회, 수정, 삭제     | ADMIN |
 |             | /admin/product?productId={productId}&soldout={soldOutStatus}               | `PUT`                       | 상품 품절 여부 수정       | ADMIN |
 |             | /admin/option/{optionId}                                                   | `GET` `PUT` `POST` `DELETE` | 상품 옵션 CRUD        | ADMIN |
 |             | /admin/category/{categoryId}                                               | `GET` `PUT` `POST` `DELETE` | 상품 카테고리 CRUD      | ADMIN |
