@@ -54,8 +54,6 @@ public class AuthService {
 
     }
 
-
-
     @Transactional
     public void resign(long id){
 

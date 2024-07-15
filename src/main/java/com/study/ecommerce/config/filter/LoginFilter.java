@@ -19,7 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 
 @Slf4j
@@ -79,12 +81,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // JWT 토큰 생성
         String token = jwtUtil.createToken(email,role);
 
-        // 응답 헤더에 토큰 추가
-        response.addHeader("Authorization", "Bearer " + token);
+//        // 응답 헤더에 토큰 추가
+//        response.addHeader("Authorization", "Bearer " + token);
 
-        //response.sendRedirect("/");
+        // 응답 본문에 토큰과 유저 정보를 JSON 형태로 추가
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("token", token);
+        //responseBody.put("user", customUserDetails); //token만 보내주거나, UserDTO를 만들어서 보내주자..
 
-        //super.successfulAuthentication(request, response, chain, authResult);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+
+        // 메인 페이지로 리다이렉션
+        // wresponse.sendRedirect("/");
 
     }
 

@@ -69,7 +69,8 @@ public class SecurityConfig {
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 )
-                .addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
+                //.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
                 .exceptionHandling(e -> e.accessDeniedHandler(new Http403Handler(objectMapper))
                                     .authenticationEntryPoint(new Http401Handler(objectMapper))
