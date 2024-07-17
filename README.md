@@ -25,8 +25,10 @@
 <br/>
 
 ## [ERD]
+[ERD Cloud](https://www.erdcloud.com/d/ydWfKvowAFNPdALg7)
 
-- 추가예정
+![image](https://github.com/user-attachments/assets/e5eccc52-eba2-4efa-83b2-6666b8526e95)
+
 
 
 
