@@ -1,5 +1,6 @@
 package com.study.ecommerce.domain;
 
+import com.study.ecommerce.common.BaseTimeEntity;
 import com.study.ecommerce.request.MemberSignUp;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -11,13 +12,11 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
     private Long id;
-
 
     @NotNull
     @Column(unique = true,length = 50)
@@ -32,8 +31,14 @@ public class Member {
     @NotNull
     private String role;
 
-    @OneToMany(mappedBy ="member")
+    @Embedded
+    private Address address;
+
+    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
     private List<Order> orders;
+
+    @OneToMany(mappedBy = "reviewMember",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Review> reviews;
 
     @Builder
     public Member(String email, String name, String password,String role) {

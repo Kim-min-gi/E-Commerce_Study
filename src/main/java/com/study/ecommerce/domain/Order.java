@@ -18,8 +18,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private LocalDateTime orderDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
