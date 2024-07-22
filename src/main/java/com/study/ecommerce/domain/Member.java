@@ -40,6 +40,9 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "reviewMember",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<Review> reviews;
 
+    @OneToOne(mappedBy = "member",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Cart cart;
+
     @Builder
     public Member(String email, String name, String password,String role) {
         this.email = email;
