@@ -13,6 +13,7 @@ public class Review extends BaseTimeEntity {
 
     private int rating;
 
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn

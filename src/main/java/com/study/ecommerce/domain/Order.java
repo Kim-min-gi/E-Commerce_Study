@@ -23,6 +23,16 @@ public class Order {
     @JoinColumn
     private Member member;
 
+    @Column(nullable = false)
+    private String payment;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(nullable = false)
+    private int totalPrice;
+
+
     //주소
 
     //결제정보
