@@ -109,6 +109,8 @@
 | **Product**  | /admin/product                                                               | `POST`              | 상품 등록                 | ADMIN |
 |              | /admin/products                                                              | `GET`              | 상품 리스트 조회 (관리용)   | ADMIN |
 |              | /admin/product/{productId}                                                   | `GET` `PATCH` `DELETE`  | 상품 조회, 수정, 삭제  | ADMIN |
+|              | /product/{productId}                                                         | `GET`                    | 상품 상세 조회          | -     |
+
 <!--
 | **Product** | /product/list/{categoryId}                                                 | `GET`                       | 카테고리 별 상품 목록 조회   | -     |
 |             | /product/best-list                                                         | `GET`                       | 베스트 상품 목록 조회      | -     |
