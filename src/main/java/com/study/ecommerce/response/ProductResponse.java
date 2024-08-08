@@ -18,7 +18,7 @@ public class ProductResponse {
     private String categoryName;
 
 
-    public static ProductResponse from(Product product) {
+    public static ProductResponse form(Product product) {
         return ProductResponse.builder()
                 .id(product.getId())
                 .name(product.getName())

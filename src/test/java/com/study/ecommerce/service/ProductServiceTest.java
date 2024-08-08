@@ -219,7 +219,44 @@ class ProductServiceTest {
 
     }
 
+    @Test
+    @DisplayName("카테고리별 상품 조회")
+    void test6() throws Exception{
 
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        ProductCategory productCategory2 = ProductCategory.builder()
+                .name("카테고리2")
+                .build();
+
+        productCategoryRepository.save(productCategory2);
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .amount(i)
+                        .price(i)
+                        .build()
+        ).toList();
+
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productCategoryRepository.save(productCategory);
+
+
+
+        List<ProductResponse> productResponses = productService.getCategoryProduct(productCategory.getId());
+
+        Assertions.assertEquals("물품1",productResponses.get(0).getName());
+        Assertions.assertEquals("물품2",productResponses.get(1).getName());
+        Assertions.assertEquals("물품3",productResponses.get(2).getName());
+
+    }
 
 
 

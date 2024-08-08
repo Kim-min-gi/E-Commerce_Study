@@ -49,7 +49,7 @@ public class ProductService {
 
     public List<ProductResponse> getProducts(Pageable pageable) {
 
-        return productRepository.findAllWithCategory(pageable).stream().map(ProductResponse::from).
+        return productRepository.findAllWithCategory(pageable).stream().map(ProductResponse::form).
                 toList();
     }
 
@@ -57,7 +57,7 @@ public class ProductService {
     public ProductResponse getProduct(long id){
         Product product  = productRepository.findById(id).orElseThrow(NotFoundProduct::new);
 
-        return ProductResponse.from(product);
+        return ProductResponse.form(product);
     }
 
 
@@ -89,11 +89,21 @@ public class ProductService {
 
 
     //카테고리별 상품 리스트
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getCategoryProduct(long id){
+        ProductCategory productCategory = productCategoryRepository.findById(id).orElseThrow(NotFoundCategory::new);
 
+        return productCategory.getProducts().stream().map(ProductResponse::form).toList();
+
+    }
 
     //베스트 상품 리스트?
 
+
+
     //상품 상세 조회
+
+
 
 
 
