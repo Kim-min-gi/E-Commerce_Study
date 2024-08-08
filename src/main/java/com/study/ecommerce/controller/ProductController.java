@@ -40,7 +40,7 @@ public class ProductController {
     }
 
     @GetMapping("/admin/product/{id}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable long id){
+    public ResponseEntity<ProductResponse> getAdminProduct(@PathVariable long id){
 
         ProductResponse product = productService.getProduct(id);
 
@@ -61,6 +61,17 @@ public class ProductController {
         productService.removeProduct(id);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+
+    //user
+
+    @GetMapping("/product/{id}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable long id){
+
+        ProductResponse product = productService.getProduct(id);
+
+        return ResponseEntity.ok(product);
     }
 
 

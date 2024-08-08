@@ -85,6 +85,17 @@ public class ProductService {
     }
 
 
+    ///user용
+
+
+    //카테고리별 상품 리스트
+
+
+    //베스트 상품 리스트?
+
+    //상품 상세 조회
+
+
 
 
 

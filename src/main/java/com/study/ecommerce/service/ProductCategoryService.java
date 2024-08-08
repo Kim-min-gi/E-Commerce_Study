@@ -19,9 +19,9 @@ public class ProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
 
 
-    public List<ProductCategory> getCategory(){
-        return productCategoryRepository.findAll();
-    }
+//    public List<ProductCategory> getCategory(){
+//        return productCategoryRepository.findAll();
+//    }
 
     public void addCategory(CategoryRequest categoryRequest){
 
