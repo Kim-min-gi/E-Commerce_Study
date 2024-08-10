@@ -219,6 +219,46 @@ class ProductControllerTest {
 
     }
 
+    @Test
+    @DisplayName("카테고리 상품 리스트 조회")
+    @CustomMockMember
+    void categoryProductList() throws Exception{
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        ProductCategory productCategory2 = ProductCategory.builder()
+                .name("카테고리2")
+                .build();
+
+        productCategoryRepository.save(productCategory2);
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .amount(i)
+                        .price(i)
+                        .build()
+        ).toList();
+
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productCategoryRepository.save(productCategory);
+
+
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/product/list/{categoryId}",productCategory.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("물품1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[29].name").value("물품30"))
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
 
 
 }
