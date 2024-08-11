@@ -34,6 +34,10 @@ public class Product extends BaseTimeEntity {
     @JoinColumn
     private ProductCategory productCategory;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private Cart cart;
+
 
     @Builder
     public Product(String name, int price, int amount) {

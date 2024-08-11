@@ -3,6 +3,8 @@ package com.study.ecommerce.domain;
 import com.study.ecommerce.common.BaseTimeEntity;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Cart extends BaseTimeEntity {
 
@@ -18,7 +20,13 @@ public class Cart extends BaseTimeEntity {
 
     @OneToOne
     @JoinColumn(name = "cart")
-    private Member member;
+    private Member cartMember;
+
+    @OneToMany(mappedBy = "cart",fetch = FetchType.LAZY)
+    private List<Product> product;
+
+
+
 
 
 

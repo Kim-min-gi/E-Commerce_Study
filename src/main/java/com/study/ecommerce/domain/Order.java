@@ -18,7 +18,6 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private Member member;
@@ -27,15 +26,14 @@ public class Order {
     private String payment;
 
     @Column(nullable = false)
-    private String status;
-
-    @Column(nullable = false)
     private int totalPrice;
 
+    @Embedded
+    private Address address;
 
-    //주소
+    @Column(nullable = false)
+    private String status;
 
-    //결제정보
 
 
 }
