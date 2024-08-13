@@ -4,13 +4,12 @@ package com.study.ecommerce.domain;
 import com.study.ecommerce.common.BaseTimeEntity;
 import com.study.ecommerce.request.ProductRequest;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
+import java.util.List;
 
 @Entity
 @Getter
@@ -21,36 +20,35 @@ public class Product extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @Column(nullable = false)
     private String name;
 
-    @NotNull
+    @Column(nullable = false)
     private int price;
 
-    @NotNull
-    private int amount;
+    @Column(nullable = false)
+    private int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private ProductCategory productCategory;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Cart cart;
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CartProduct> cartItem;
 
 
     @Builder
-    public Product(String name, int price, int amount) {
+    public Product(String name, int price, int quantity) {
         this.name = name;
         this.price = price;
-        this.amount = amount;
+        this.quantity = quantity;
     }
 
     public static Product form(ProductRequest productRequest){
         return  Product.builder()
                 .name(productRequest.getName())
                 .price(productRequest.getPrice())
-                .amount(productRequest.getAmount())
+                .quantity(productRequest.getQuantity())
                 .build();
     }
 
@@ -69,8 +67,8 @@ public class Product extends BaseTimeEntity {
             this.price = productRequest.getPrice();
         }
 
-        if (productRequest.getAmount() != null){
-            this.amount = productRequest.getAmount();
+        if (productRequest.getQuantity() != null){
+            this.quantity = productRequest.getQuantity();
         }
 
         if (productCategory != null){

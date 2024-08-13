@@ -14,7 +14,7 @@ public class ProductRequest {
 
     private Integer price;
 
-    private Integer amount;
+    private Integer quantity;
 
     private String categoryName;
 

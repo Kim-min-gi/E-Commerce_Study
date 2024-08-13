@@ -24,10 +24,6 @@ public class ProductCategory extends BaseTimeEntity {
     private List<Product> products = new ArrayList<>();
 
 
-    public void modifyProductCategoryName(String name){
-        this.name = name;
-    }
-
     @Builder
     public ProductCategory(String name, List<Product> product) {
         this.name = name;

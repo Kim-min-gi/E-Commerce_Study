@@ -1,10 +1,7 @@
 package com.study.ecommerce.response;
 
 import com.study.ecommerce.domain.Product;
-import com.study.ecommerce.domain.ProductCategory;
 import lombok.*;
-
-import java.util.Optional;
 
 @AllArgsConstructor
 @Getter
@@ -14,7 +11,7 @@ public class ProductResponse {
     private Long id;
     private String name;
     private int price;
-    private int amount;
+    private int quantity;
     private String categoryName;
 
 
@@ -23,7 +20,7 @@ public class ProductResponse {
                 .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
-                .amount(product.getAmount())
+                .quantity(product.getQuantity())
                 .categoryName(product.getProductCategory().getName())
                 .build();
     }

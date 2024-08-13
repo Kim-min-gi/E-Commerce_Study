@@ -76,7 +76,7 @@ class ProductControllerTest {
                 .name("물품1")
                 .price(161000)
                 .categoryName(productCategory.getName())
-                .amount(99)
+                .quantity(99)
                 .build();
 
 
@@ -103,7 +103,7 @@ class ProductControllerTest {
 
         List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
                 .name("물품" + i)
-                .amount(i)
+                .quantity(i)
                 .price(i)
                 .build()).toList();
 
@@ -136,7 +136,7 @@ class ProductControllerTest {
                 .name("물품1")
                 .price(161000)
                 .categoryName(productCategory.getName())
-                .amount(99)
+                .quantity(99)
                 .build();
 
         productService.addProduct(productRequest);
@@ -166,7 +166,7 @@ class ProductControllerTest {
 
         List<Product> requestProduct = IntStream.range(1,31).mapToObj(i -> Product.builder()
                 .name("물품" + i)
-                .amount(i)
+                .quantity(i)
                 .price(i)
                 .build()).toList();
 
@@ -177,13 +177,13 @@ class ProductControllerTest {
         ProductRequest productRequest = ProductRequest.builder()
                 .categoryName(productCategory.getName())
                 .name("바뀐물품1")
-                .amount(123)
+                .quantity(123)
                 .price(1211)
                         .build();
 
 
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/admin/product/{id}",1L)
+        mockMvc.perform(MockMvcRequestBuilders.patch("/admin/product/{id}",requestProduct.get(0).getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
@@ -204,7 +204,7 @@ class ProductControllerTest {
                 .name("물품1")
                 .price(161000)
                 .categoryName(productCategory.getName())
-                .amount(99)
+                .quantity(99)
                 .build();
 
         productService.addProduct(productRequest);
@@ -238,7 +238,7 @@ class ProductControllerTest {
         List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
                 Product.builder()
                         .name("물품" + i)
-                        .amount(i)
+                        .quantity(i)
                         .price(i)
                         .build()
         ).toList();

@@ -1,6 +1,5 @@
 package com.study.ecommerce.service;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.study.ecommerce.domain.Product;
 import com.study.ecommerce.domain.ProductCategory;
 import com.study.ecommerce.repository.ProductCategoryRepository;
@@ -9,18 +8,13 @@ import com.study.ecommerce.request.ProductRequest;
 import com.study.ecommerce.response.ProductResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.boot.convert.DataSizeUnit;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class ProductServiceTest {
@@ -62,7 +56,7 @@ class ProductServiceTest {
                 .name("물품1")
                 .price(161000)
                 .categoryName(productCategory.getName())
-                .amount(99)
+                .quantity(99)
                 .build();
 
         productService.addProduct(productRequest);
@@ -71,7 +65,7 @@ class ProductServiceTest {
 
         Assertions.assertEquals(productCategory.getId(),product.getProductCategory().getId());
         Assertions.assertEquals(product.getName(), "물품1");
-        Assertions.assertEquals(product.getAmount(),99);
+        Assertions.assertEquals(product.getQuantity(),99);
 
     }
 
@@ -91,7 +85,7 @@ class ProductServiceTest {
                 .name("물품1")
                 .price(161000)
                 .categoryName(productCategory.getName())
-                .amount(99)
+                .quantity(99)
                 .build();
 
         productService.addProduct(productRequest);
@@ -101,7 +95,7 @@ class ProductServiceTest {
         ProductResponse product2 = productService.getProduct(product.getId());
 
         Assertions.assertEquals(product2.getName(),"물품1");
-        Assertions.assertEquals(product2.getAmount(),99);
+        Assertions.assertEquals(product2.getQuantity(),99);
 
     }
 
@@ -118,7 +112,7 @@ class ProductServiceTest {
         List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
                 Product.builder()
                 .name("물품" + i)
-                .amount(i)
+                .quantity(i)
                 .price(i)
                 .build()
         ).toList();
@@ -158,7 +152,7 @@ class ProductServiceTest {
         ProductRequest productRequest = ProductRequest.builder()
                 .name("물품1")
                 .price(161000)
-                .amount(99)
+                .quantity(99)
                 .categoryName(productCategory.getName())
                 .build();
 
@@ -171,7 +165,7 @@ class ProductServiceTest {
                 .name("바뀐물품1")
                 .price(220)
                 .categoryName(productCategory2.getName())
-                .amount(9)
+                .quantity(9)
                 .build();
 
         productService.modifyProduct(product.getId(),productRequest2);
@@ -184,7 +178,7 @@ class ProductServiceTest {
         Assertions.assertEquals(product2.getId(), product.getId());
         Assertions.assertEquals(product2.getName(), productRequest2.getName());
         Assertions.assertEquals(product2.getPrice(), productRequest2.getPrice());
-        Assertions.assertEquals(product2.getAmount(), productRequest2.getAmount());
+        Assertions.assertEquals(product2.getQuantity(), productRequest2.getQuantity());
         Assertions.assertEquals(product2.getProductCategory().getName(), productRequest2.getCategoryName());
 
     }
@@ -203,7 +197,7 @@ class ProductServiceTest {
                 .name("물품1")
                 .price(161000)
                 .categoryName(productCategory.getName())
-                .amount(99)
+                .quantity(99)
                 .build();
 
         productService.addProduct(productRequest);
@@ -238,7 +232,7 @@ class ProductServiceTest {
         List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
                 Product.builder()
                         .name("물품" + i)
-                        .amount(i)
+                        .quantity(i)
                         .price(i)
                         .build()
         ).toList();
