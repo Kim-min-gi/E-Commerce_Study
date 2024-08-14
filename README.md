@@ -27,8 +27,7 @@
 ## [ERD]
 [ERD Cloud](https://www.erdcloud.com/d/ydWfKvowAFNPdALg7)
 
-![image](https://github.com/user-attachments/assets/e1374b4d-625b-4ddb-8611-a9c625cf5623)
-
+<img width="1064" alt="image" src="https://github.com/user-attachments/assets/5653d5ce-c80c-42c4-a094-83fd282bb1c6">
 
 
 
