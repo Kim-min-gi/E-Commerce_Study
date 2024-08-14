@@ -33,14 +33,7 @@ public class Member extends BaseTimeEntity {
     @Embedded
     private Address address;
 
-    @OneToMany(mappedBy = "member",fetch = FetchType.LAZY)
-    private List<Order> orders;
 
-    @OneToMany(mappedBy = "reviewMember",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<Review> reviews;
-
-    @OneToOne(mappedBy = "cartMember",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Cart cart;
 
     @Builder
     public Member(String email, String name, String password,String role) {

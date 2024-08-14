@@ -19,20 +19,31 @@ public class Cart extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "cart")
+    @ManyToOne
+    @JoinColumn
     private Member cartMember;
 
-    @OneToMany(mappedBy = "cart",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<CartProduct> cartItems;
+    @ManyToOne
+    @JoinColumn
+    private Product cartProduct;
+
+    @Column(nullable = false)
+    private Integer quantity;
 
 
     @Builder
-    public Cart(Member cartMember, List<CartProduct> cartItems) {
+    public Cart(Member cartMember, Product cartProduct, Integer quantity) {
         this.cartMember = cartMember;
-        this.cartItems = cartItems == null ? new ArrayList<>() : cartItems;
+        this.cartProduct = cartProduct;
+        this.quantity = quantity;
     }
 
+    public void addQuantity(Integer quantity){
+        this.quantity += quantity;
+    }
 
+    public void setQuantity(Integer quantity){
+        this.quantity = quantity;
+    }
 
 }

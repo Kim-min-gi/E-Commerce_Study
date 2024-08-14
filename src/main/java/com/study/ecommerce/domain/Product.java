@@ -27,15 +27,11 @@ public class Product extends BaseTimeEntity {
     private int price;
 
     @Column(nullable = false)
-    private int quantity;
+    private Integer quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     private ProductCategory productCategory;
-
-    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CartProduct> cartItem;
-
 
     @Builder
     public Product(String name, int price, int quantity) {

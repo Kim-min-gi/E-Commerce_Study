@@ -17,13 +17,17 @@ public class Review extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false)
+    private Long memberId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private OrderProduct orderProduct;
+
+    @Column(nullable = false)
     private int rating;
 
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    private Member reviewMember;
 
 
 
