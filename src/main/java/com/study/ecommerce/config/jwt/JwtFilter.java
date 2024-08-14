@@ -1,4 +1,4 @@
-package com.study.ecommerce.jwt;
+package com.study.ecommerce.config.jwt;
 
 import com.study.ecommerce.config.CustomUserDetails;
 import com.study.ecommerce.domain.Member;
@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {

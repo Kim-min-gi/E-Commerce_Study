@@ -2,7 +2,7 @@ package com.study.ecommerce.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ecommerce.config.CustomUserDetails;
-import com.study.ecommerce.jwt.JwtUtil;
+import com.study.ecommerce.config.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 

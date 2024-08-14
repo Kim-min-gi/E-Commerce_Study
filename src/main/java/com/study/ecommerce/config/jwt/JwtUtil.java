@@ -1,4 +1,4 @@
-package com.study.ecommerce.jwt;
+package com.study.ecommerce.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
