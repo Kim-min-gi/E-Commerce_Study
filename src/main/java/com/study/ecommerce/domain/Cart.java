@@ -21,7 +21,7 @@ public class Cart extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn
-    private Member cartMember;
+    private Member member;
 
     @ManyToOne
     @JoinColumn
@@ -32,8 +32,8 @@ public class Cart extends BaseTimeEntity {
 
 
     @Builder
-    public Cart(Member cartMember, Product cartProduct, Integer quantity) {
-        this.cartMember = cartMember;
+    public Cart(Member member, Product cartProduct, Integer quantity) {
+        this.member = member;
         this.cartProduct = cartProduct;
         this.quantity = quantity;
     }
