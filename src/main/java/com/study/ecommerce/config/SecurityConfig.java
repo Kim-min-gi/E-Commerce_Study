@@ -70,7 +70,7 @@ public class SecurityConfig {
                                 .anyRequest().authenticated()
                 )
                 //.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
-                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
                 .exceptionHandling(e -> e.accessDeniedHandler(new Http403Handler(objectMapper))
                                     .authenticationEntryPoint(new Http401Handler(objectMapper))
@@ -81,10 +81,8 @@ public class SecurityConfig {
 
     @Bean
     public LoginFilter loginFilter(){
-        LoginFilter filter = new LoginFilter(objectMapper,jwtUtil);
+        LoginFilter filter = new LoginFilter(objectMapper,jwtUtil,"/auth/login");
         filter.setAuthenticationManager(authenticationManager());
-        filter.setFilterProcessesUrl("/auth/login");
-        //filter.setAuthenticationSuccessHandler(new SimpleUrlAuthenticationSuccessHandler("/"));
         filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
 
         return filter;

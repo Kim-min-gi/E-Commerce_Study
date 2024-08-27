@@ -30,10 +30,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
 
-    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil){
+    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil, String url){
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
+        this.setFilterProcessesUrl(url);
     }
+
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -80,28 +82,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // JWT 토큰 생성
         String token = jwtUtil.createToken(email,role);
 
-//        // 응답 헤더에 토큰 추가
-//        response.addHeader("Authorization", "Bearer " + token);
+        // 응답 헤더에 토큰 추가
+        response.addHeader("Authorization", "Bearer " + token);
 
-        // 응답 본문에 토큰과 유저 정보를 JSON 형태로 추가
-        Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("token", token);
-        //responseBody.put("user", customUserDetails); //token만 보내주거나, UserDTO를 만들어서 보내주자..
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
-
-        // 메인 페이지로 리다이렉션
-        // wresponse.sendRedirect("/");
 
     }
 
     @Override  // 로그인 실패시
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         response.setStatus(401);
-        //super.unsuccessfulAuthentication(request, response, failed);
-
     }
 
 
