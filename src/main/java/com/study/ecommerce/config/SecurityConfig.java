@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,6 +36,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
     private final MemberRepository memberRepository;
+
 
 
     @Bean
@@ -79,14 +81,18 @@ public class SecurityConfig {
     }
 
 
+
+
     @Bean
-    public LoginFilter loginFilter(){
+    public LoginFilter loginFilter() {
         LoginFilter filter = new LoginFilter(objectMapper,jwtUtil,"/auth/login");
         filter.setAuthenticationManager(authenticationManager());
         filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
 
         return filter;
     }
+
+
 
     @Bean
     public AuthenticationManager authenticationManager(){

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,7 +31,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
 
-    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil, String url){
+    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil,String url){
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
         this.setFilterProcessesUrl(url);

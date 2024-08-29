@@ -46,4 +46,12 @@ public class Cart extends BaseTimeEntity {
         this.quantity = quantity;
     }
 
+    public static Cart createCart(Member member, Product product, Integer quantity){
+        return Cart.builder()
+                .member(member)
+                .cartProduct(product)
+                .quantity(quantity)
+                .build();
+    }
+
 }
