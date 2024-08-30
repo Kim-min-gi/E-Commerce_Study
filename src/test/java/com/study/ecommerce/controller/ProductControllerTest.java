@@ -115,8 +115,7 @@ class ProductControllerTest {
         //페이징 테스트
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/products?page=1")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(MockMvcRequestBuilders.get("/admin/products?page=1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
 

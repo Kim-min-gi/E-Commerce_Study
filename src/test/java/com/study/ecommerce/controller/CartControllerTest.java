@@ -1,5 +1,6 @@
-package com.study.ecommerce.service;
+package com.study.ecommerce.controller;
 
+import com.study.ecommerce.config.CustomMockMember;
 import com.study.ecommerce.domain.Cart;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.domain.Product;
@@ -8,16 +9,20 @@ import com.study.ecommerce.repository.CartRepository;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.repository.ProductRepository;
-import com.study.ecommerce.response.CartListResponse;
-import org.junit.jupiter.api.Assertions;
+import com.study.ecommerce.service.CartService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,52 +30,36 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class CartServiceTest {
+@AutoConfigureMockMvc
+class CartControllerTest {
 
     @Autowired
-    private CartService cartService;
+    private MockMvc mockMvc;
+
     @Autowired
     private CartRepository cartRepository;
+
     @Autowired
     private MemberRepository memberRepository;
 
     @Autowired
-    private ProductCategoryRepository productCategoryRepository;
-
-    @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
 
     @BeforeEach
-    void clean(){
+    public void clean(){
         productCategoryRepository.deleteAll();
-        cartRepository.deleteAll();
-        productRepository.deleteAll();
         memberRepository.deleteAll();
-    }
-
-
-    @Test
-    @DisplayName("장바구니에 상품 추가")
-    public void test1(){
-
+        productRepository.deleteAll();
+        cartRepository.deleteAll();
     }
 
     @Test
-    @DisplayName("장바구니에 상품 삭제")
-    public void test2(){
-
-    }
-
-    @Test
-    @DisplayName("장바구니에 상품 수량 변경")
-    public void test3(){
-
-    }
-
-    @Test
-    @DisplayName("장바구니에 상품리스트 출력")
-    public void test4(){
+    @DisplayName("카트 리스트 조회")
+    @CustomMockMember(role = "ROLE_USER")
+    void getCartList() throws Exception {
         //given
         Member member = Member.builder()
                 .email("Testing@naver.com")
@@ -118,17 +107,24 @@ class CartServiceTest {
         );
 
 
-        //when
-        List<CartListResponse> listCart = cartService.getCartList();
+        mockMvc.perform(MockMvcRequestBuilders.get("/cart"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].productName").value("물품1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].productName").value("물품2"))
+                .andDo(MockMvcResultHandlers.print());
 
-        //then
-        Assertions.assertEquals(listCart.size(),2);
-        Assertions.assertEquals(listCart.get(0).getQuantity(),3);
-        Assertions.assertEquals(listCart.get(0).getProductName(),"물품1");
-        Assertions.assertEquals(listCart.get(1).getQuantity(),5);
-        Assertions.assertEquals(listCart.get(1).getProductName(),"물품2");
 
     }
 
+    @Test
+    void addCartProduct() {
+    }
 
+    @Test
+    void modifyCartProduct() {
+    }
+
+    @Test
+    void removeCartProduct() {
+    }
 }
