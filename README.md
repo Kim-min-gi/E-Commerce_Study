@@ -123,7 +123,6 @@
 |             | /auth/order/elapsed-time/{orderId}                                         | `GET`                       | 주문 경과 시간 조회       | USER  |
 |             | /auth/order/cancel/{orderId}                                               | `PATCH`                     | 주문 취소             | USER  |
 |             | /admin/order/status/{orderId}                                              | `PATCH`                     | 주문 상태 변경          | ADMIN |
-|             | /admin/order/cooking-time/{orderId}                                        | `PATCH`                     | 예상 조리 시간 선택       | ADMIN |
 |             | /admin/order/receipt-status/{orderId}                                      | `PATCH`                     | 주문 수락 또는 거절       | ADMIN |
 | **Cart**    | /auth/cart                                                                 | `GET`                       | 장바구니 상품 목록 조회     | USER  |
 |             | /auth/cart/save                                                            | `POST`                      | 장바구니 상품 추가        | USER  |
