@@ -27,6 +27,11 @@ public class JwtUtil {
     }
 
     //검증을 진행
+    public String getId(String token){
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("id", String.class);
+    }
+
+
     public String getEmail(String token){
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
     }
@@ -42,9 +47,10 @@ public class JwtUtil {
 
 
 
-    public String createToken(String email,String role){
+    public String createToken(Long id,String email,String role){
 
         return Jwts.builder()
+                .claim("id",id)
                 .claim("email", email)
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))

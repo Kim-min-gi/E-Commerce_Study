@@ -72,6 +72,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 
+        Long memberId = customUserDetails.getId();
         String email = customUserDetails.getUsername();
 
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
@@ -81,7 +82,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String role = authority.getAuthority();
 
         // JWT 토큰 생성
-        String token = jwtUtil.createToken(email,role);
+        String token = jwtUtil.createToken(memberId,email,role);
 
         // 응답 헤더에 토큰 추가
         response.addHeader("Authorization", "Bearer " + token);
