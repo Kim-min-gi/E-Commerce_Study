@@ -43,6 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
+        Long id = Long.parseLong(jwtUtil.getId(token));
         String email = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
@@ -51,6 +52,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 .password("temppassword")
                 .role(role)
                 .build();
+
+        member.setId(id);
 
 
         //UserDetails에 회원 정보 객체 담기

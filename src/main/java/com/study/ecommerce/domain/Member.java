@@ -54,6 +54,10 @@ public class Member extends BaseTimeEntity {
                 .build();
     }
 
+    public void setId(Long id){
+        this.id = id;
+    }
+
 
 
 
