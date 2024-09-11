@@ -2,6 +2,7 @@ package com.study.ecommerce.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,10 +26,10 @@ public class OrderProduct {
     private Integer quantity;
 
 
-
-
-
-
-
-
+    @Builder
+    public OrderProduct(Long orderId, Product product, Integer quantity) {
+        this.orderId = orderId;
+        this.product = product;
+        this.quantity = quantity;
+    }
 }
