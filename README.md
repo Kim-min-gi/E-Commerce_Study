@@ -111,9 +111,9 @@
 |              | /product/{productId}                                                         | `GET`                    | 상품 상세 조회          | -     |
 | **Cart**     | /cart                                                                        | `GET` `PATCH` `POST` `DELETE` | 장바구니 상품 목록 조회, 수량 변경, 추가, 삭제 | USER  |
 | **Order**    | /orders                                                                      | `GET`                        | 구매 내역 조회          | USER  |
-<!-- |              | /orders                                                                      | `GET`                        | 구매 내역 조회          | USER  | -->
 |              | /orderCancel                                                                 | `PATCH`                        | 주문 취소               | USER  |
 |              | /orderModify                                                                 | `PATCH`                        | 주문 상태 변경          | ADMIN  |
+
 <!--
 | **Product** | /product/list/{categoryId}                                                 | `GET`                       | 카테고리 별 상품 목록 조회   | -     |
 |             | /product/best-list                                                         | `GET`                       | 베스트 상품 목록 조회      | -     |
