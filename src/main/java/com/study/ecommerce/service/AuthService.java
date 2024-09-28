@@ -21,16 +21,7 @@ public class AuthService {
 
     public void signup(MemberSignUp memberSignUp){
 
-        Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
-
-        //중복체크
-        if (findMember.isPresent()){
-            throw new AlreadyExistsEmailException();
-        }
-
-        String encryptedPassword = passwordEncoder.encode(memberSignUp.getPassword());
-
-        Member saveMember = Member.from(memberSignUp,encryptedPassword,"ROLE_USER");
+        Member saveMember = duplicateCheckAndSignup(memberSignUp,"ROLE_USER");
 
         memberRepository.save(saveMember);
 
@@ -39,16 +30,7 @@ public class AuthService {
 
     public void adminSignup(MemberSignUp memberSignUp){
 
-        Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
-
-        //중복체크
-        if (findMember.isPresent()){
-            throw new AlreadyExistsEmailException();
-        }
-
-        String encryptedPassword = passwordEncoder.encode(memberSignUp.getPassword());
-
-        Member saveMember = Member.from(memberSignUp,encryptedPassword,"ROLE_ADMIN");
+        Member saveMember = duplicateCheckAndSignup(memberSignUp,"ROLE_ADMIN");
 
         memberRepository.save(saveMember);
 
@@ -63,6 +45,20 @@ public class AuthService {
 
     }
 
+
+    public Member duplicateCheckAndSignup(MemberSignUp memberSignUp,String role){
+        Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
+
+        //중복체크
+        if (findMember.isPresent()){
+            throw new AlreadyExistsEmailException();
+        }
+
+        String encryptedPassword = passwordEncoder.encode(memberSignUp.getPassword());
+
+
+        return Member.from(memberSignUp,encryptedPassword,role);
+    }
 
 
 
