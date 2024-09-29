@@ -40,7 +40,7 @@ class CartServiceTest {
     private ProductRepository productRepository;
 
 
-    @AfterEach
+    @BeforeEach
     void clean(){
         cartRepository.deleteAll();
         memberRepository.deleteAll();

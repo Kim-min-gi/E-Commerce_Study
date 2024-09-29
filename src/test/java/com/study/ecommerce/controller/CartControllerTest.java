@@ -57,10 +57,10 @@ class CartControllerTest {
 
     @BeforeEach
     public void clean(){
-        productCategoryRepository.deleteAll();
+        cartRepository.deleteAll();
         memberRepository.deleteAll();
         productRepository.deleteAll();
-        cartRepository.deleteAll();
+        productCategoryRepository.deleteAll();
     }
 
     @Test
