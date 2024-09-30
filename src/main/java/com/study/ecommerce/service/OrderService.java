@@ -38,7 +38,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<Order> findAllOrders(Pageable pageable){
 
-        Member member = memberRepository.findById(getMemberId()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(getMemberEmail()).orElseThrow(NotFoundMemberException::new);
 
         return orderRepository.findByMember(member,pageable);
     }
@@ -49,7 +49,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<Order> findOrderDate(Pageable pageable, LocalDate startDate, LocalDate endDate){
 
-        Member member = memberRepository.findById(getMemberId()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(getMemberEmail()).orElseThrow(NotFoundMemberException::new);
 
         return orderRepository.findByMember(member,pageable,startDate,endDate);
     }
@@ -59,7 +59,7 @@ public class OrderService {
     public void orderCancel(Long orderId){
         Order order = orderRepository.findById(orderId).orElseThrow(NotFoundOrderException::new);
 
-        if (!Objects.equals(order.getMember().getId(), getMemberId())){
+        if (!Objects.equals(order.getMember().getId(), getMemberEmail())){
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
 
@@ -72,7 +72,7 @@ public class OrderService {
     @Transactional
     public void createOrder(OrderRequest orderRequest){
 
-        Member member = memberRepository.findById(getMemberId()).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(getMemberEmail()).orElseThrow(NotFoundMemberException::new);
 
         List<Cart> carts = cartRepository.findAllByMember(member);
 
@@ -107,7 +107,7 @@ public class OrderService {
     public void modifyOrder(OrderRequest orderRequest) throws Exception {
        Order order = orderRepository.findById(orderRequest.getOrderId()).orElseThrow(NotFoundOrderException::new);
 
-       Member findMember = memberRepository.findById(getMemberId()).orElseThrow(NotFoundMemberException::new);
+       Member findMember = memberRepository.findByEmail(getMemberEmail()).orElseThrow(NotFoundMemberException::new);
 
        if (!findMember.getRole().equals("ROLE_ADMIN")){
            throw new IllegalAccessException();
@@ -121,10 +121,9 @@ public class OrderService {
 
 
 
-    public Long getMemberId(){
+    public String getMemberEmail(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        return userDetails.getId();
+        return authentication.getName();
     }
 
 }
