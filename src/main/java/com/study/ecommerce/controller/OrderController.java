@@ -12,6 +12,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,7 +39,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @GetMapping("/orderCancel")
+    @PatchMapping("/orderCancel")
     public ResponseEntity<Void> orderCancel(Long orderId){
 
         orderService.orderCancel(orderId);
@@ -54,13 +55,14 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/orderModify")
+    @PatchMapping("/orderModify")
     public ResponseEntity<Void> modifyOrder(OrderRequest orderRequest) throws Exception {
 
         orderService.modifyOrder(orderRequest);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
+
 
 
 }

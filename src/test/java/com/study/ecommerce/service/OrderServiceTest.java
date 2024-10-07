@@ -60,14 +60,14 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문내역 조회")
-    public void test1(){
+        public void test1(){
 
 
         //given
         Member member = Member.builder()
                 .email("Testing@naver.com")
-                .name("Testing")
-                .password("1234")
+                .name("Test")
+                .password("ASDA515184424")
                 .role("ROLE_USER")
                 .build();
 
