@@ -2,7 +2,7 @@ package com.study.ecommerce.controller;
 
 import com.study.ecommerce.exception.AdminCodeNotMatch;
 import com.study.ecommerce.request.MemberSignUp;
-import com.study.ecommerce.response.AdminResponse;
+import com.study.ecommerce.response.MemberResponse;
 import com.study.ecommerce.service.AdminService;
 import com.study.ecommerce.service.AuthService;
 import jakarta.validation.Valid;
@@ -33,15 +33,15 @@ public class AdminController {
 
 
     @GetMapping("/admin/member")
-    public ResponseEntity<List<AdminResponse>> member(@PageableDefault Pageable pageable) throws Exception{
-        List<AdminResponse> adminResponses = memberService.getMembers(pageable);
-        return ResponseEntity.ok(adminResponses);
+    public ResponseEntity<List<MemberResponse>> member(@PageableDefault Pageable pageable) throws Exception{
+        List<MemberResponse> memberRespons = memberService.getMembers(pageable);
+        return ResponseEntity.ok(memberRespons);
     }
 
     @GetMapping("/admin/member/{id}")
-    public ResponseEntity<AdminResponse> getmember(@PathVariable long id) throws Exception{
-        AdminResponse adminResponse = memberService.getMember(id);
-        return ResponseEntity.ok(adminResponse);
+    public ResponseEntity<MemberResponse> getmember(@PathVariable long id) throws Exception{
+        MemberResponse memberResponse = memberService.getMember(id);
+        return ResponseEntity.ok(memberResponse);
     }
 
 

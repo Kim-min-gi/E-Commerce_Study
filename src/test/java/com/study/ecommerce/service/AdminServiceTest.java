@@ -1,18 +1,15 @@
 package com.study.ecommerce.service;
 
 import com.study.ecommerce.domain.Member;
-import com.study.ecommerce.domain.Product;
 import com.study.ecommerce.repository.MemberRepository;
-import com.study.ecommerce.response.AdminResponse;
+import com.study.ecommerce.response.MemberResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 
@@ -50,7 +47,7 @@ class AdminServiceTest {
         Pageable pageable = PageRequest.of(0,10);
 
 
-        List<AdminResponse> list = adminService.getMembers(pageable);
+        List<MemberResponse> list = adminService.getMembers(pageable);
 
 
         Assertions.assertEquals("testing1@gmail.com",list.get(0).getEmail());
@@ -72,7 +69,7 @@ class AdminServiceTest {
         memberRepository.save(member);
 
 
-       AdminResponse findMember = adminService.getMember(member.getId());
+       MemberResponse findMember = adminService.getMember(member.getId());
 
 
 
