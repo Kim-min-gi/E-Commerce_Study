@@ -3,10 +3,7 @@ package com.study.ecommerce.domain;
 import com.study.ecommerce.common.BaseTimeEntity;
 import com.study.ecommerce.request.MemberSignUp;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.util.List;
 
 
 @Entity
@@ -45,7 +42,7 @@ public class Member extends BaseTimeEntity {
 
 
     @Builder
-    public static Member from(MemberSignUp memberSignUp, String encodePassword, String role){
+    public static Member form(MemberSignUp memberSignUp, String encodePassword, String role){
         return Member.builder()
                 .email(memberSignUp.getEmail())
                 .password(encodePassword)

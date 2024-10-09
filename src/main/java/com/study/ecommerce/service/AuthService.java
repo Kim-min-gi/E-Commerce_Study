@@ -57,7 +57,7 @@ public class AuthService {
         String encryptedPassword = passwordEncoder.encode(memberSignUp.getPassword());
 
 
-        return Member.from(memberSignUp,encryptedPassword,role);
+        return Member.form(memberSignUp,encryptedPassword,role);
     }
 
 
