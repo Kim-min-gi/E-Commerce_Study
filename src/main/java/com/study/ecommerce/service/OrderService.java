@@ -68,7 +68,7 @@ public class OrderService {
     public void orderCancel(Long orderId){
         Order order = orderRepository.findById(orderId).orElseThrow(NotFoundOrderException::new);
 
-        if (!Objects.equals(order.getMember().getId(), getMemberEmail())){
+        if (!Objects.equals(order.getMember().getEmail(), getMemberEmail())){
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
 

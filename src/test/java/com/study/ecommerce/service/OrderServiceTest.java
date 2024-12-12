@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class OrderServiceTest {
@@ -215,8 +214,6 @@ class OrderServiceTest {
 
         Assertions.assertEquals(100,orders.get(0).getTotalPrice());
 
-
-
     }
 
 
@@ -224,6 +221,64 @@ class OrderServiceTest {
     @DisplayName("주문취소")
     public void test3(){
 
+        //given
+        Member member = Member.builder()
+                .email("Testing@naver.com")
+                .name("Test")
+                .password("ASDA515184424")
+                .role("ROLE_USER")
+                .build();
+
+        memberRepository.save(member);
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .quantity(i)
+                        .price(i)
+                        .build()
+        ).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productCategoryRepository.save(productCategory);
+
+
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
+        );
+
+
+        Address address = Address.builder()
+                .city("서울")
+                .street("강남")
+                .zipcode("1111")
+                .build();
+
+        Order requestOrder =
+                Order.builder()
+                        .orderStatus(OrderStatus.ORDER_COMPLETE)
+                        .address(address)
+                        .payment(Payment.CARD)
+                        .member(member)
+                        .totalPrice(100)
+                        .build();
+
+
+        orderRepository.save(requestOrder);
+
+        orderService.orderCancel(requestOrder.getId());
+
+        //then
+        Order updatedOrder = orderRepository.findById(requestOrder.getId()).orElseThrow();
+        Assertions.assertEquals(OrderStatus.CANCELED,updatedOrder.getOrderStatus());
     }
 
 
