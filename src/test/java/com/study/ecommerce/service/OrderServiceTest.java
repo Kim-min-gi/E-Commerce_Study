@@ -4,6 +4,7 @@ import com.study.ecommerce.domain.*;
 import com.study.ecommerce.domain.type.OrderStatus;
 import com.study.ecommerce.domain.type.Payment;
 import com.study.ecommerce.repository.*;
+import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.OrderResponse;
 import com.study.ecommerce.response.ProductResponse;
 import lombok.RequiredArgsConstructor;
@@ -289,9 +290,72 @@ class OrderServiceTest {
     }
 
     @Test
-    @DisplayName("주문수정")
-    public void test5(){
+    @DisplayName("관리자용 주문수정")
+    public void test5() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("Testing@naver.com")
+                .name("Test")
+                .password("ASDA515184424")
+                .role("ROLE_ADMIN")
+                .build();
 
+        memberRepository.save(member);
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .quantity(i)
+                        .price(i)
+                        .build()
+        ).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productCategoryRepository.save(productCategory);
+
+
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
+        );
+
+
+        Address address = Address.builder()
+                .city("서울")
+                .street("강남")
+                .zipcode("1111")
+                .build();
+
+        Order requestOrder =
+                Order.builder()
+                        .orderStatus(OrderStatus.ORDER_COMPLETE)
+                        .address(address)
+                        .payment(Payment.CARD)
+                        .member(member)
+                        .totalPrice(100)
+                        .build();
+
+
+        orderRepository.save(requestOrder);
+
+        OrderRequest orderRequest = OrderRequest.builder()
+                .orderId(requestOrder.getId())
+                .orderStatus(OrderStatus.PROCESSING)
+                .build();
+
+
+        orderService.modifyOrder(orderRequest);
+
+        //then
+        Order updatedOrder = orderRepository.findById(requestOrder.getId()).orElseThrow();
+        Assertions.assertEquals(OrderStatus.PROCESSING,updatedOrder.getOrderStatus());
     }
 
 
