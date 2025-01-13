@@ -43,6 +43,9 @@ public class AuthService {
 
         member.ifPresent(memberRepository::delete);
 
+
+        //멤버 삭제시 Order 및 리뷰 삭제 추가
+
     }
 
 
