@@ -3,6 +3,7 @@ package com.study.ecommerce.domain;
 import com.study.ecommerce.common.BaseTimeEntity;
 import com.study.ecommerce.domain.type.Payment;
 import com.study.ecommerce.domain.type.OrderStatus;
+import com.study.ecommerce.response.OrderResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -50,6 +51,8 @@ public class Order extends BaseTimeEntity {
     public void setOrderModify(OrderStatus orderStatus){
         this.orderStatus = orderStatus;
     }
+
+
 
 
 

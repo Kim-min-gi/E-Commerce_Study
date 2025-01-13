@@ -3,6 +3,7 @@ package com.study.ecommerce.controller;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.domain.Order;
 import com.study.ecommerce.request.OrderRequest;
+import com.study.ecommerce.response.OrderResponse;
 import com.study.ecommerce.service.OrderService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,16 +27,16 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/orders")
-    public ResponseEntity<Page<Order>> findAllOrders(@PageableDefault Pageable pageable){
-        Page<Order> orders = orderService.findAllOrders(pageable);
+    public ResponseEntity<List<OrderResponse>> findAllOrders(@PageableDefault Pageable pageable){
+        List<OrderResponse> orders = orderService.findAllOrders(pageable);
 
         return ResponseEntity.ok(orders);
     }
 
 
     @GetMapping("/ordersDate")
-    public ResponseEntity<Page<Order>> findOrderDate(@PageableDefault Pageable pageable, LocalDate startDate, LocalDate endDate){
-        Page<Order> orders = orderService.findOrderDate(pageable,startDate,endDate);
+    public ResponseEntity<List<OrderResponse>> findOrderDate(@PageableDefault Pageable pageable, LocalDate startDate, LocalDate endDate){
+        List<OrderResponse> orders = orderService.findOrderDate(pageable,startDate,endDate);
 
         return ResponseEntity.ok(orders);
     }
