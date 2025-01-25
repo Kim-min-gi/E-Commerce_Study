@@ -7,20 +7,32 @@ import com.study.ecommerce.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs(uriScheme = "https",uriHost = "api.ecommerce.com", uriPort = 433)
+@ExtendWith(RestDocumentationExtension.class)
 class AdminControllerTest {
 
     @Autowired
@@ -52,10 +64,18 @@ class AdminControllerTest {
 
         memberRepository.saveAll(members);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/member?page=1")
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/member?page=1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("testing1@gmail.com"))
+                .andDo(document("admin-list",
+                        responseFields(
+                                fieldWithPath("[]").description("회원 리스트 배열"),
+                                fieldWithPath("[].id").description("회원 번호"),
+                                fieldWithPath("[].email").description("회원 아이디"),
+                                fieldWithPath("[].name").description("회원 이름")
+                        )
+                        ))
                 .andDo(MockMvcResultHandlers.print());
 
 
@@ -75,10 +95,20 @@ class AdminControllerTest {
 
         memberRepository.save(member);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/member/{id}",member.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/member/{id}",member.getId())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("testing@gmail.com"))
+                .andDo(document("admin-inquiry",
+                        pathParameters(
+                            parameterWithName("id").description("회원번호")
+                        ),
+                        responseFields(
+                                        fieldWithPath("id").description("회원 번호"),
+                                        fieldWithPath("email").description("회원 아이디"),
+                                        PayloadDocumentation.fieldWithPath("name").description("회원 이름")
+                                )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
     }
