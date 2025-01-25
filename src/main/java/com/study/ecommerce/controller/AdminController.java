@@ -23,12 +23,6 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService memberService;
-    private final AuthService authService;
-
-
-
-    @Value("${spring.adminCode}")
-    private String adminCode;
 
 
 
@@ -43,22 +37,6 @@ public class AdminController {
         MemberResponse memberResponse = memberService.getMember(id);
         return ResponseEntity.ok(memberResponse);
     }
-
-
-    @PostMapping("/auth/signup/admin")
-    public ResponseEntity<Void> signup(@Valid @RequestBody MemberSignUp memberSignUp){
-
-        if (!memberSignUp.getCode().equals(adminCode)){
-            throw new AdminCodeNotMatch();
-        }
-
-        authService.adminSignup(memberSignUp);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-
-
 
 
 
