@@ -68,7 +68,7 @@ class AdminControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].email").value("testing1@gmail.com"))
-                .andDo(document("admin-list",
+                .andDo(document("admin/admin-list",
                         responseFields(
                                 fieldWithPath("[]").description("회원 리스트 배열"),
                                 fieldWithPath("[].id").description("회원 번호"),
@@ -99,7 +99,7 @@ class AdminControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("testing@gmail.com"))
-                .andDo(document("admin-inquiry",
+                .andDo(document("admin/admin-inquiry",
                         pathParameters(
                             parameterWithName("id").description("회원번호")
                         ),
