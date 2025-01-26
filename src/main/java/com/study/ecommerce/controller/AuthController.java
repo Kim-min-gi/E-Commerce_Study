@@ -1,6 +1,7 @@
 package com.study.ecommerce.controller;
 
 import com.study.ecommerce.exception.AdminCodeNotMatch;
+import com.study.ecommerce.request.MemberRequest;
 import com.study.ecommerce.request.MemberSignUp;
 import com.study.ecommerce.service.AuthService;
 import jakarta.validation.Valid;
@@ -30,8 +31,8 @@ public class AuthController {
     }
 
     @PostMapping("/auth/resign")
-    public ResponseEntity<Void> resign(@RequestBody long id){
-        authService.resign(id);
+    public ResponseEntity<Void> resign(@RequestBody MemberRequest memberRequest){
+        authService.resign(memberRequest.getId());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
