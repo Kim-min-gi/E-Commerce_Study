@@ -1,0 +1,37 @@
+= Auth API
+:toc:
+
+== 회원 회원가입
+
+=== 요청
+include::{snippets}/auth/member-signup/http-request.adoc[]
+
+include::{snippets}/auth/member-signup/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/auth/member-signup/http-response.adoc[]
+
+
+
+== 관리자 회원가입
+
+=== 요청
+include::{snippets}/auth/admin-signup/http-request.adoc[]
+
+include::{snippets}/auth/admin-signup/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/auth/admin-signup/http-response.adoc[]
+
+== 회원탈퇴
+
+=== 요청
+include::{snippets}/auth/member-resign/http-request.adoc[]
+
+include::{snippets}/auth/member-resign/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/auth/member-resign/http-response.adoc[]
+
+
+
