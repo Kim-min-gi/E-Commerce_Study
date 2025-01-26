@@ -16,10 +16,16 @@ import com.study.ecommerce.service.CartService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,9 +38,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs(uriScheme = "https",uriHost = "api.ecommerce.com", uriPort = 433)
+@ExtendWith(RestDocumentationExtension.class)
 class CartControllerTest {
 
     @Autowired
@@ -114,10 +123,19 @@ class CartControllerTest {
         );
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/cart"))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/cart"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].productName").value("물품1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].productName").value("물품2"))
+                .andDo(MockMvcRestDocumentation.document("cart/cart-list",
+                        responseFields(
+                                fieldWithPath("[]").description("카트 리스트"),
+                                fieldWithPath("[].id").description("카트 번호"),
+                                fieldWithPath("[].productId").description("상품 번호"),
+                                fieldWithPath("[].productName").description("상품 이름"),
+                                fieldWithPath("[].quantity").description("상품 수량")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
 
@@ -178,10 +196,16 @@ class CartControllerTest {
         );
 
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/cart")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/cart")
                         .content(objectMapper.writeValueAsString(cartRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(MockMvcRestDocumentation.document("cart/cart-addProduct",
+                        PayloadDocumentation.requestFields(
+                                PayloadDocumentation.fieldWithPath("productId").description("상품 번호"),
+                                PayloadDocumentation.fieldWithPath("quantity").description("상품 수량")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
     }
 
@@ -243,10 +267,16 @@ class CartControllerTest {
                 new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/cart")
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/cart")
                     .content(objectMapper.writeValueAsString(cartRequest2))
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("cart/cart-modifyProduct",
+                        PayloadDocumentation.requestFields(
+                                PayloadDocumentation.fieldWithPath("productId").description("상품 번호"),
+                                PayloadDocumentation.fieldWithPath("quantity").description("상품 수량")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
     }
@@ -306,10 +336,16 @@ class CartControllerTest {
                 new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
         );
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/cart")
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/cart")
                         .content(objectMapper.writeValueAsString(cartRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("cart/cart-removeProduct",
+                        PayloadDocumentation.requestFields(
+                                PayloadDocumentation.fieldWithPath("productId").description("상품 번호"),
+                                PayloadDocumentation.fieldWithPath("quantity").description("상품 수량")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
     }

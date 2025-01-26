@@ -1,0 +1,48 @@
+= Cart API
+:toc:
+
+== 카트 리스트 조회
+
+=== 요청
+include::{snippets}/cart/cart-list/http-request.adoc[]
+
+=== 응답
+include::{snippets}/cart/cart-list/http-response.adoc[]
+
+include::{snippets}/cart/cart-list/response-fields.adoc[]
+
+
+== 카트 상품 추가
+
+=== 요청
+include::{snippets}/cart/cart-addProduct/http-request.adoc[]
+
+include::{snippets}/cart/cart-addProduct/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/cart/cart-addProduct/http-response.adoc[]
+
+
+== 카트 상품 수정
+
+=== 요청
+include::{snippets}/cart/cart-modifyProduct/http-request.adoc[]
+
+include::{snippets}/cart/cart-modifyProduct/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/cart/cart-modifyProduct/http-response.adoc[]
+
+
+== 카트 상품 삭제
+
+=== 요청
+include::{snippets}/cart/cart-removeProduct/http-request.adoc[]
+
+include::{snippets}/cart/cart-removeProduct/request-fields.adoc[]
+
+=== 응답
+include::{snippets}/cart/cart-removeProduct/http-response.adoc[]
+
+
+
