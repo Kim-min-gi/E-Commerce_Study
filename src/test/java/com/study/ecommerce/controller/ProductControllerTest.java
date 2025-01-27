@@ -8,28 +8,34 @@ import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.repository.ProductRepository;
 import com.study.ecommerce.request.ProductRequest;
 import com.study.ecommerce.service.ProductService;
-import jakarta.persistence.Access;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs(uriScheme = "https",uriHost = "api.ecommerce.com", uriPort = 433)
+@ExtendWith(RestDocumentationExtension.class)
 class ProductControllerTest {
 
 
@@ -61,7 +67,7 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 추가")
+    @DisplayName("상품 추가 (관리자)")
     @CustomMockMember
     void addProduct() throws Exception{
 
@@ -81,17 +87,25 @@ class ProductControllerTest {
 
 
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/admin/product")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/admin/product")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(MockMvcRestDocumentation.document("product/productAdd",
+                        requestFields(
+                                fieldWithPath("name").description("상품명"),
+                                fieldWithPath("price").description("상품 가격"),
+                                fieldWithPath("quantity").description("상품 수"),
+                                fieldWithPath("categoryName").description("카테고리명")
+                        )
+                        ))
                 .andDo(MockMvcResultHandlers.print());
 
 
     }
 
     @Test
-    @DisplayName("상품 리스트 조회")
+    @DisplayName("상품 리스트 조회 (관리자)")
     @CustomMockMember
     void getProducts() throws Exception{
         ProductCategory productCategory = ProductCategory.builder()
@@ -112,17 +126,24 @@ class ProductControllerTest {
         productRepository.saveAll(requestProduct);
 
 
-        //페이징 테스트
-
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/products?page=1"))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/products?page=1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("product/product-list",
+                        responseFields(
+                                fieldWithPath("[]").description("상품 리스트 배열"),
+                                fieldWithPath("[].id").description("상품 번호"),
+                                fieldWithPath("[].name").description("상품 이름"),
+                                fieldWithPath("[].price").description("상품 개당 가격"),
+                                fieldWithPath("[].quantity").description("상품 수량"),
+                                fieldWithPath("[].categoryName").description("상품 카테고리 명")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
     }
 
     @Test
-    @DisplayName("상품 한개 조회")
+    @DisplayName("상품 한개 조회 (관리자)")
     @CustomMockMember
     void getProduct() throws Exception{
         ProductCategory productCategory = ProductCategory.builder()
@@ -140,20 +161,32 @@ class ProductControllerTest {
 
         productService.addProduct(productRequest);
 
-        Product product = productRepository.findByName("물품1").get();
+        Product productId = productRepository.findByName("물품1").get();
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/admin/product/{id}",product.getId())
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/product/{productId}",productId.getId())
+//                        .content(objectMapper.writeValueAsString(idRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("물품1"))
+                .andDo(MockMvcRestDocumentation.document("product/getProduct",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("productId").description("상품 번호")
+                        ),
+                        PayloadDocumentation.responseFields(
+                                fieldWithPath("id").description("상품 번호"),
+                                fieldWithPath("name").description("상품 이름"),
+                                fieldWithPath("price").description("상품 개당 가격"),
+                                fieldWithPath("quantity").description("상품 수량"),
+                                fieldWithPath("categoryName").description("상품 카테고리 명")
+                        )))
                 .andDo(MockMvcResultHandlers.print());
 
 
     }
 
     @Test
-    @DisplayName("상품 수정")
+    @DisplayName("상품 수정 (관리자)")
     @CustomMockMember
     void modifyProduct() throws Exception {
         ProductCategory productCategory = ProductCategory.builder()
@@ -182,15 +215,19 @@ class ProductControllerTest {
 
 
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/admin/product/{id}",requestProduct.get(0).getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/admin/product/{productId}",requestProduct.get(0).getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(productRequest)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("product/modifyProduct",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("productId").description("상품 번호")
+                        )))
                 .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    @DisplayName("상품 삭제")
+    @DisplayName("상품 삭제 (관리자)")
     @CustomMockMember
     void removeProduct() throws Exception{
         ProductCategory productCategory = ProductCategory.builder()
@@ -211,12 +248,25 @@ class ProductControllerTest {
         Product product = productRepository.findByName("물품1").get();
 
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/product/{id}",product.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/admin/product/{productId}",product.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("product/deleteProduct",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("productId").description("상품 번호")
+                        )))
                 .andDo(MockMvcResultHandlers.print());
 
     }
+
+
+
+    //유저용 상품 상세 페이지 조회 테스트 필요
+
+
+
+
+
 
     @Test
     @DisplayName("카테고리 상품 리스트 조회")
@@ -249,7 +299,7 @@ class ProductControllerTest {
 
 
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/product/list/{categoryId}",productCategory.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/product/list/{categoryId}",productCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("물품1"))

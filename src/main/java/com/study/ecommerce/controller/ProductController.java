@@ -1,17 +1,14 @@
 package com.study.ecommerce.controller;
 
-import com.study.ecommerce.domain.Product;
 import com.study.ecommerce.request.ProductRequest;
 import com.study.ecommerce.response.ProductResponse;
 import com.study.ecommerce.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,26 +36,26 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/admin/product/{id}")
-    public ResponseEntity<ProductResponse> getAdminProduct(@PathVariable long id){
+    @GetMapping("/admin/product/{productId}")
+    public ResponseEntity<ProductResponse> getAdminProduct(@PathVariable Long productId){
 
-        ProductResponse product = productService.getProduct(id);
+        ProductResponse product = productService.getProduct(productId);
 
         return ResponseEntity.ok(product);
     }
 
-    @PatchMapping("/admin/product/{id}")
-    public ResponseEntity<Void> modifyProduct(@PathVariable long id,@Valid @RequestBody ProductRequest productRequest){
+    @PatchMapping("/admin/product/{productId}")
+    public ResponseEntity<Void> modifyProduct(@PathVariable Long productId,@Valid @RequestBody ProductRequest productRequest){
 
-        productService.modifyProduct(id,productRequest);
+        productService.modifyProduct(productId,productRequest);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @DeleteMapping("/admin/product/{id}")
-    public ResponseEntity<Void> removeProduct(@PathVariable long id){
+    @DeleteMapping("/admin/product/{productId}")
+    public ResponseEntity<Void> removeProduct(@PathVariable Long productId){
 
-        productService.removeProduct(id);
+        productService.removeProduct(productId);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
@@ -66,16 +63,16 @@ public class ProductController {
 
     //user
 
-    @GetMapping("/product/{id}")
-    public ResponseEntity<ProductResponse> getProduct(@PathVariable long id){
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable Long productId){
 
-        ProductResponse product = productService.getProduct(id);
+        ProductResponse product = productService.getProduct(productId);
 
         return ResponseEntity.ok(product);
     }
 
     @GetMapping("/product/list/{categoryId}")
-    public ResponseEntity<List<ProductResponse>> getCategoryProduct(@PathVariable long categoryId){
+    public ResponseEntity<List<ProductResponse>> getCategoryProduct(@PathVariable Long categoryId){
 
         List<ProductResponse> categoryProduct = productService.getCategoryProduct(categoryId);
 
