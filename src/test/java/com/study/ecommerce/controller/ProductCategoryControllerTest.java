@@ -9,11 +9,18 @@ import com.study.ecommerce.service.ProductCategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.objenesis.SpringObjenesis;
+import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -26,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureRestDocs(uriScheme = "https",uriHost = "api.ecommerce.com", uriPort = 433)
+@ExtendWith(RestDocumentationExtension.class)
 class ProductCategoryControllerTest {
 
     @Autowired
@@ -56,10 +65,16 @@ class ProductCategoryControllerTest {
                 .build();
 
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/admin/category")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/admin/category")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(categoryRequest)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andDo(MockMvcRestDocumentation.document("category/addCategory",
+                                PayloadDocumentation.requestFields(
+                                        PayloadDocumentation.fieldWithPath("id").description("카테고리 아이디 (새로 생성이라 Null)"),
+                                        PayloadDocumentation.fieldWithPath("name").description("카테고리 명")
+                                ))
+                        )
                 .andDo(MockMvcResultHandlers.print());
 
     }
@@ -82,10 +97,15 @@ class ProductCategoryControllerTest {
                 .build();
 
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/admin/category/{id}",productCategory.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/admin/category/{id}",productCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pathCategoryRequest)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("category/modifyCategory",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("id").description("카테고리 아이디")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
     }
@@ -103,10 +123,18 @@ class ProductCategoryControllerTest {
 
         ProductCategory productCategory = productCategoryRepository.findByName("카테고리1").get();
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/admin/category/{id}",productCategory.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/admin/category/{id}",productCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("category/deleteCategory",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("id").description("카테고리 아이디")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
     }
+
+
+    //카테고리 리스트 조회 및 한개 조회
 }
