@@ -261,8 +261,28 @@ class ProductControllerTest {
 
 
 
-    //유저용 상품 상세 페이지 조회 테스트 필요
 
+//    @Test
+//    @DisplayName("상품 상세 내용")
+//    @CustomMockMember
+//    void getProductDetails() throws Exception{
+//        ProductCategory productCategory = ProductCategory.builder()
+//                .name("카테고리1")
+//                .build();
+//
+//        productCategoryRepository.save(productCategory);
+//
+//        ProductRequest productRequest = ProductRequest.builder()
+//                .name("물품1")
+//                .price(161000)
+//                .categoryName(productCategory.getName())
+//                .quantity(99)
+//                .build();
+//
+//        productService.addProduct(productRequest);
+//
+//        Product product = productRepository.findByName("물품1").get();
+//    }
 
 
 
