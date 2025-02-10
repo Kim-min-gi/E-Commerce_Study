@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,19 +20,18 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 
 @Slf4j
+@RequiredArgsConstructor
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
 
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
 
-    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil,String url){
+    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil, String url){
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
         this.setFilterProcessesUrl(url);
@@ -40,7 +40,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-
         EmailPassword emailPassword = null;
 
         try {
@@ -50,6 +49,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
 
         UsernamePasswordAuthenticationToken token = UsernamePasswordAuthenticationToken.unauthenticated(
                 emailPassword.email,
@@ -61,11 +61,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         return this.getAuthenticationManager().authenticate(token);
     }
 
-    @Getter
-    private static class EmailPassword{
-        private String email;
-        private String password;
-    }
+
 
     @Override   // 로그인 성공시
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
@@ -87,7 +83,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // 응답 헤더에 토큰 추가
         response.addHeader("Authorization", "Bearer " + token);
 
-
     }
 
     @Override  // 로그인 실패시
@@ -96,6 +91,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     }
 
 
+    @Getter
+    private static class EmailPassword{
+        private String email;
+        private String password;
+    }
 
 
 

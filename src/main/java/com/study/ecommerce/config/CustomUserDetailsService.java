@@ -1,6 +1,7 @@
 package com.study.ecommerce.config;
 
 import com.study.ecommerce.domain.Member;
+import com.study.ecommerce.exception.NotFoundMemberException;
 import com.study.ecommerce.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,14 +21,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
 
-        Optional<Member> findByMember = memberRepository.findByEmail(email);
+        Member findByMember = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
 
-        if (findByMember.isPresent()){
+        return new CustomUserDetails(findByMember);
 
-            return new CustomUserDetails(findByMember.get());
-        }
-
-        return null;
     }
 
 

@@ -7,14 +7,11 @@ import com.study.ecommerce.config.handler.Http403Handler;
 import com.study.ecommerce.config.handler.LoginFailHandler;
 import com.study.ecommerce.config.jwt.JwtFilter;
 import com.study.ecommerce.config.jwt.JwtUtil;
-import com.study.ecommerce.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -33,10 +30,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final ObjectMapper objectMapper;
-    private final JwtUtil jwtUtil;
-    private final MemberRepository memberRepository;
+//    private final MemberRepository memberRepository;
 
+    private final ObjectMapper objectMapper;
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final JwtUtil jwtUtil;
 
 
     @Bean
@@ -51,42 +49,58 @@ public class SecurityConfig {
     }
 
 
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtUtil jwtUtil) throws Exception{
 
 
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/auth/login","auth/signup","/","auth/signup/admin").permitAll()
-                        .requestMatchers("/user").hasAnyRole("USER","ADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                                .anyRequest().authenticated()
-                )
-                //.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class)
-                .addFilterAfter(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
-                .addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class) // JWT 필터 추가
-                .exceptionHandling(e -> e.accessDeniedHandler(new Http403Handler(objectMapper))
-                                    .authenticationEntryPoint(new Http401Handler(objectMapper))
-                )
-                .build();
+        http.csrf(AbstractHttpConfigurer::disable);
+
+        http.formLogin(AbstractHttpConfigurer::disable);
+        http.httpBasic(AbstractHttpConfigurer::disable);
+
+        http.authorizeHttpRequests((request) -> request
+                .requestMatchers("/auth/login","/auth/signup","/","/auth/signup/admin").permitAll()
+                .requestMatchers("/user").hasAnyRole("USER","ADMIN")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+        );
+
+        http.sessionManagement((session) -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+        http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        http.exceptionHandling(e -> e.accessDeniedHandler(new Http403Handler(objectMapper))
+                .authenticationEntryPoint(new Http401Handler(objectMapper))
+        );
+
+        return http.build();
+
     }
 
 
 
+    //AuthenticationManager Bean 등록
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+
+        return configuration.getAuthenticationManager();
+    }
+
+
 
     @Bean
-    public LoginFilter loginFilter() {
+    public LoginFilter loginFilter() throws Exception {
+        AuthenticationManager authenticationManager = authenticationManager(authenticationConfiguration);
         LoginFilter filter = new LoginFilter(objectMapper,jwtUtil,"/auth/login");
-        filter.setAuthenticationManager(authenticationManager());
+        filter.setAuthenticationManager(authenticationManager);
         filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
 
         return filter;
@@ -94,14 +108,17 @@ public class SecurityConfig {
 
 
 
-    @Bean
-    public AuthenticationManager authenticationManager(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(new CustomUserDetailsService(memberRepository));
-        provider.setPasswordEncoder(passwordEncoder());
 
-        return new ProviderManager(provider);
-    }
+
+//
+//    @Bean
+//    public AuthenticationManager authenticationManager(){
+//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+//        provider.setUserDetailsService(new CustomUserDetailsService(memberRepository));
+//        provider.setPasswordEncoder(passwordEncoder());
+//
+//        return new ProviderManager(provider);
+//    }
 
 
 
