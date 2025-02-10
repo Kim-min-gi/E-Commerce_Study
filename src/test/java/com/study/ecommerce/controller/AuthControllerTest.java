@@ -62,7 +62,6 @@ class AuthControllerTest {
 
     @Test
     @DisplayName("회원가입")
-    @WithMockUser
     void signup() throws Exception {
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
@@ -88,7 +87,6 @@ class AuthControllerTest {
 
     @Test
     @DisplayName("관리자 회원가입")
-    @WithMockUser
     void adminSignup() throws Exception {
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
@@ -114,7 +112,6 @@ class AuthControllerTest {
 
     @Test
     @DisplayName("관리자 회원가입 실패")
-    @WithMockUser
     void adminSignupFail() throws Exception {
         MemberSignUp member = MemberSignUp.builder()
                 .email("Testing@naver.com")
