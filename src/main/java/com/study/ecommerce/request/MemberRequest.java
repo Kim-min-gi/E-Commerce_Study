@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class MemberRequest {
 
     private Long id;
+    private String password;
 
 
 }
