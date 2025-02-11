@@ -48,7 +48,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        Long id = Long.parseLong(jwtUtil.getId(token));
+        Long id = jwtUtil.getId(token);
         String email = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
