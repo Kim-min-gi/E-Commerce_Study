@@ -53,11 +53,6 @@ public class AuthService {
         boolean matches = passwordEncoder.matches(memberRequest.getPassword(), member.getPassword());
 
 
-        boolean equals = member.getEmail().equals(email);
-
-        System.out.println( " email equals >>>>>>>>>>>>>> " + equals);
-        System.out.println( " password equals >>>>>>>>>>>>>> " + matches);
-
         if (member.getEmail().equals(email) && matches){
             memberRepository.delete(member);
         }else{
