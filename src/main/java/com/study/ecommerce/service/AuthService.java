@@ -2,9 +2,14 @@ package com.study.ecommerce.service;
 
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.exception.AlreadyExistsEmailException;
+import com.study.ecommerce.exception.NotFoundMemberException;
+import com.study.ecommerce.exception.ResignUnauthorizedException;
 import com.study.ecommerce.repository.MemberRepository;
+import com.study.ecommerce.request.MemberRequest;
 import com.study.ecommerce.request.MemberSignUp;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,11 +42,27 @@ public class AuthService {
     }
 
     @Transactional
-    public void resign(long id){
+    public void resign(MemberRequest memberRequest){
 
-        Optional<Member> member = memberRepository.findById(id);
+        Member member = memberRepository.findById(memberRequest.getId()).orElseThrow(NotFoundMemberException::new);
 
-        member.ifPresent(memberRepository::delete);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        boolean matches = passwordEncoder.matches(memberRequest.getPassword(), member.getPassword());
+
+
+        boolean equals = member.getEmail().equals(email);
+
+        System.out.println( " email equals >>>>>>>>>>>>>> " + equals);
+        System.out.println( " password equals >>>>>>>>>>>>>> " + matches);
+
+        if (member.getEmail().equals(email) && matches){
+            memberRepository.delete(member);
+        }else{
+            throw new ResignUnauthorizedException();
+        }
 
 
         //멤버 삭제시 Order 및 리뷰 삭제 추가

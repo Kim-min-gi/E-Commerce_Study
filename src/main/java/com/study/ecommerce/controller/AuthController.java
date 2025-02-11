@@ -32,7 +32,7 @@ public class AuthController {
 
     @PostMapping("/auth/resign")
     public ResponseEntity<Void> resign(@RequestBody MemberRequest memberRequest){
-        authService.resign(memberRequest.getId());
+        authService.resign(memberRequest);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
