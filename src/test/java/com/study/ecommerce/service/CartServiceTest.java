@@ -99,9 +99,9 @@ class CartServiceTest {
         //then
         List<CartListResponse> listCart = cartService.getCartList();
 
-        Assertions.assertEquals(listCart.size(),1);
-        Assertions.assertEquals(listCart.get(0).getQuantity(),3);
-        Assertions.assertEquals(listCart.get(0).getProductName(),"물품1");
+        Assertions.assertEquals(1, listCart.size());
+        Assertions.assertEquals(3, listCart.get(0).getQuantity());
+        Assertions.assertEquals("물품1", listCart.get(0).getProductName());
 
     }
 
@@ -165,11 +165,11 @@ class CartServiceTest {
         //then
         List<CartListResponse> listCart = cartService.getCartList();
 
-        Assertions.assertEquals(listCart.size(),2);
-        Assertions.assertEquals(listCart.get(0).getQuantity(),3);
-        Assertions.assertEquals(listCart.get(0).getProductName(),"물품1");
-        Assertions.assertEquals(listCart.get(1).getQuantity(),1);
-        Assertions.assertEquals(listCart.get(1).getProductName(),"물품2");
+        Assertions.assertEquals(2, listCart.size());
+        Assertions.assertEquals(3, listCart.get(0).getQuantity());
+        Assertions.assertEquals("물품1", listCart.get(0).getProductName());
+        Assertions.assertEquals(1, listCart.get(1).getQuantity());
+        Assertions.assertEquals("물품2", listCart.get(1).getProductName());
     }
 
     @Test
@@ -221,7 +221,7 @@ class CartServiceTest {
         //then
         List<CartListResponse> listCart = cartService.getCartList();
 
-        Assertions.assertEquals(listCart.size(),0);
+        Assertions.assertEquals(0, listCart.size());
 
     }
 
@@ -278,9 +278,9 @@ class CartServiceTest {
         //then
         List<CartListResponse> listCart = cartService.getCartList();
 
-        Assertions.assertEquals(listCart.size(),1);
-        Assertions.assertEquals(listCart.get(0).getProductName(),"물품1");
-        Assertions.assertEquals(listCart.get(0).getQuantity(),1);
+        Assertions.assertEquals(1, listCart.size());
+        Assertions.assertEquals("물품1", listCart.get(0).getProductName());
+        Assertions.assertEquals(1, listCart.get(0).getQuantity());
     }
 
     @Test
@@ -337,11 +337,11 @@ class CartServiceTest {
         List<CartListResponse> listCart = cartService.getCartList();
 
         //then
-        Assertions.assertEquals(listCart.size(),2);
-        Assertions.assertEquals(listCart.get(0).getQuantity(),3);
-        Assertions.assertEquals(listCart.get(0).getProductName(),"물품1");
-        Assertions.assertEquals(listCart.get(1).getQuantity(),5);
-        Assertions.assertEquals(listCart.get(1).getProductName(),"물품2");
+        Assertions.assertEquals(2, listCart.size());
+        Assertions.assertEquals(3, listCart.get(0).getQuantity());
+        Assertions.assertEquals("물품1", listCart.get(0).getProductName());
+        Assertions.assertEquals(5, listCart.get(1).getQuantity());
+        Assertions.assertEquals("물품2", listCart.get(1).getProductName());
 
     }
 

@@ -23,6 +23,7 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,6 +51,9 @@ class AuthControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Value("${spring.adminCode}")
     private String adminCode;
@@ -131,13 +135,15 @@ class AuthControllerTest {
 
     @Test
     @DisplayName("회원탈퇴")
-    @WithMockUser
+    @CustomMockMember
     void resign() throws Exception {
+
+        String encode = passwordEncoder.encode("1234");
 
         Member member = Member.builder()
                 .email("Testing@naver.com")
                 .name("Testing")
-                .password("1234")
+                .password(encode)
                 .role("ROLE_USER")
                 .build();
 
@@ -147,6 +153,7 @@ class AuthControllerTest {
 
         MemberRequest memberRequest = MemberRequest.builder()
                 .id(memberId)
+                .password("1234")
                 .build();
 
 
@@ -157,7 +164,8 @@ class AuthControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(MockMvcRestDocumentation.document("auth/member-resign",
                         requestFields(
-                                fieldWithPath("id").description("회원 번호")
+                                fieldWithPath("id").description("회원 번호"),
+                                fieldWithPath("password").description("회원 비밀번호")
                         )))
                 .andDo(MockMvcResultHandlers.print());
 

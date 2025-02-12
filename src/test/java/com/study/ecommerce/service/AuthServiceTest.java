@@ -32,7 +32,7 @@ class AuthServiceTest {
     private MemberRepository memberRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthService authService;
@@ -73,7 +73,7 @@ class AuthServiceTest {
     void resign() throws Exception{
 
         //create
-        String encode = bCryptPasswordEncoder.encode("1234");
+        String encode = passwordEncoder.encode("1234");
 
         Member member = Member.builder()
                 .email("Testing@naver.com")

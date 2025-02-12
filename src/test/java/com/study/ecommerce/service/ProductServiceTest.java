@@ -64,8 +64,8 @@ class ProductServiceTest {
         Product product = productRepository.findByName("물품1").get();
 
         Assertions.assertEquals(productCategory.getId(),product.getProductCategory().getId());
-        Assertions.assertEquals(product.getName(), "물품1");
-        Assertions.assertEquals(product.getQuantity(),99);
+        Assertions.assertEquals("물품1", product.getName());
+        Assertions.assertEquals(99, product.getQuantity());
 
     }
 
@@ -94,8 +94,8 @@ class ProductServiceTest {
 
         ProductResponse product2 = productService.getProduct(product.getId());
 
-        Assertions.assertEquals(product2.getName(),"물품1");
-        Assertions.assertEquals(product2.getQuantity(),99);
+        Assertions.assertEquals("물품1", product2.getName());
+        Assertions.assertEquals(99, product2.getQuantity());
 
     }
 
