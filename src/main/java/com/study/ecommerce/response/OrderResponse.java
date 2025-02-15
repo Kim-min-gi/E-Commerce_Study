@@ -46,6 +46,7 @@ public class OrderResponse {
                 .payment(order.getPayment())
                 .orderStatus(order.getOrderStatus())
                 .totalPrice(order.getTotalPrice())
+                .orderDate(order.getCreatedDate())
                 .build();
     }
 
