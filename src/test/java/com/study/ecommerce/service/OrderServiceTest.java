@@ -54,10 +54,10 @@ class OrderServiceTest {
 
     @BeforeEach
     void clean(){
-        memberRepository.deleteAll();
         orderRepository.deleteAll();
         cartRepository.deleteAll();
         orderProductRepository.deleteAll();
+        memberRepository.deleteAll();
         productCategoryRepository.deleteAll();
         productRepository.deleteAll();
     }
@@ -206,7 +206,7 @@ class OrderServiceTest {
         orderRepository.saveAll(requestOrders);
 
         LocalDate start = LocalDate.of(2024,11,1);
-        LocalDate end = LocalDate.of(2024,11,30);
+        LocalDate end = LocalDate.of(2025,11,30);
 
         //when
         List<OrderResponse> orders =  orderService.findOrderDate(pageable,start,end);
@@ -286,6 +286,9 @@ class OrderServiceTest {
     @Test
     @DisplayName("주문생성")
     public void test4(){
+
+
+
 
     }
 

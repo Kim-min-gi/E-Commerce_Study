@@ -1,13 +1,16 @@
 package com.study.ecommerce.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ecommerce.config.CustomMockMember;
+import com.study.ecommerce.config.JpaConfig;
 import com.study.ecommerce.domain.*;
 import com.study.ecommerce.domain.type.OrderStatus;
 import com.study.ecommerce.domain.type.Payment;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.repository.OrderRepository;
 import com.study.ecommerce.repository.ProductCategoryRepository;
+import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.OrderResponse;
 import com.study.ecommerce.service.OrderService;
 import org.junit.jupiter.api.Assertions;
@@ -20,11 +23,15 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,11 +39,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -127,17 +137,179 @@ class OrderControllerTest {
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/orders?page=1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(document("order/orderList",
+                        responseFields(
+                                fieldWithPath("[]").description("주문 리스트 배열"),
+                                fieldWithPath("[].id").description("주문 번호"),
+                                fieldWithPath("[].totalPrice").description("총 액수"),
+                                fieldWithPath("[].orderProductResponse").description("상품"),
+                                fieldWithPath("[].payment").description("결제 방법"),
+                                fieldWithPath("[].address").description("배송 주소"),
+                                fieldWithPath("[].address.city").description("도시"),
+                                fieldWithPath("[].address.street").description("거리"),
+                                fieldWithPath("[].address.zipcode").description("우편번호"),
+                                fieldWithPath("[].orderDate").description("주문 날짜"),
+                                fieldWithPath("[].orderStatus").description("주문 상태")
+                        )
+                ))
                 .andDo(MockMvcResultHandlers.print());
 
     }
 
     @Test
-    void findOrderDate() {
+    @DisplayName("주문내역 날짜로 조회")
+    void findOrderDate() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("Testing@naver.com")
+                .name("Test")
+                .password("ASDA515184424")
+                .role("ROLE_USER")
+                .build();
 
+        memberRepository.save(member);
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .quantity(i)
+                        .price(i)
+                        .build()
+        ).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productCategoryRepository.save(productCategory);
+
+
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
+        );
+
+
+        Address address = Address.builder()
+                .city("서울")
+                .street("강남")
+                .zipcode("1111")
+                .build();
+
+        List<Order> requestOrders = IntStream.range(1,31).mapToObj(i ->
+                Order.builder()
+                        .orderStatus(OrderStatus.ORDER_COMPLETE)
+                        .address(address)
+                        .payment(Payment.CARD)
+                        .member(member)
+                        .totalPrice(i * 100)
+                        .build()
+        ).toList();
+
+
+        orderRepository.saveAll(requestOrders);
+
+        LocalDate start = LocalDate.of(2024,11,1);
+        LocalDate end = LocalDate.of(2025,11,30);
+
+
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/ordersDate")
+                                .param("page","1")
+                                .param("startDate",start.toString())
+                                .param("endDate",end.toString())
+                //.content(objectMapper.writeValueAsString(start))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(document("order/orderDateList",
+                        responseFields(
+                                fieldWithPath("[]").description("주문 리스트 배열"),
+                                fieldWithPath("[].id").description("주문 번호"),
+                                fieldWithPath("[].totalPrice").description("총주문 금액"),
+                                fieldWithPath("[].orderStatus").description("주문 상태"),
+                                fieldWithPath("[].orderProductResponse").description("주문 상품들"),
+                                fieldWithPath("[].payment").description("결제방법"),
+                                fieldWithPath("[].address").description("배송 주소"),
+                                fieldWithPath("[].address.city").description("도시"),
+                                fieldWithPath("[].address.street").description("거리"),
+                                fieldWithPath("[].address.zipcode").description("우편번호"),
+                                fieldWithPath("[].orderDate").description("주문 날짜")
+                        )
+                ))
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    void orderCancel() {
+    @DisplayName("주문 취소")
+    void orderCancel() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("Testing@naver.com")
+                .name("Test")
+                .password("ASDA515184424")
+                .role("ROLE_USER")
+                .build();
+
+        memberRepository.save(member);
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .quantity(i)
+                        .price(i)
+                        .build()
+        ).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productCategoryRepository.save(productCategory);
+
+
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
+        );
+
+
+        Address address = Address.builder()
+                .city("서울")
+                .street("강남")
+                .zipcode("1111")
+                .build();
+
+        Order requestOrder =
+                Order.builder()
+                        .orderStatus(OrderStatus.ORDER_COMPLETE)
+                        .address(address)
+                        .payment(Payment.CARD)
+                        .member(member)
+                        .totalPrice(100)
+                        .build();
+
+
+        orderRepository.save(requestOrder);
+
+
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/orderCancel/{orderId}",requestOrder.getId())
+//               .content(objectMapper.writeValueAsString(requestOrder.getId()))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("order/orderCancel",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("orderId").description("주문 번호")
+                        )))
+                .andDo(MockMvcResultHandlers.print());
+
     }
 
     @Test
@@ -145,6 +317,79 @@ class OrderControllerTest {
     }
 
     @Test
-    void modifyOrder() {
+    @DisplayName("주문 상태 변경")
+    void modifyOrder() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("Testing@naver.com")
+                .name("Test")
+                .password("ASDA515184424")
+                .role("ROLE_ADMIN")
+                .build();
+
+        memberRepository.save(member);
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .quantity(i)
+                        .price(i)
+                        .build()
+        ).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productCategoryRepository.save(productCategory);
+
+
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
+        );
+
+
+        Address address = Address.builder()
+                .city("서울")
+                .street("강남")
+                .zipcode("1111")
+                .build();
+
+        Order requestOrder =
+                Order.builder()
+                        .orderStatus(OrderStatus.ORDER_COMPLETE)
+                        .address(address)
+                        .payment(Payment.CARD)
+                        .member(member)
+                        .totalPrice(100)
+                        .build();
+
+
+        orderRepository.save(requestOrder);
+
+        OrderRequest orderRequest = OrderRequest.builder()
+                .orderId(requestOrder.getId())
+                .orderStatus(OrderStatus.PROCESSING)
+                .build();
+
+
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/orderModify")
+                .content(objectMapper.writeValueAsString(orderRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent())
+                .andDo(MockMvcRestDocumentation.document("order/orderModify",
+                        requestFields(
+                                fieldWithPath("orderId").description("주문 번호"),
+                                fieldWithPath("totalPrice").description("주문 총금액"),
+                                fieldWithPath("payment").description("주문 결제 방법"),
+                                fieldWithPath("address").description("주소"),
+                                fieldWithPath("orderStatus").description("주문 상태")
+                        )))
+                .andDo(MockMvcResultHandlers.print());
     }
 }

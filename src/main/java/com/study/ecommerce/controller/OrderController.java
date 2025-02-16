@@ -12,10 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,14 +32,15 @@ public class OrderController {
 
 
     @GetMapping("/ordersDate")
-    public ResponseEntity<List<OrderResponse>> findOrderDate(@PageableDefault Pageable pageable, LocalDate startDate, LocalDate endDate){
+    public ResponseEntity<List<OrderResponse>> findOrderDate(@PageableDefault Pageable pageable,
+                                                             @RequestParam LocalDate startDate,@RequestParam LocalDate endDate){
         List<OrderResponse> orders = orderService.findOrderDate(pageable,startDate,endDate);
 
         return ResponseEntity.ok(orders);
     }
 
-    @PatchMapping("/orderCancel")
-    public ResponseEntity<Void> orderCancel(Long orderId){
+    @PatchMapping("/orderCancel/{orderId}")
+    public ResponseEntity<Void> orderCancel(@PathVariable Long orderId){
 
         orderService.orderCancel(orderId);
 
@@ -50,7 +48,7 @@ public class OrderController {
     }
 
     @PostMapping("/orderCreate")
-    public ResponseEntity<Void> createOrder(OrderRequest orderRequest){
+    public ResponseEntity<Void> createOrder(@RequestBody OrderRequest orderRequest){
 
         orderService.createOrder(orderRequest);
 
@@ -58,7 +56,7 @@ public class OrderController {
     }
 
     @PatchMapping("/orderModify")
-    public ResponseEntity<Void> modifyOrder(OrderRequest orderRequest) throws Exception {
+    public ResponseEntity<Void> modifyOrder(@RequestBody OrderRequest orderRequest) throws Exception {
 
         orderService.modifyOrder(orderRequest);
 

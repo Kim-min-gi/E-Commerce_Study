@@ -15,7 +15,7 @@ public class OrderRequest {
 
     private Payment payment;
 
-    private int totalPrice;
+    private Integer totalPrice;
 
     private Address address;
 
