@@ -16,12 +16,12 @@ public class Cart extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Product cartProduct;

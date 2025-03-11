@@ -42,8 +42,8 @@ class CartServiceTest {
 
     @BeforeEach
     void clean(){
-        cartRepository.deleteAll();
         memberRepository.deleteAll();
+        cartRepository.deleteAll();
         productCategoryRepository.deleteAll();
         productRepository.deleteAll();
     }
