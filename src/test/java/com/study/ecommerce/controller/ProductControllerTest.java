@@ -54,17 +54,24 @@ class ProductControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+
     @BeforeEach
-    void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
         productRepository.deleteAll();
         productCategoryRepository.deleteAll();
     }
 
-    @AfterEach
-    void cleanup(){
-        productRepository.deleteAll();
-        productCategoryRepository.deleteAll();
-    }
+
 
     @Test
     @DisplayName("상품 추가 (관리자)")

@@ -4,6 +4,7 @@ package com.study.ecommerce.controller;
 import com.study.ecommerce.config.CustomMockMember;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.repository.MemberRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,13 +42,20 @@ class AdminControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
-
-
     @BeforeEach
-    void clean(){
-        memberRepository.deleteAll();
+    void setUp() {
+        cleanDatabase();
     }
 
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("member List 출력")

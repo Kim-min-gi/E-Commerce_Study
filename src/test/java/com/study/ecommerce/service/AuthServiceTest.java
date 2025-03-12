@@ -38,7 +38,17 @@ class AuthServiceTest {
     private AuthService authService;
 
     @BeforeEach
-    void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
         memberRepository.deleteAll();
     }
 

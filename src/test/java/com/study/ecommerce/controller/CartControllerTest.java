@@ -13,6 +13,7 @@ import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.repository.ProductRepository;
 import com.study.ecommerce.request.CartRequest;
 import com.study.ecommerce.service.CartService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,17 @@ class CartControllerTest {
     private ProductCategoryRepository productCategoryRepository;
 
     @BeforeEach
-    public void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
         cartRepository.deleteAll();
         memberRepository.deleteAll();
         productRepository.deleteAll();

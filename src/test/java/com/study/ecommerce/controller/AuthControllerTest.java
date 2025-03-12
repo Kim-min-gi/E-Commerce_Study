@@ -7,6 +7,7 @@ import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.request.MemberRequest;
 import com.study.ecommerce.request.MemberSignUp;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,9 +59,17 @@ class AuthControllerTest {
     @Value("${spring.adminCode}")
     private String adminCode;
 
-
     @BeforeEach
-    void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+    void cleanDatabase() {
         memberRepository.deleteAll();
     }
 

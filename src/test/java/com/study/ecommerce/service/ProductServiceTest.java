@@ -29,17 +29,19 @@ class ProductServiceTest {
     private ProductCategoryRepository productCategoryRepository;
 
     @BeforeEach
-    void clean(){
-        productRepository.deleteAll();
-        productCategoryRepository.deleteAll();
+    void setUp() {
+        cleanDatabase();
     }
 
     @AfterEach
-    void cleanup(){
+    void tearDown() {
+        cleanDatabase();
+    }
+
+    void cleanDatabase() {
         productRepository.deleteAll();
         productCategoryRepository.deleteAll();
     }
-
 
     @Test
     @DisplayName("상품 추가")

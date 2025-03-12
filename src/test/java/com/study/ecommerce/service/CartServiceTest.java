@@ -41,7 +41,17 @@ class CartServiceTest {
 
 
     @BeforeEach
-    void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
         memberRepository.deleteAll();
         cartRepository.deleteAll();
         productCategoryRepository.deleteAll();

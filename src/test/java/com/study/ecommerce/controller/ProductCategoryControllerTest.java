@@ -6,6 +6,7 @@ import com.study.ecommerce.domain.ProductCategory;
 import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.request.CategoryRequest;
 import com.study.ecommerce.service.ProductCategoryService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,10 +51,22 @@ class ProductCategoryControllerTest {
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
 
+
     @BeforeEach
-    void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
         productCategoryRepository.deleteAll();
     }
+
 
     @Test
     @DisplayName("카테고리 추가")

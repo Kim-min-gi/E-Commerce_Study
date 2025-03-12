@@ -25,12 +25,17 @@ class ProductCategoryServiceTest {
 
 
     @BeforeEach
-    void cleanUp(){
-        productCategoryRepository.deleteAll();
+    void setUp() {
+        cleanDatabase();
     }
 
     @AfterEach
-    void clean(){
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
         productCategoryRepository.deleteAll();
     }
 
