@@ -15,11 +15,12 @@ public class OrderProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long orderId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(nullable = false)
     private Product product;
 
     @Column(nullable = false)
@@ -27,9 +28,14 @@ public class OrderProduct {
 
 
     @Builder
-    public OrderProduct(Long orderId, Product product, Integer quantity) {
-        this.orderId = orderId;
+    public OrderProduct(Order order, Product product, Integer quantity) {
+        this.order = order;
         this.product = product;
         this.quantity = quantity;
     }
+
+    public void setOrder(Order order){
+        this.order = order;
+    }
+
 }

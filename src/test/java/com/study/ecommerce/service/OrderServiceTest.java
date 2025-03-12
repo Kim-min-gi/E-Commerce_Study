@@ -1,17 +1,17 @@
 package com.study.ecommerce.service;
 
 import com.study.ecommerce.domain.*;
+import com.study.ecommerce.domain.Order;
 import com.study.ecommerce.domain.type.OrderStatus;
 import com.study.ecommerce.domain.type.Payment;
+import com.study.ecommerce.exception.NotFoundOrderException;
 import com.study.ecommerce.repository.*;
+import com.study.ecommerce.request.OrderItemRequest;
 import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.OrderResponse;
 import com.study.ecommerce.response.ProductResponse;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -20,11 +20,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.beans.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 
@@ -53,14 +57,25 @@ class OrderServiceTest {
     private OrderService orderService;
 
     @BeforeEach
-    void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+    void cleanDatabase() {
+        orderProductRepository.deleteAll();
         orderRepository.deleteAll();
         cartRepository.deleteAll();
-        orderProductRepository.deleteAll();
-        memberRepository.deleteAll();
-        productCategoryRepository.deleteAll();
         productRepository.deleteAll();
+        productCategoryRepository.deleteAll();
+        memberRepository.deleteAll();
     }
+
+
 
 
     @Test
@@ -84,7 +99,7 @@ class OrderServiceTest {
 
         productCategoryRepository.save(productCategory);
 
-        List<Product> requestProduct = IntStream.range(1,31).mapToObj(i ->
+        List<Product> requestProduct = IntStream.range(1,10).mapToObj(i ->
                 Product.builder()
                         .name("물품" + i)
                         .quantity(i)
@@ -94,12 +109,10 @@ class OrderServiceTest {
 
         requestProduct.forEach(product -> product.setCategory(productCategory));
 
-        productCategoryRepository.save(productCategory);
+        productRepository.saveAll(requestProduct);
 
 
         Pageable pageable = PageRequest.of(0,10);
-
-
 
         List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
         SecurityContextHolder.getContext().setAuthentication(
@@ -144,6 +157,79 @@ class OrderServiceTest {
 
 
     @Test
+    @DisplayName("주문내역 한건 조회")
+    public void testFindOrder() throws IllegalAccessException {
+
+        // given
+        Member member = Member.builder()
+                .email("Testing@naver.com")
+                .name("Test")
+                .password("ASDA515184424")
+                .role("ROLE_USER")
+                .build();
+
+        memberRepository.save(member);
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        Product product = Product.builder()
+                .name("상품1")
+                .price(1000)
+                .quantity(100)
+                .build();
+
+        product.setCategory(productCategory);
+
+        productRepository.save(product);
+
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
+        );
+
+
+        Address address = Address.builder()
+                .city("서울")
+                .street("강남")
+                .zipcode("1111")
+                .build();
+
+        Order order =  Order.builder()
+                .orderStatus(OrderStatus.ORDER_COMPLETE)
+                .address(address)
+                .payment(Payment.CARD)
+                .member(member)
+                .totalPrice(1000)
+                .build();
+
+        orderRepository.save(order);
+
+        OrderProduct orderProduct = OrderProduct.builder()
+                .order(order)
+                .product(product)
+                .quantity(1)
+                .build();
+
+        order.addOrderProduct(orderProduct);
+
+        orderProductRepository.save(orderProduct);
+
+        OrderResponse findOrder = orderService.findOrder(order.getId());
+
+        Assertions.assertEquals("상품1",findOrder.getOrderProductResponse().get(0).getName());
+        Assertions.assertEquals(1000,findOrder.getTotalPrice());
+        Assertions.assertEquals(Payment.CARD,findOrder.getPayment());
+
+
+    }
+
+
+
+    @Test
     @DisplayName("주문내역 날짜로 조회")
     public void test2(){
 
@@ -173,7 +259,7 @@ class OrderServiceTest {
 
         requestProduct.forEach(product -> product.setCategory(productCategory));
 
-        productCategoryRepository.save(productCategory);
+        productRepository.saveAll(requestProduct);
 
 
         Pageable pageable = PageRequest.of(0,10);
@@ -248,7 +334,7 @@ class OrderServiceTest {
 
         requestProduct.forEach(product -> product.setCategory(productCategory));
 
-        productCategoryRepository.save(productCategory);
+        productRepository.saveAll(requestProduct);
 
 
         List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
@@ -285,10 +371,85 @@ class OrderServiceTest {
 
     @Test
     @DisplayName("주문생성")
-    public void test4(){
+    public void test4() throws IllegalAccessException {
+        //given
+        Member member = Member.builder()
+                .email("Testing@naver.com")
+                .name("Test")
+                .password("ASDA515184424")
+                .role("ROLE_USER")
+                .build();
+
+        memberRepository.save(member);
+
+        ProductCategory productCategory = ProductCategory.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(productCategory);
+
+        List<Product> requestProduct = IntStream.range(1,10).mapToObj(i ->
+                Product.builder()
+                        .name("물품" + i)
+                        .quantity(i)
+                        .price(1000)
+                        .build()
+        ).toList();
+
+        requestProduct.forEach(product -> product.setCategory(productCategory));
+
+        productRepository.saveAll(requestProduct);
 
 
+        List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("Testing@naver.com", null, authorities)
+        );
 
+
+        Address address = Address.builder()
+                .city("서울")
+                .street("강남")
+                .zipcode("1111")
+                .build();
+
+        OrderItemRequest orderItemRequest = OrderItemRequest.builder()
+                .productId(requestProduct.get(0).getId())
+                .price(1000)
+                .quantity(1)
+                .build();
+
+        OrderItemRequest orderItemRequest2 = OrderItemRequest.builder()
+                .productId(requestProduct.get(1).getId())
+                .price(1000)
+                .quantity(1)
+                .build();
+
+        List<OrderItemRequest> orderItemRequestList = new ArrayList<>();
+
+        orderItemRequestList.add(orderItemRequest);
+        orderItemRequestList.add(orderItemRequest2);
+
+        OrderRequest request = OrderRequest.builder()
+                .memberId(member.getId())
+                .payment(Payment.CARD)
+                .address(address)
+                .orderItemRequestList(orderItemRequestList)
+                .totalPrice(2000L)
+                .build();
+
+        orderService.createOrder(request);
+
+        Pageable pageable = PageRequest.of(0,10);
+
+
+        List<OrderResponse> allOrders = orderService.findAllOrders(pageable);
+        OrderResponse order = allOrders.get(0);
+
+        Assertions.assertEquals("물품1",order.getOrderProductResponse().get(0).getName());
+        Assertions.assertEquals("물품2",order.getOrderProductResponse().get(1).getName());
+        Assertions.assertEquals(Payment.CARD,order.getPayment());
+        Assertions.assertEquals(2000L,order.getTotalPrice());
 
     }
 
@@ -321,7 +482,7 @@ class OrderServiceTest {
 
         requestProduct.forEach(product -> product.setCategory(productCategory));
 
-        productCategoryRepository.save(productCategory);
+        productRepository.saveAll(requestProduct);
 
 
         List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));

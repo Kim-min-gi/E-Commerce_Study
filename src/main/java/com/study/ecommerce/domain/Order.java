@@ -3,7 +3,6 @@ package com.study.ecommerce.domain;
 import com.study.ecommerce.common.BaseTimeEntity;
 import com.study.ecommerce.domain.type.Payment;
 import com.study.ecommerce.domain.type.OrderStatus;
-import com.study.ecommerce.response.OrderResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,6 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -32,7 +34,7 @@ public class Order extends BaseTimeEntity {
     private Payment payment;
 
     @Column(nullable = false)
-    private int totalPrice;
+    private long totalPrice;
 
     @Embedded
     private Address address;
@@ -41,9 +43,12 @@ public class Order extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+
 
     @Builder
-    public Order(Member member, Payment payment, int totalPrice, Address address, OrderStatus orderStatus) {
+    public Order(Member member, Payment payment, long totalPrice, Address address, OrderStatus orderStatus) {
         this.member = member;
         this.payment = payment;
         this.totalPrice = totalPrice;
@@ -51,8 +56,13 @@ public class Order extends BaseTimeEntity {
         this.orderStatus = orderStatus;
     }
 
-    public void setOrderModify(OrderStatus orderStatus){
+    public void setOrderStatusModify(OrderStatus orderStatus){
         this.orderStatus = orderStatus;
+    }
+
+    public void addOrderProduct(OrderProduct orderProduct){
+        orderProduct.setOrder(this);
+        this.orderProducts.add(orderProduct);
     }
 
 

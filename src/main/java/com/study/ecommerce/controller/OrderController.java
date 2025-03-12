@@ -30,6 +30,13 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<OrderResponse> findOrder(@PathVariable Long orderId) throws IllegalAccessException {
+        OrderResponse order = orderService.findOrder(orderId);
+
+        return ResponseEntity.ok(order);
+    }
+
 
     @GetMapping("/ordersDate")
     public ResponseEntity<List<OrderResponse>> findOrderDate(@PageableDefault Pageable pageable,

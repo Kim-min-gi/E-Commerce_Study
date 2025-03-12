@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -18,7 +19,7 @@ public class OrderResponse {
 
     private Long id;
 
-    private int totalPrice;
+    private long totalPrice;
 
     private OrderStatus orderStatus;
 
@@ -44,6 +45,7 @@ public class OrderResponse {
                 .id(order.getId())
                 .address(Address.form(order.getAddress()))
                 .payment(order.getPayment())
+                .orderProductResponse(new ArrayList<>())
                 .orderStatus(order.getOrderStatus())
                 .totalPrice(order.getTotalPrice())
                 .orderDate(order.getCreatedDate())

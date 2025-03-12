@@ -1,15 +1,11 @@
 package com.study.ecommerce.service;
 
-import com.study.ecommerce.config.CustomUserDetails;
 import com.study.ecommerce.domain.*;
 import com.study.ecommerce.domain.type.OrderStatus;
-import com.study.ecommerce.exception.CartEmptyException;
-import com.study.ecommerce.exception.NotFoundMemberException;
-import com.study.ecommerce.exception.NotFoundOrderException;
-import com.study.ecommerce.repository.CartRepository;
-import com.study.ecommerce.repository.MemberRepository;
-import com.study.ecommerce.repository.OrderProductRepository;
-import com.study.ecommerce.repository.OrderRepository;
+import com.study.ecommerce.exception.*;
+import com.study.ecommerce.exception.NotFoundProduct;
+import com.study.ecommerce.repository.*;
+import com.study.ecommerce.request.OrderItemRequest;
 import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.OrderProductResponse;
 import com.study.ecommerce.response.OrderResponse;
@@ -21,12 +17,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.ClientInfoStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +36,8 @@ public class OrderService {
 
     private final OrderProductRepository orderProductRepository;
 
+    private final ProductRepository productRepository;
+
     @Transactional(readOnly = true)
     public List<OrderResponse> findAllOrders(Pageable pageable){
 
@@ -47,6 +45,30 @@ public class OrderService {
 
         return orderProductFindByOrderId(orderRepository.findByMember(member,pageable));
     }
+
+    @Transactional(readOnly = true)
+    public OrderResponse findOrder(Long orderId) throws IllegalAccessException {
+
+        Member member = memberRepository.findByEmail(getMemberEmail()).orElseThrow(NotFoundMemberException::new);
+        Order findOrder = orderRepository.findByOrderId(orderId).orElseThrow(NotFoundOrderException::new);
+
+        if (!member.getRole().equals("ROLE_ADMIN") && !member.getEmail().equals(findOrder.getMember().getEmail())){
+            throw new IllegalAccessException("잘못된 접근 입니다.");
+        }
+
+        OrderResponse form = OrderResponse.form(findOrder);
+
+        List<OrderProduct> orderProductList = orderProductRepository.findByOrderId(findOrder.getId());
+
+        for (OrderProduct orderProduct : orderProductList){
+            OrderProductResponse orderProductResponse = OrderProductResponse.form(orderProduct);
+
+            form.addOrderProductResponse(orderProductResponse);
+        }
+
+        return form;
+    }
+
 
 
 
@@ -72,9 +94,9 @@ public class OrderService {
             throw new IllegalArgumentException("잘못된 접근입니다.");
         }
 
-        order.setOrderModify(OrderStatus.CANCELED);
+        order.setOrderStatusModify(OrderStatus.CANCELED);
 
-        orderRepository.save(order);
+        //orderRepository.save(order);
     }
 
     //주문 생성
@@ -83,10 +105,38 @@ public class OrderService {
 
         Member member = memberRepository.findByEmail(getMemberEmail()).orElseThrow(NotFoundMemberException::new);
 
-        List<Cart> carts = cartRepository.findAllByMember(member);
+//        List<Cart> carts = cartRepository.findAllByMember(member);
 
-        if (carts.isEmpty()){
-            throw new CartEmptyException();
+//        if (carts.isEmpty()){
+//            throw new CartEmptyException();
+//        }
+
+        long totalPrice = 0;
+
+        ArrayList<OrderProduct> orderProducts = new ArrayList<>();
+
+
+        //각 상품들을 다시 조회해서 가격을 확인 후 totalPrice 확정내기
+        for (OrderItemRequest orderItemRequest : orderRequest.getOrderItemRequestList()){
+            Product product = productRepository.findById(orderItemRequest.getProductId()).orElseThrow(NotFoundProduct::new);
+
+            if (product.getPrice() != orderItemRequest.getPrice()){
+                throw new IncorrectOrderException();
+            }
+
+            OrderProduct orderProduct = OrderProduct.builder()
+                    .product(product)
+                    .quantity(orderItemRequest.getQuantity())
+                    .build();
+
+            orderProducts.add(orderProduct);
+
+            totalPrice += (long) product.getPrice() * orderItemRequest.getQuantity();
+        }
+
+        //총 주문금액이 다른경우
+        if (totalPrice != orderRequest.getTotalPrice()){
+            throw new IncorrectOrderException();
         }
 
         Order saveOrder = Order.builder()
@@ -94,20 +144,14 @@ public class OrderService {
                 .address(orderRequest.getAddress())
                 .payment(orderRequest.getPayment())
                 .member(member)
-                .totalPrice(orderRequest.getTotalPrice())
+                .totalPrice(totalPrice)
                 .build();
-
 
         orderRepository.save(saveOrder);
 
-        carts.forEach(cart -> {
-            orderProductRepository.save(OrderProduct.builder()
-                            .orderId(saveOrder.getId())
-                            .product(cart.getCartProduct())
-                            .quantity(cart.getQuantity())
-                    .build());
-        });
+        orderProducts.forEach(saveOrder::addOrderProduct);
 
+        orderProductRepository.saveAll(orderProducts);
 
     }
 
@@ -123,9 +167,9 @@ public class OrderService {
        }
 
 
-       order.setOrderModify(orderRequest.getOrderStatus());
+       order.setOrderStatusModify(orderRequest.getOrderStatus());
 
-       orderRepository.save(order);
+//       orderRepository.save(order);
     }
 
 

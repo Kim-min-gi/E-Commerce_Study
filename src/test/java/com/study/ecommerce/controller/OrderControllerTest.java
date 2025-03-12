@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ecommerce.config.CustomMockMember;
 import com.study.ecommerce.config.JpaConfig;
 import com.study.ecommerce.domain.*;
+import com.study.ecommerce.domain.Order;
 import com.study.ecommerce.domain.type.OrderStatus;
 import com.study.ecommerce.domain.type.Payment;
 import com.study.ecommerce.repository.MemberRepository;
@@ -13,10 +14,7 @@ import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.OrderResponse;
 import com.study.ecommerce.service.OrderService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -70,7 +68,17 @@ class OrderControllerTest {
     private OrderRepository orderRepository;
 
     @BeforeEach
-    public void clean(){
+    void setUp() {
+        cleanDatabase();
+    }
+
+    @AfterEach
+    void tearDown() {
+        cleanDatabase();
+    }
+
+
+    void cleanDatabase() {
         orderRepository.deleteAll();
         productCategoryRepository.deleteAll();
         memberRepository.deleteAll();
@@ -385,6 +393,8 @@ class OrderControllerTest {
                 .andDo(MockMvcRestDocumentation.document("order/orderModify",
                         requestFields(
                                 fieldWithPath("orderId").description("주문 번호"),
+                                fieldWithPath("memberId").description("주문회원"),
+                                fieldWithPath("orderItemRequestList").description("주문 상품 List"),
                                 fieldWithPath("totalPrice").description("주문 총금액"),
                                 fieldWithPath("payment").description("주문 결제 방법"),
                                 fieldWithPath("address").description("주소"),
