@@ -38,3 +38,6 @@ out/
 
 ### jwt ###
 application-jwt.yml
+
+### redis ###
+application-redis.yml
