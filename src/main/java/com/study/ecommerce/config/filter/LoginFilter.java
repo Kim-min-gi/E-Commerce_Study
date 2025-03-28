@@ -3,13 +3,18 @@ package com.study.ecommerce.config.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ecommerce.config.CustomUserDetails;
 import com.study.ecommerce.config.jwt.JwtUtil;
+import com.study.ecommerce.domain.RefreshToken;
+import com.study.ecommerce.repository.RefreshTokenRepository;
+import com.study.ecommerce.response.LoginResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,11 +35,13 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final ObjectMapper objectMapper;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil, String url){
+    public LoginFilter(ObjectMapper objectMapper, JwtUtil jwtUtil, String url, RefreshTokenRepository refreshTokenRepository){
         this.objectMapper = objectMapper;
         this.jwtUtil = jwtUtil;
         this.setFilterProcessesUrl(url);
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
 
@@ -66,22 +73,53 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override   // 로그인 성공시
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
-        CustomUserDetails customUserDetails = (CustomUserDetails) authResult.getPrincipal();
 
-        Long memberId = customUserDetails.getId();
-        String email = customUserDetails.getUsername();
+        String email = authResult.getName();
 
         Collection<? extends GrantedAuthority> authorities = authResult.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority authority = iterator.next();
-
         String role = authority.getAuthority();
 
-        // JWT 토큰 생성
-        String token = jwtUtil.createToken(memberId,email,role);
+        String access = jwtUtil.createToken("Authorization",email,role,600000L);
+        String refresh = jwtUtil.createToken("refresh",email,role,86400000L);
 
-        // 응답 헤더에 토큰 추가
-        response.addHeader("Authorization", "Bearer " + token);
+        //Response 생성
+        LoginResponse.AuthenticatedResponseDto authenticatedResponseDto = LoginResponse.AuthenticatedResponseDto.builder()
+                .grantType("Bearer")
+                .accessToken(access)
+                .refreshToken(refresh)
+                .build();
+
+        LoginResponse.MemberInfoResponseDto memberInfoResponseDto = LoginResponse.MemberInfoResponseDto.builder()
+                .email(email)
+                .role(role)
+                .build();
+
+        LoginResponse loginResponse = LoginResponse.builder()
+                .authenticatedResponseDto(authenticatedResponseDto)
+                .memberInfoResponseDto(memberInfoResponseDto)
+                .build();
+
+
+        response.setHeader("Authorization","Bearer " + access);
+        //response.setHeader("refresh",refresh);
+        response.addCookie(createCookie("refresh",refresh));
+
+        //redis 저장
+        RefreshToken refreshToken = RefreshToken.builder()
+                .token(refresh)
+                .email(email)
+                .build();
+
+        refreshTokenRepository.save(refreshToken);
+
+        //Response json 반환
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(loginResponse));
+        response.setStatus(HttpStatus.OK.value());
+
 
     }
 
@@ -95,6 +133,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private static class EmailPassword{
         private String email;
         private String password;
+    }
+
+    private Cookie createCookie(String key, String value){
+
+
+        Cookie cookie = new Cookie(key,value);
+        cookie.setMaxAge(24*60*60);
+        cookie.setHttpOnly(true);
+
+
+        //cookie.setSecure(true); //https 용
+        //cookie.setPath("/"); //쿠키가 적용될 범위
+
+        return cookie;
     }
 
 

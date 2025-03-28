@@ -1,13 +1,22 @@
 package com.study.ecommerce.service;
 
+import com.study.ecommerce.config.jwt.JwtUtil;
 import com.study.ecommerce.domain.Member;
+import com.study.ecommerce.domain.RefreshToken;
 import com.study.ecommerce.exception.AlreadyExistsEmailException;
 import com.study.ecommerce.exception.NotFoundMemberException;
 import com.study.ecommerce.exception.ResignUnauthorizedException;
 import com.study.ecommerce.repository.MemberRepository;
+import com.study.ecommerce.repository.RefreshTokenRepository;
 import com.study.ecommerce.request.MemberRequest;
 import com.study.ecommerce.request.MemberSignUp;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +31,8 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     public void signup(MemberSignUp memberSignUp){
@@ -64,6 +75,58 @@ public class AuthService {
 
     }
 
+    @Transactional
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+
+        for (Cookie c : cookies){
+            if (c.getName().equals("refresh")){
+                refresh = c.getValue();
+            }
+        }
+
+        if(refresh == null){
+            return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
+        }
+
+
+        try {
+            jwtUtil.isExpired(refresh);  //이 부분 생각해보기
+        }catch (ExpiredJwtException e){
+            return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
+        }
+
+        String category = jwtUtil.getCategory(refresh);
+
+        if (!category.equals("refresh")){
+            return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
+        }
+
+
+        String email = jwtUtil.getEmail(refresh);
+        String role = jwtUtil.getRole(refresh);
+
+
+        String newAccessToken = jwtUtil.createToken("Authorization",email,role,600000L);
+        String newRefreshToken = jwtUtil.createToken("refresh",email,role,86400000L);
+
+        //redis refreshToken 삭제 후 저장
+        refreshTokenRepository.deleteById(email);
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .token(refresh)
+                .email(email)
+                .build();
+
+        refreshTokenRepository.save(refreshToken);
+
+        response.setHeader("Authorization","Bearer " + newAccessToken);
+        response.addCookie(createCookie("refresh",newRefreshToken));
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     public Member duplicateCheckAndSignup(MemberSignUp memberSignUp,String role){
         Optional<Member> findMember = memberRepository.findByEmail(memberSignUp.getEmail());
@@ -79,6 +142,20 @@ public class AuthService {
         return Member.form(memberSignUp,encryptedPassword,role);
     }
 
+
+    private Cookie createCookie(String key, String value){
+
+
+        Cookie cookie = new Cookie(key,value);
+        cookie.setMaxAge(24*60*60);
+        cookie.setHttpOnly(true);
+
+
+        //cookie.setSecure(true); //https 용
+        //cookie.setPath("/"); //쿠키가 적용될 범위
+
+        return cookie;
+    }
 
 
 }

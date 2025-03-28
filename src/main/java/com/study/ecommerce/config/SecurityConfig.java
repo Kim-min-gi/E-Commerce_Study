@@ -7,6 +7,7 @@ import com.study.ecommerce.config.handler.Http403Handler;
 import com.study.ecommerce.config.handler.LoginFailHandler;
 import com.study.ecommerce.config.jwt.JwtFilter;
 import com.study.ecommerce.config.jwt.JwtUtil;
+import com.study.ecommerce.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +36,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
 
     @Bean
@@ -65,7 +67,7 @@ public class SecurityConfig {
         http.httpBasic(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests((request) -> request
-                .requestMatchers("/auth/login","/auth/signup","/","/auth/signup/admin").permitAll()
+                .requestMatchers("/auth/login","/auth/signup","/","/auth/signup/admin","/auth/reissue").permitAll()
                 .requestMatchers("/user").hasAnyRole("USER","ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
@@ -99,7 +101,7 @@ public class SecurityConfig {
     @Bean
     public LoginFilter loginFilter() throws Exception {
         AuthenticationManager authenticationManager = authenticationManager(authenticationConfiguration);
-        LoginFilter filter = new LoginFilter(objectMapper,jwtUtil,"/auth/login");
+        LoginFilter filter = new LoginFilter(objectMapper,jwtUtil,"/auth/login",refreshTokenRepository);
         filter.setAuthenticationManager(authenticationManager);
         filter.setAuthenticationFailureHandler(new LoginFailHandler(objectMapper));
 

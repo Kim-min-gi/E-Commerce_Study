@@ -4,6 +4,8 @@ import com.study.ecommerce.exception.AdminCodeNotMatch;
 import com.study.ecommerce.request.MemberRequest;
 import com.study.ecommerce.request.MemberSignUp;
 import com.study.ecommerce.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
 
+
     private final AuthService authService;
 
     @Value("${spring.adminCode}")
     private String adminCode;
+
+
 
 
     @PostMapping("/auth/signup")
@@ -47,6 +52,11 @@ public class AuthController {
         authService.adminSignup(memberSignUp);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/auth/reissue")
+    public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response){
+        return authService.reissue(request,response);
     }
 
 

@@ -2,6 +2,7 @@ package com.study.ecommerce.config.jwt;
 
 import com.study.ecommerce.config.CustomUserDetails;
 import com.study.ecommerce.domain.Member;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 
 @RequiredArgsConstructor
@@ -25,32 +27,40 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = request.getHeader("Authorization");
+        String accessToken = request.getHeader("Authorization");
 
-
-        //Authorization 헤더 검증
-        if (authorization == null || !authorization.startsWith("Bearer ")){
-
-            //response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            //response.getWriter().write("로그인 해주세요");
-            filterChain.doFilter(request,response);
+        if(accessToken == null){
+            filterChain.doFilter(request, response);
 
             return;
         }
 
-        String token = authorization.split(" ")[1];
 
-        //토큰 소멸 시간 검증
-        if (jwtUtil.isExpired(token)){
+        try {
+            jwtUtil.isExpired(accessToken);
+        }catch (ExpiredJwtException e){
+            PrintWriter writer = response.getWriter();
+            writer.print("Authorization token expired");
 
-            filterChain.doFilter(request,response);
-
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
 
-        Long id = jwtUtil.getId(token);
-        String email = jwtUtil.getEmail(token);
-        String role = jwtUtil.getRole(token);
+
+        String category = jwtUtil.getCategory(accessToken);
+
+        if (!category.equals("Authorization")){
+
+            PrintWriter writer = response.getWriter();
+            writer.print("invalid Authorization token");
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+
+        String email = jwtUtil.getEmail(accessToken);
+        String role = jwtUtil.getRole(accessToken);
 
         Member member = Member.builder()
                 .email(email)
@@ -58,11 +68,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 .role(role)
                 .build();
 
-        member.setId(id);
-
-
-        //UserDetails에 회원 정보 객체 담기
         CustomUserDetails customUserDetails = new CustomUserDetails(member);
+
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails,null,customUserDetails.getAuthorities());
@@ -70,8 +77,53 @@ public class JwtFilter extends OncePerRequestFilter {
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
 
-
         filterChain.doFilter(request, response);
+
+//        String authorization = request.getHeader("Authorization");
+//
+//
+//        //Authorization 헤더 검증
+//        if (authorization == null || !authorization.startsWith("Bearer ")){
+//
+//            filterChain.doFilter(request,response);
+//
+//            return;
+//        }
+//
+//        String token = authorization.split(" ")[1];
+//
+//        //토큰 소멸 시간 검증
+//        if (jwtUtil.isExpired(token)){
+//
+//            filterChain.doFilter(request,response);
+//
+//            return;
+//        }
+//
+////        Long id = jwtUtil.getId(token);
+//        String email = jwtUtil.getEmail(token);
+//        String role = jwtUtil.getRole(token);
+//
+//        Member member = Member.builder()
+//                .email(email)
+//                .password("temppassword")
+//                .role(role)
+//                .build();
+//
+////        member.setId(id);
+//
+//
+//        //UserDetails에 회원 정보 객체 담기
+//        CustomUserDetails customUserDetails = new CustomUserDetails(member);
+//
+//        //스프링 시큐리티 인증 토큰 생성
+//        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails,null,customUserDetails.getAuthorities());
+//
+//        //세션에 사용자 등록
+//        SecurityContextHolder.getContext().setAuthentication(authToken);
+//
+//
+//        filterChain.doFilter(request, response);
 
 
     }
