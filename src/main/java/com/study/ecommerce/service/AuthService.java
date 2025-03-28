@@ -4,6 +4,7 @@ import com.study.ecommerce.config.jwt.JwtUtil;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.domain.RefreshToken;
 import com.study.ecommerce.exception.AlreadyExistsEmailException;
+import com.study.ecommerce.exception.ExpiredRefreshTokenException;
 import com.study.ecommerce.exception.NotFoundMemberException;
 import com.study.ecommerce.exception.ResignUnauthorizedException;
 import com.study.ecommerce.repository.MemberRepository;
@@ -90,23 +91,16 @@ public class AuthService {
             return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
         }
 
-
-        try {
-            jwtUtil.isExpired(refresh);  //이 부분 생각해보기
-        }catch (ExpiredJwtException e){
-            return new ResponseEntity<>("refresh token expired", HttpStatus.BAD_REQUEST);
-        }
-
         String category = jwtUtil.getCategory(refresh);
+        String email = jwtUtil.getEmail(refresh);
+        String role = jwtUtil.getRole(refresh);
 
         if (!category.equals("refresh")){
             return new ResponseEntity<>("invalid refresh token", HttpStatus.BAD_REQUEST);
         }
 
-
-        String email = jwtUtil.getEmail(refresh);
-        String role = jwtUtil.getRole(refresh);
-
+        //refreshToken 만료 확인
+        refreshTokenRepository.findById(email).orElseThrow(ExpiredRefreshTokenException::new);
 
         String newAccessToken = jwtUtil.createToken("Authorization",email,role,600000L);
         String newRefreshToken = jwtUtil.createToken("refresh",email,role,86400000L);
