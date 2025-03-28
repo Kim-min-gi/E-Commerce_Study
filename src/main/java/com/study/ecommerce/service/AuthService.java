@@ -109,7 +109,7 @@ public class AuthService {
         refreshTokenRepository.deleteById(email);
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .token(refresh)
+                .token(newRefreshToken)
                 .email(email)
                 .build();
 
