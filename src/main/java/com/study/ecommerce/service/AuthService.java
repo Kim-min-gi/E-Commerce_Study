@@ -71,9 +71,6 @@ public class AuthService {
             throw new ResignUnauthorizedException();
         }
 
-
-        //멤버 삭제시 Order 및 리뷰 삭제 추가
-
     }
 
     @Transactional
