@@ -1,10 +1,6 @@
-package com.study.ecommerce.domain;
+package com.study.ecommerce.domain.token;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +9,7 @@ import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @NoArgsConstructor
-@RedisHash(value = "refreshToken", timeToLive = 86400000L)
+@RedisHash(value = "refreshToken", timeToLive = 86400L)
 public class RefreshToken {
 
 

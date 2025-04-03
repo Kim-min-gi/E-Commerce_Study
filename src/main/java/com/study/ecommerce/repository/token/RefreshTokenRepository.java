@@ -1,6 +1,6 @@
-package com.study.ecommerce.repository;
+package com.study.ecommerce.repository.token;
 
-import com.study.ecommerce.domain.RefreshToken;
+import com.study.ecommerce.domain.token.RefreshToken;
 import org.springframework.data.repository.CrudRepository;
 
 

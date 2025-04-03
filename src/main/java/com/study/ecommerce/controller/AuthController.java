@@ -59,6 +59,11 @@ public class AuthController {
         return authService.reissue(request,response);
     }
 
+    @PostMapping("/auth/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+        return authService.logout(request,response);
+    }
+
 
 
 }

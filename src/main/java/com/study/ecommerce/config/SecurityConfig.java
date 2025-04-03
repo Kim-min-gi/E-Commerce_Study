@@ -7,7 +7,8 @@ import com.study.ecommerce.config.handler.Http403Handler;
 import com.study.ecommerce.config.handler.LoginFailHandler;
 import com.study.ecommerce.config.jwt.JwtFilter;
 import com.study.ecommerce.config.jwt.JwtUtil;
-import com.study.ecommerce.repository.RefreshTokenRepository;
+import com.study.ecommerce.repository.token.BlackListTokenRepository;
+import com.study.ecommerce.repository.token.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -37,6 +38,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final BlackListTokenRepository blackListTokenRepository;
 
 
     @Bean
@@ -76,7 +78,7 @@ public class SecurityConfig {
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(new JwtFilter(jwtUtil), LoginFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtUtil,blackListTokenRepository), LoginFilter.class);
         http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling(e -> e.accessDeniedHandler(new Http403Handler(objectMapper))

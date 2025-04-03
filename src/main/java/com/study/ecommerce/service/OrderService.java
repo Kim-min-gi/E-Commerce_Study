@@ -153,6 +153,8 @@ public class OrderService {
 
         orderProductRepository.saveAll(orderProducts);
 
+        //cart list 삭제 고민
+
     }
 
     //관리자용

@@ -2,12 +2,15 @@ package com.study.ecommerce.config.jwt;
 
 import com.study.ecommerce.config.CustomUserDetails;
 import com.study.ecommerce.domain.Member;
+import com.study.ecommerce.domain.token.BlackListAccessToken;
+import com.study.ecommerce.repository.token.BlackListTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,37 +18,29 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Optional;
 
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
 
     private final JwtUtil jwtUtil;
+    private final BlackListTokenRepository blackListTokenRepository;
 
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String accessToken = request.getHeader("Authorization");
+        String authorization = request.getHeader("Authorization");
 
-        if(accessToken == null){
+        if(authorization == null || !authorization.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
-
             return;
         }
 
-
-        try {
-            jwtUtil.isExpired(accessToken);
-        }catch (ExpiredJwtException e){
-            PrintWriter writer = response.getWriter();
-            writer.print("Authorization token expired");
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
+        String accessToken = authorization.split(" ")[1];
 
         String category = jwtUtil.getCategory(accessToken);
 
@@ -58,9 +53,18 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-
         String email = jwtUtil.getEmail(accessToken);
         String role = jwtUtil.getRole(accessToken);
+
+        Boolean expired = jwtUtil.isExpired(accessToken);// 토큰 유효기간 확인
+        Optional<BlackListAccessToken> byId = blackListTokenRepository.findById(email); //블랙리스트 조회
+
+        if (byId.isPresent() || expired){
+            PrintWriter writer = response.getWriter();
+            writer.print("Authorization token expired");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
 
         Member member = Member.builder()
                 .email(email)

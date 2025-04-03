@@ -1,10 +1,9 @@
 package com.study.ecommerce.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.ecommerce.config.CustomUserDetails;
 import com.study.ecommerce.config.jwt.JwtUtil;
-import com.study.ecommerce.domain.RefreshToken;
-import com.study.ecommerce.repository.RefreshTokenRepository;
+import com.study.ecommerce.domain.token.RefreshToken;
+import com.study.ecommerce.repository.token.RefreshTokenRepository;
 import com.study.ecommerce.response.LoginResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,7 +14,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

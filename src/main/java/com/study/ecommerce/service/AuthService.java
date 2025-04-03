@@ -2,16 +2,17 @@ package com.study.ecommerce.service;
 
 import com.study.ecommerce.config.jwt.JwtUtil;
 import com.study.ecommerce.domain.Member;
-import com.study.ecommerce.domain.RefreshToken;
+import com.study.ecommerce.domain.token.BlackListAccessToken;
+import com.study.ecommerce.domain.token.RefreshToken;
 import com.study.ecommerce.exception.AlreadyExistsEmailException;
 import com.study.ecommerce.exception.ExpiredRefreshTokenException;
 import com.study.ecommerce.exception.NotFoundMemberException;
 import com.study.ecommerce.exception.ResignUnauthorizedException;
 import com.study.ecommerce.repository.MemberRepository;
-import com.study.ecommerce.repository.RefreshTokenRepository;
+import com.study.ecommerce.repository.token.BlackListTokenRepository;
+import com.study.ecommerce.repository.token.RefreshTokenRepository;
 import com.study.ecommerce.request.MemberRequest;
 import com.study.ecommerce.request.MemberSignUp;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,6 +35,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final BlackListTokenRepository blackListTokenRepository;
 
 
     public void signup(MemberSignUp memberSignUp){
@@ -112,11 +114,60 @@ public class AuthService {
 
         refreshTokenRepository.save(refreshToken);
 
+        //블랙리스트 Authorization 삭제
+        Optional<BlackListAccessToken> byId = blackListTokenRepository.findById(email);
+
+        if (byId.isPresent()){
+            blackListTokenRepository.deleteById(email);
+        }
+
         response.setHeader("Authorization","Bearer " + newAccessToken);
         response.addCookie(createCookie("refresh",newRefreshToken));
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+        String authorization = request.getHeader("Authorization");
+        String accessToken = authorization.split(" ")[1];
+
+        for (Cookie c : cookies){
+            if (c.getName().equals("refresh")){
+                refresh = c.getValue();
+            }
+        }
+
+        if(refresh == null){
+            return new ResponseEntity<>("refresh token null", HttpStatus.BAD_REQUEST);
+        }
+
+        String email = jwtUtil.getEmail(refresh);
+
+        //refresh 삭제
+        refreshTokenRepository.deleteById(email);
+
+
+        //Authorization(AccessToken) 블랙리스트에 등록
+        if(!jwtUtil.isExpired(accessToken)){ //만료기간이 남아 있으면 저장
+            BlackListAccessToken blackListAccessToken = BlackListAccessToken.builder()
+                    .token(accessToken)
+                    .email(email)
+                    .build();
+
+            blackListTokenRepository.save(blackListAccessToken);
+        }
+
+        Cookie cookie = new Cookie("refresh", null);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
 
     public Member duplicateCheckAndSignup(MemberSignUp memberSignUp,String role){
@@ -147,6 +198,7 @@ public class AuthService {
 
         return cookie;
     }
+
 
 
 }
