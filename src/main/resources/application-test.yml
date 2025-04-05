@@ -21,3 +21,13 @@ logging:
   level:
     org.hibernate.SQL: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+
+  jwtSecretKey: test-jwt-key
+  adminCode: test-admin-code
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: test-pass
