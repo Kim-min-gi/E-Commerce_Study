@@ -102,23 +102,25 @@
 
 ## [API] (개발할때마다 추가될 예정)
 
-| Domain       | URL                                                                          | Http Method | description   | 접근 권한 |
-|:-------------|:-----------------------------------------------------------------------------|:------------|:--------------|:------|
-| **Auth**     | /auth/signup                                                                  | `POST`      | 사용자 회원가입      | -     |
-|              | /auth/signup/admin                                                            | `POST`      | 관리자 회원가입      | -     |
-|              | /auth/login                                                                   | `POST`      | 사용자/관리자 로그인   | -     |
-| **MEMBER**   | /admin/member                                                                 | `GET`       | 사용자 전체 조회     | ADMIN |
-|              | /admin/member/{id}                                                            | `GET`       | 사용자 조회        | ADMIN |
-| **Category** | /admin/category                                                               | `POST`      | 물품 카테고리 생성    | ADMIN |
-|              | /admin/category/{id}                                                          | `PATCH` `DELETE`    | 물품 카테고리 수정,삭제    | ADMIN |
-| **Product**  | /admin/product                                                               | `POST`              | 상품 등록                 | ADMIN |
-|              | /admin/products                                                              | `GET`              | 상품 리스트 조회 (관리용)   | ADMIN |
-|              | /admin/product/{productId}                                                   | `GET` `PATCH` `DELETE`  | 상품 조회, 수정, 삭제  | ADMIN |
-|              | /product/{productId}                                                         | `GET`                    | 상품 상세 조회          | -     |
-| **Cart**     | /cart                                                                        | `GET` `PATCH` `POST` `DELETE` | 장바구니 상품 목록 조회, 수량 변경, 추가, 삭제 | USER  |
-| **Order**    | /orders                                                                      | `GET`                        | 구매 내역 조회          | USER  |
-|              | /orderCancel                                                                 | `PATCH`                        | 주문 취소               | USER  |
-|              | /orderModify                                                                 | `PATCH`                        | 주문 상태 변경          | ADMIN  |
+| Domain       | URL                        | Http Method | description                  | 접근 권한       |
+|:-------------|:---------------------------|:------------|:-----------------------------|:------------|
+| **Auth**     | /auth/signup               | `POST`      | 사용자 회원가입                     | -           |
+|              | /auth/signup/admin         | `POST`      | 관리자 회원가입                     | -           |
+|              | /auth/login                | `POST`      | 사용자/관리자 로그인                  | -           |
+|              | /auth/logout               | `POST`      | 사용자/관리자 로그아웃                 | USER,ADMIN  |
+|              | /auth/reissue              | `POST`      | JWT(AccessToken)토큰 재발급       | USER,ADMIN  |
+| **MEMBER**   | /admin/member              | `GET`       | 사용자 전체 조회                    | ADMIN       |
+|              | /admin/member/{id}         | `GET`       | 사용자 조회                       | ADMIN       |
+| **Category** | /admin/category            | `POST`      | 물품 카테고리 생성                   | ADMIN       |
+|              | /admin/category/{id}       | `PATCH` `DELETE`    | 물품 카테고리 수정,삭제                | ADMIN       |
+| **Product**  | /admin/product             | `POST`              | 상품 등록                        | ADMIN       |
+|              | /admin/products            | `GET`              | 상품 리스트 조회 (관리용)              | ADMIN       |
+|              | /admin/product/{productId} | `GET` `PATCH` `DELETE`  | 상품 조회, 수정, 삭제                | ADMIN       |
+|              | /product/{productId}       | `GET`                    | 상품 상세 조회                     | -           |
+| **Cart**     | /cart                      | `GET` `PATCH` `POST` `DELETE` | 장바구니 상품 목록 조회, 수량 변경, 추가, 삭제 | USER        |
+| **Order**    | /orders                    | `GET`                        | 구매 내역 조회                     | USER        |
+|              | /orderCancel               | `PATCH`                        | 주문 취소                        | USER        |
+|              | /orderModify               | `PATCH`                        | 주문 상태 변경                     | ADMIN       |
 
 <!--
 | **Product** | /product/list/{categoryId}                                                 | `GET`                       | 카테고리 별 상품 목록 조회   | -     |
