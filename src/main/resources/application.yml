@@ -1,6 +1,15 @@
+#spring:
+#  profiles:
+#    include: jwt,redis
+
 spring:
   profiles:
-    include: jwt,redis
+    group:
+      default:
+        - jwt
+        - redis
+      test:
+        - test
 
   data:
     web:
