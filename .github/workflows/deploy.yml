@@ -1,0 +1,29 @@
+name: CD - Deploy to EC2
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH Key 설정
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: EC2 호스트 등록
+        run: |
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: EC2에 접속해서 배포 실행
+        run: |
+          ssh ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            docker pull ${{ secrets.DOCKER_USERNAME }}/study_project:latest
+            docker stop ecommerce-app || true
+            docker rm ecommerce-app || true
+            docker run -d -p 8080:8080 --name ecommerce-app ${{ secrets.DOCKER_USERNAME }}/study_project:latest
+          EOF
