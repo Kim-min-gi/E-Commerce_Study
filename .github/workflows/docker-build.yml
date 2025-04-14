@@ -31,7 +31,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Docker 이미지 빌드
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/study_project:latest .
+        run: docker build -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/study_project:latest .
 
       - name: DockerHub에 업로드
         run: docker push ${{ secrets.DOCKER_USERNAME }}/study_project:latest
