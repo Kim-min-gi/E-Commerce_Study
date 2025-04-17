@@ -46,6 +46,6 @@ jobs:
             doker compose version
 
             docker pull ${{ secrets.DOCKER_USERNAME }}/study_project:latest
-            docker compose down || true
+            docker compose down --volumes --remove-orphans || true
             docker compose up -d
           EOF
