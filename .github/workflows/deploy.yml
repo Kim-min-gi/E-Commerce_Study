@@ -36,11 +36,16 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_HOST }} << EOF
             echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" > ~/app/.env
-
             cd ~/app
+          
+            sudo mkdir -p /usr/local/lib/docker/cli-plugins
+            sudo curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 \
+              -o /usr/local/lib/docker/cli-plugins/docker-compose
+            sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
+  
+            doker compose version
 
             docker pull ${{ secrets.DOCKER_USERNAME }}/study_project:latest
-
             docker compose down || true
             docker compose up -d
           EOF
