@@ -10,6 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      -
+      - name: GitHub 리포지토리 Checkout
+        uses: actions/checkout@v3
+
       - name: SSH Key 설정
         run: |
           mkdir -p ~/.ssh
