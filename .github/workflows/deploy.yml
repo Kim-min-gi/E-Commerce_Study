@@ -25,6 +25,7 @@ jobs:
           ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_HOST }} "mkdir -p ~/app"
 
       - name: docker-compose.yml 파일 EC2로 복사
+        working-directory: ${{ github.workspace }}
         run: |
           scp -i ~/.ssh/id_rsa docker-compose.yml ec2-user@${{ secrets.EC2_HOST }}:~/app/docker-compose.yml
 
