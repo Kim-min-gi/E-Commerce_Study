@@ -41,6 +41,6 @@ jobs:
 
             docker pull ${{ secrets.DOCKER_USERNAME }}/study_project:latest
 
-            docker-compose down || true
-            docker-compose up -d
+            docker compose down || true
+            docker compose up -d
           EOF
