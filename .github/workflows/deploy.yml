@@ -44,6 +44,8 @@ jobs:
             sudo chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
   
             doker compose version
+          
+            docker rm -f ecommerce-app || true
 
             docker pull ${{ secrets.DOCKER_USERNAME }}/study_project:latest
             docker compose down --volumes --remove-orphans || true
