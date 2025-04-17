@@ -20,21 +20,23 @@ jobs:
         run: |
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
+      - name: EC2에 ~/app 디렉토리 만들기
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_HOST }} "mkdir -p ~/app"
+
       - name: docker-compose.yml 파일 EC2로 복사
         run: |
-          scp -i ~/.ssh/id_rsa ./docker-compose.yml ec2-user@${{ secrets.EC2_HOST }}:~/home/app/docker-compose.yml
+          scp -i ~/.ssh/id_rsa ./docker-compose.yml ec2-user@${{ secrets.EC2_HOST }}:~/app/docker-compose.yml
 
       - name: EC2에 접속해서 배포 실행
         run: |
-          ssh ec2-user@${{ secrets.EC2_HOST }} << EOF
-          
-            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" > ~/home/app/.env
-          
-            cd ~/home/app  
-          
+          ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_HOST }} << EOF
+            echo "REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}" > ~/app/.env
+
+            cd ~/app
+
             docker pull ${{ secrets.DOCKER_USERNAME }}/study_project:latest
-          
+
             docker-compose down || true
             docker-compose up -d
-          
           EOF
