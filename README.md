@@ -23,7 +23,8 @@
 > 공부목적이 강한 프로젝트이므로 만들어보고 싶은 기능, 적용해보고 개발 방식등을 적용해보는 프로젝트입니다.
 > 
 > 현재 SpringBoot와 Spring Data JPA를 사용해 기본적인 REST API를 구현하고,\
-> Spring Scurity + JWt방식을 사용하여 로그인을 구현했으며, Redis를 사용하여 access/Refresh 토큰을 통해 로그아웃을 구현했습니다. \
+> Spring Scurity + JWt방식을 사용하여 로그인을 구현했으며, \
+> Redis를 사용하여 access/Refresh 토큰을 통해 로그아웃을 구현했습니다. \
 > Spring Rest Docs를 통해 api 문서화 작업을 했으며, \
 > Github Actions, Docker, AWS Ec2 등을 이용해 서버를 배포했습니다. 
 > 
