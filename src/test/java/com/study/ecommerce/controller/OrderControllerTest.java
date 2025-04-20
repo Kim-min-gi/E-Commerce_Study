@@ -1,9 +1,8 @@
 package com.study.ecommerce.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ecommerce.config.CustomMockMember;
-import com.study.ecommerce.config.JpaConfig;
 import com.study.ecommerce.domain.*;
 import com.study.ecommerce.domain.Order;
 import com.study.ecommerce.domain.type.OrderStatus;
@@ -14,23 +13,16 @@ import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.repository.ProductRepository;
 import com.study.ecommerce.request.OrderItemRequest;
 import com.study.ecommerce.request.OrderRequest;
-import com.study.ecommerce.response.OrderResponse;
-import com.study.ecommerce.service.OrderService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,7 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 
