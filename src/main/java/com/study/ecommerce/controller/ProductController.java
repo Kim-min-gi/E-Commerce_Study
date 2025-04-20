@@ -28,7 +28,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/admin/products")
+    @GetMapping("/product/products")
     public ResponseEntity<List<ProductResponse>> getProducts(@PageableDefault Pageable pageable){
 
         List<ProductResponse> products =  productService.getProducts(pageable);

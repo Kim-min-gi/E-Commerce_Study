@@ -115,7 +115,7 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("상품 리스트 조회 (관리자)")
+    @DisplayName("상품 리스트 조회")
     @CustomMockMember
     void getProducts() throws Exception{
         ProductCategory productCategory = ProductCategory.builder()
@@ -136,7 +136,7 @@ class ProductControllerTest {
         productRepository.saveAll(requestProduct);
 
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/admin/products?page=1"))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/product/products?page=1"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcRestDocumentation.document("product/product-list",
                         responseFields(
@@ -334,6 +334,10 @@ class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("물품1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[29].name").value("물품30"))
+                .andDo(MockMvcRestDocumentation.document("/product/list/{categoryId}",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("categoryId").description("카테고리 번호")
+                        )))
                 .andDo(MockMvcResultHandlers.print());
 
     }
