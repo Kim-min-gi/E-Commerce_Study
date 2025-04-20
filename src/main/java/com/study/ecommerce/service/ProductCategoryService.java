@@ -5,7 +5,9 @@ import com.study.ecommerce.exception.AlreadyExistsCategory;
 import com.study.ecommerce.exception.NotFoundCategory;
 import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.request.CategoryRequest;
+import com.study.ecommerce.response.ProductCategoryResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,9 +21,16 @@ public class ProductCategoryService {
     private final ProductCategoryRepository productCategoryRepository;
 
 
-//    public List<ProductCategory> getCategory(){
-//        return productCategoryRepository.findAll();
-//    }
+    public List<ProductCategoryResponse> getCategoryList(){
+
+        return productCategoryRepository.findAll().stream().map(ProductCategoryResponse::from).toList();
+    }
+
+    public ProductCategoryResponse getCategory(Long categoryId){
+        ProductCategory productCategory = productCategoryRepository.findById(categoryId).orElseThrow(NotFoundCategory::new);
+
+        return ProductCategoryResponse.from(productCategory);
+    }
 
     public void addCategory(CategoryRequest categoryRequest){
 

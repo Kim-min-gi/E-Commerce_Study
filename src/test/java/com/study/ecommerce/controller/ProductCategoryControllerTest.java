@@ -2,6 +2,7 @@ package com.study.ecommerce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.ecommerce.config.CustomMockMember;
+import com.study.ecommerce.domain.Product;
 import com.study.ecommerce.domain.ProductCategory;
 import com.study.ecommerce.repository.ProductCategoryRepository;
 import com.study.ecommerce.request.CategoryRequest;
@@ -21,6 +22,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.restdocs.payload.ResponseFieldsSnippet;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,7 +31,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,13 +117,13 @@ class ProductCategoryControllerTest {
                 .build();
 
 
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/admin/category/{id}",productCategory.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/admin/category/{categoryId}",productCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(pathCategoryRequest)))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(MockMvcRestDocumentation.document("category/modifyCategory",
                         RequestDocumentation.pathParameters(
-                                RequestDocumentation.parameterWithName("id").description("카테고리 아이디")
+                                RequestDocumentation.parameterWithName("categoryId").description("카테고리 아이디")
                         )
                 ))
                 .andDo(MockMvcResultHandlers.print());
@@ -139,12 +143,12 @@ class ProductCategoryControllerTest {
 
         ProductCategory productCategory = productCategoryRepository.findByName("카테고리1").get();
 
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/admin/category/{id}",productCategory.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/admin/category/{categoryId}",productCategory.getId())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNoContent())
                 .andDo(MockMvcRestDocumentation.document("category/deleteCategory",
                         RequestDocumentation.pathParameters(
-                                RequestDocumentation.parameterWithName("id").description("카테고리 아이디")
+                                RequestDocumentation.parameterWithName("categoryId").description("카테고리 아이디")
                         )
                 ))
                 .andDo(MockMvcResultHandlers.print());
@@ -152,5 +156,65 @@ class ProductCategoryControllerTest {
     }
 
 
-    //카테고리 리스트 조회 및 한개 조회
+    @Test
+    @DisplayName("카테고리 리스트 조회")
+    @CustomMockMember
+    void getCategoryList() throws Exception {
+
+        List<ProductCategory> categoryRequest = IntStream.range(1,10).mapToObj(i ->
+                ProductCategory.builder()
+                        .name("카테고리 명" + i)
+                        .build()
+        ).toList();
+
+        productCategoryRepository.saveAll(categoryRequest);
+
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/categories")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("category/getCategoryList",
+                        PayloadDocumentation.responseFields(
+                                PayloadDocumentation.fieldWithPath("[]").description("카테고리 리스트"),
+                                PayloadDocumentation.fieldWithPath("[].id").description("카테고리 아이디"),
+                                PayloadDocumentation.fieldWithPath("[].name").description("카테고리 이름"),
+                                PayloadDocumentation.fieldWithPath("[].productCount").description("카테고리 상품 수")
+                        )))
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
+
+
+    @Test
+    @DisplayName("카테고리 단건 조회")
+    @CustomMockMember
+    void getCategory() throws Exception {
+
+        CategoryRequest categoryRequest = CategoryRequest.builder()
+                .name("카테고리1")
+                .build();
+
+        productCategoryRepository.save(ProductCategory.form(categoryRequest));
+
+
+        ProductCategory productCategory = productCategoryRepository.findByName("카테고리1").get();
+
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/category/{categoryId}",productCategory.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcRestDocumentation.document("category/getCategory",
+                        RequestDocumentation.pathParameters(
+                                RequestDocumentation.parameterWithName("categoryId").description("카테고리 아이디")
+                        ),PayloadDocumentation.responseFields(
+                            PayloadDocumentation.fieldWithPath("id").description("카테고리 아이디"),
+                                PayloadDocumentation.fieldWithPath("name").description("카테고리 이름"),
+                                PayloadDocumentation.fieldWithPath("productCount").description("카테고리 상품 수")
+                        )
+                ))
+                .andDo(MockMvcResultHandlers.print());
+
+    }
+
+
 }
