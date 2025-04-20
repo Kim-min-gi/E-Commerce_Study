@@ -40,3 +40,11 @@ include::{snippets}/order/orderCancel/http-response.adoc[]
 
 
 
+== 주문 상태 변경
+
+=== 요청
+include::{snippets}/order/orderModify/http-request.adoc[]
+
+=== 응답
+include::{snippets}/order/orderModify/http-response.adoc[]
+
