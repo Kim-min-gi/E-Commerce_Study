@@ -45,11 +45,7 @@ public class AuthController {
     @PostMapping("/auth/signup/admin")
     public ResponseEntity<Void> adminSignup(@Valid @RequestBody MemberSignUp memberSignUp){
 
-        if (!memberSignUp.getCode().equals(adminCode)){
-            throw new AdminCodeNotMatch();
-        }
-
-        authService.adminSignup(memberSignUp);
+        authService.adminSignup(memberSignUp,adminCode);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

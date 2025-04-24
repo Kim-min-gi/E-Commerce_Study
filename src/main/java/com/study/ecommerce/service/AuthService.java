@@ -4,10 +4,7 @@ import com.study.ecommerce.config.jwt.JwtUtil;
 import com.study.ecommerce.domain.Member;
 import com.study.ecommerce.domain.token.BlackListAccessToken;
 import com.study.ecommerce.domain.token.RefreshToken;
-import com.study.ecommerce.exception.AlreadyExistsEmailException;
-import com.study.ecommerce.exception.ExpiredRefreshTokenException;
-import com.study.ecommerce.exception.NotFoundMemberException;
-import com.study.ecommerce.exception.ResignUnauthorizedException;
+import com.study.ecommerce.exception.*;
 import com.study.ecommerce.repository.MemberRepository;
 import com.study.ecommerce.repository.token.BlackListTokenRepository;
 import com.study.ecommerce.repository.token.RefreshTokenRepository;
@@ -47,7 +44,11 @@ public class AuthService {
     }
 
 
-    public void adminSignup(MemberSignUp memberSignUp){
+    public void adminSignup(MemberSignUp memberSignUp, String adminCode){
+
+        if (!adminCode.equals(memberSignUp.getCode())){
+            throw new AdminCodeNotMatch("code",memberSignUp.getCode());
+        }
 
         Member saveMember = duplicateCheckAndSignup(memberSignUp,"ROLE_ADMIN");
 
