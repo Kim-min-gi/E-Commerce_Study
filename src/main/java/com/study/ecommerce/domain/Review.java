@@ -2,6 +2,8 @@ package com.study.ecommerce.domain;
 
 import com.study.ecommerce.common.BaseTimeEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,8 +18,15 @@ public class Review extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn
+//    private Member member;
+
+    @NotNull
     private Long memberId;
+
+    @NotBlank
+    private String memberName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn
