@@ -8,11 +8,10 @@
 > 4. [ERD](#erd)
 > 5. [주요 기능](#주요-기능)
 >   + 공통 : [회원가입, 로그인](#회원기능) | [상품 목록 및 상품 상세 조회](#상품기능)
->   + 사용자 : [장바구니 관리](#장바구니) | [주문 관리](#주문기능) 
+>   + 사용자 : [장바구니 관리](#장바구니) | [주문 관리](#주문기능) | [리뷰 관리](#리뷰-관리)
 >   + 관리자 : [상품 관리](#상품기능) | [카테고리 관리](#카테고리) | [회원 관리](#회원관리)
 > 6. [API 명세](#api-명세)
 
-<!-- | [리뷰 관리](#리뷰-관리) -->
 <br/>
 <br/>
 
@@ -28,9 +27,9 @@
 > Spring Rest Docs를 통해 api 문서화 작업을 했으며, \
 > Github Actions, Docker, AWS Ec2 등을 이용해 서버를 배포했습니다. 
 > 
-> 더 적용해볼 기술들에는
-> S3를 통해 리뷰에 사용되는 사진들을 저장할 계획이며, \
-> Spring Batch를 통해 하루/일주일/한달 매출을 계산기능을 생각하고 있습니다.
+> 더 공부해서 적용해볼 기능 및 기술들에는
+> Spring Batch를 통해 하루/일주일/한달 매출을 계산기능과
+> 대용량 데이터들의 대한 처리 방법들에 대한 기술을 생각하고 있습니다.
 <!-- > 카테고리별 판매순위 Top 항목의 상품들을 표시하는 기능도 구현해 볼 생각입니다. -->
 
 <br/>
@@ -130,11 +129,17 @@
   - 3개월간의 주문 내역이 조회되고, 기간을 설정할 시 설정한 기간동안의 내역이 조회된다.
 - **주문취소**
   - 배송 시작전 사용자는 주문을 취소할 수 있다.
-  - 
 <br/>
 
 ### 리뷰관리
-  - **추가예정
+- **리뷰 작성**
+  - 사용자는 상품에 대한 리뷰를 작성할 수 있다.
+  - 사용자는 상품에 대한 사진을 올릴 수 있다.
+- **리뷰 조회**
+  - 사용자는 자신이 작성 리뷰들을 볼 수 있다.
+  - 사용자는 상품에 대한 리뷰들을 볼 수 있다.
+- **리뷰 수정 및 삭제**
+  - 사용자는 리뷰를 수정 및 삭제를 할 수 있다.
 
 
 <br/>
@@ -179,7 +184,7 @@
 |              | /auth/login                | `POST`                           | 사용자/관리자 로그인                  | -     |
 |              | /auth/logout               | `POST`                           | 사용자/관리자 로그아웃                 | USER  |
 |              | /auth/reissue              | `POST`                           | JWT(AccessToken)토큰 재발급       | USER  |
-| **MEMBER**   | /admin/member              | `GET`                            | 사용자 전체 조회                    | ADMIN |
+| **Member**   | /admin/member              | `GET`                            | 사용자 전체 조회                    | ADMIN |
 |              | /admin/member/{id}         | `GET`                            | 사용자 조회                       | ADMIN |
 | **Category** | /admin/category            | `POST`                           | 물품 카테고리 생성                   | ADMIN |
 |              | /admin/category/{id}       | `PATCH` `DELETE`                 | 물품 카테고리 수정,삭제                | ADMIN |
@@ -197,6 +202,12 @@
 |              | /orderCreate               | `POST`                           | 주문 생성                        | USER  |
 |              | /orderCancel/{orderId}     | `PATCH`                          | 주문 취소                        | USER  |
 |              | /orderModify               | `PATCH`                          | 주문 상태 변경                     | ADMIN |
+| **Review**   | /product/reviews           | `GET`                            | 상품 리뷰 조회              | USER  |
+|              | /member/reviews            | `GET`                            | 사용자 리뷰 조회                   | USER |
+|              | /writeReview               | `POST`                           | 리뷰 작성                    | USER |
+|              | /deleteReview              | `DELETE`                         | 리뷰 삭제                   | USER |
+|              | /modifyReview              | `PATCH`                          | 리뷰 수정                  | USER |
+
 
 <!--
 | **Product** | /product/list/{categoryId}                                                 | `GET`                       | 카테고리 별 상품 목록 조회   | -     |
