@@ -8,6 +8,7 @@ spring:
       default:
         - jwt
         - redis
+        - aws
       test:
         - test
 
@@ -36,6 +37,13 @@ spring:
     password:
     driver-class-name: org.h2.Driver
 
+  # multipartFile 용량 늘려주는 설정
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+
 #  session:
 #    timeout: 86400
 #
@@ -49,5 +57,17 @@ spring:
 logging:
   level:
     org.hibernate.sql: debug
+
+
+
+
+
+
+
+
+
+
+
+
 
 
