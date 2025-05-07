@@ -51,7 +51,7 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/deleteReview")
+    @DeleteMapping("/deleteReview")
     public ResponseEntity<?> deleteReview(@RequestBody Long reviewId) throws IllegalAccessException {
 
         reviewService.deleteReview(reviewId);
@@ -60,7 +60,7 @@ public class ReviewController {
     }
 
 
-    @PostMapping("/modifyReview")
+    @PatchMapping("/modifyReview")
     public ResponseEntity<?> modifyReview(@RequestBody ReviewRequest reviewRequest, @RequestPart("images") List<MultipartFile> images) throws IllegalAccessException, IOException {
 
         reviewService.modifyReview(reviewRequest,images);
