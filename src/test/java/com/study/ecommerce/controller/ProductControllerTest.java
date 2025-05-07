@@ -334,7 +334,7 @@ class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("물품1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[29].name").value("물품30"))
-                .andDo(MockMvcRestDocumentation.document("/product/category-list",
+                .andDo(MockMvcRestDocumentation.document("product/category-list",
                         RequestDocumentation.pathParameters(
                                 RequestDocumentation.parameterWithName("categoryId").description("카테고리 번호")
                         )))
