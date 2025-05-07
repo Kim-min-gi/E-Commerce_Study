@@ -10,7 +10,7 @@ public class NotFoundCartProductException extends CommonException{
 
     @Override
     public int getStatusCode() {
-        return 400;
+        return 404;
     }
 
 }
