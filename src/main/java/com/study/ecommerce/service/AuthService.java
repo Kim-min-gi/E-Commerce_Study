@@ -155,7 +155,6 @@ public class AuthService {
         if(!jwtUtil.isExpired(accessToken)){ //만료기간이 남아 있으면 저장
             BlackListAccessToken blackListAccessToken = BlackListAccessToken.builder()
                     .token(accessToken)
-                    .email(email)
                     .build();
 
             blackListTokenRepository.save(blackListAccessToken);

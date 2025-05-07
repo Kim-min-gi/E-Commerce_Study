@@ -12,13 +12,10 @@ import org.springframework.data.redis.core.RedisHash;
 public class BlackListAccessToken {
 
     @Id
-    private String email;
-
     private String token;
 
     @Builder
-    public BlackListAccessToken(String email, String token) {
-        this.email = email;
+    public BlackListAccessToken(String token) {
         this.token = token;
     }
 }
