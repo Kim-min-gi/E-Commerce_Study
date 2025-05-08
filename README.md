@@ -46,7 +46,6 @@
 <br/>
 
 ## [기술 스택]
-
 | **분류**             | **기술명**                                                                                                      |
 |----------------------|-----------------------------------------------------------------------------------------------------------------|
 | **Language**         | <img height="30" src="https://img.shields.io/badge/Java%2017-007396?style=flat-square&logo=java&logoColor=white"/>  |
@@ -54,6 +53,7 @@
 | **Framework**        | <img height="30" src="https://img.shields.io/badge/Spring%20Boot%203.2.5-6DB33F?style=flat-square&logo=Spring-Boot&logoColor=white"/> <br/> <img height="30" src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat-square&logo=Spring-Security&logoColor=white"/> |
 | **Security**         | <img height="30" src="https://img.shields.io/badge/JWT-000000?style=flat-square&logo=JSON%20Web%20Tokens&logoColor=white"/> |
 | **Database**         | <img height="30" src="https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=flat-square&logo=Spring&logoColor=white"/> <br/> <img height="30" src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=Hibernate&logoColor=white"/> <br/> <img height="30" src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white"/> |
+| **Storage**          | <img height="25" src="https://img.shields.io/badge/Amazon%20S3-2E8B57?style=flat-square&logo=Amazon%20S3&logoColor=white"/> |
 | **Docs & Test**      | <img height="30" src="https://img.shields.io/badge/Spring%20REST%20Docs-6DB33F?style=flat-square&logo=Spring&logoColor=white"/> <br/> <img height="30" src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=Postman&logoColor=white"/> <br/> <img height="30" src="https://img.shields.io/badge/JUnit5-25A162?style=flat-square&logo=JUnit5&logoColor=white"/> |
 | **DevOps / Deploy**  | <img height="30" src="https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=Docker&logoColor=white"/> <br/> <img height="30" src="https://img.shields.io/badge/EC2-FF9900?style=flat-square&logo=amazonaws&logoColor=white"/> <br/> <img height="30" src="https://img.shields.io/badge/GitHub%20Actions-2088FF?style=flat-square&logo=GitHub-Actions&logoColor=white"/> |
 | **Version Control**  | <img height="30" src="https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white"/> |
