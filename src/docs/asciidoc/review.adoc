@@ -1,0 +1,61 @@
+= Review API
+:toc:
+
+== 상품 리뷰 조회
+
+=== 요청
+include::{snippets}/review/product-reviews/http-request.adoc[]
+
+include::{snippets}/review/product-reviews/path-parameters.adoc[]
+
+=== 응답
+include::{snippets}/review/product-reviews/http-response.adoc[]
+
+include::{snippets}/review/product-reviews/response-fields.adoc[]
+
+
+== 사용자 리뷰 조회
+
+=== 요청
+include::{snippets}/review/member-reviews/http-request.adoc[]
+
+include::{snippets}/review/member-reviews/path-parameters.adoc[]
+
+=== 응답
+include::{snippets}/review/member-reviews/http-response.adoc[]
+
+include::{snippets}/review/member-reviews/response-fields.adoc[]
+
+
+== 리뷰 작성
+
+=== 요청
+include::{snippets}/review/write-review/http-request.adoc[]
+
+include::{snippets}/review/write-review/request-parts.adoc[]
+
+include::{snippets}/review/write-review/request-part-request-fields.adoc[]
+
+
+
+== 리뷰 삭제
+
+=== 요청
+include::{snippets}/review/deleteReview/http-request.adoc[]
+
+include::{snippets}/review/deleteReview/path-parameters.adoc[]
+
+
+
+== 리뷰 수정
+
+=== 요청
+include::{snippets}/review/modify-review/http-request.adoc[]
+
+include::{snippets}/review/modify-review/request-parts.adoc[]
+
+include::{snippets}/review/modify-review/request-part-request-fields.adoc[]
+
+include::{snippets}/review/modify-review/path-parameters.adoc[]
+
+
