@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 public class ReviewRequest {
 
-    private Long id;
 
     @NotNull
     private Long memberId;

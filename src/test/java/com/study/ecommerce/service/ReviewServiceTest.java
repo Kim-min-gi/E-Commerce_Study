@@ -514,7 +514,6 @@ class ReviewServiceTest {
 
 
         ReviewRequest modifyRequest = ReviewRequest.builder()
-                .id(review.getId())
                 .memberId(member.getId())
                 .memberName("홍길동11")
                 .orderId(order.getId())
@@ -532,9 +531,9 @@ class ReviewServiceTest {
         );
 
 
-        reviewService.modifyReview(modifyRequest,List.of(file2));
+        reviewService.modifyReview(review.getId(),modifyRequest,List.of(file2));
 
-        Review review1 = reviewRepository.findById(modifyRequest.getId()).get();
+        Review review1 = reviewRepository.findById(review.getId()).get();
 
 
         Assertions.assertEquals("그럭저럭11",review1.getContent());

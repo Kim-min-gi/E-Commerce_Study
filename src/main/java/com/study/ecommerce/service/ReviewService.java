@@ -82,8 +82,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public void modifyReview(ReviewRequest reviewRequest, List<MultipartFile> images) throws IllegalAccessException, IOException {
-        Review review = reviewRepository.findById(reviewRequest.getId()).orElseThrow(NotFoundReviewException::new);
+    public void modifyReview(Long reviewId,ReviewRequest reviewRequest, List<MultipartFile> images) throws IllegalAccessException, IOException {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(NotFoundReviewException::new);
 
         Optional<Member> member = memberRepository.findByEmail(getMemberEmail());
 

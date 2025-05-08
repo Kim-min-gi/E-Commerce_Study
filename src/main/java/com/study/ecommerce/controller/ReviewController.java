@@ -25,8 +25,8 @@ public class ReviewController {
     private final ReviewService reviewService;
 
 
-    @GetMapping("/product/reviews")
-    public ResponseEntity<Page<ReviewResponse>> getProductReviews(@PageableDefault Pageable pageable, @Valid @RequestParam Long productId){
+    @GetMapping("/reviews/product/{productId}")
+    public ResponseEntity<Page<ReviewResponse>> getProductReviews(@PageableDefault Pageable pageable,@PathVariable Long productId){
 
         Page<ReviewResponse> reviews = reviewService.getProductReviews(pageable, productId);
 
@@ -34,16 +34,16 @@ public class ReviewController {
     }
 
 
-    @GetMapping("/member/reviews")
-    public ResponseEntity<Page<ReviewResponse>> getMemberReviews(@PageableDefault Pageable pageable,@Valid @RequestParam Long productId){
+    @GetMapping("/reviews/member/{memberId}")
+    public ResponseEntity<Page<ReviewResponse>> getMemberReviews(@PageableDefault Pageable pageable,@PathVariable Long memberId){
 
-        Page<ReviewResponse> reviews = reviewService.getMemberReviews(pageable, productId);
+        Page<ReviewResponse> reviews = reviewService.getMemberReviews(pageable, memberId);
 
         return ResponseEntity.ok(reviews);
     }
 
 
-    @PostMapping(value = "/writeReview",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/review",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> writeReviews(@RequestPart("request") @Valid ReviewRequest reviewRequest, @RequestPart("images") List<MultipartFile> images) throws IOException {
 
         reviewService.writeReview(reviewRequest, images);
@@ -51,8 +51,8 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/deleteReview")
-    public ResponseEntity<?> deleteReview(@RequestBody Long reviewId) throws IllegalAccessException {
+    @DeleteMapping("/reviews/{reviewId}")
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) throws IllegalAccessException {
 
         reviewService.deleteReview(reviewId);
 
@@ -60,10 +60,10 @@ public class ReviewController {
     }
 
 
-    @PatchMapping("/modifyReview")
-    public ResponseEntity<?> modifyReview(@RequestBody ReviewRequest reviewRequest, @RequestPart("images") List<MultipartFile> images) throws IllegalAccessException, IOException {
+    @PatchMapping(value = "/reviews/{reviewId}",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> modifyReview(@PathVariable Long reviewId,@RequestPart("request") @Valid ReviewRequest reviewRequest, @RequestPart("images") List<MultipartFile> images) throws IllegalAccessException, IOException {
 
-        reviewService.modifyReview(reviewRequest,images);
+        reviewService.modifyReview(reviewId,reviewRequest,images);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
