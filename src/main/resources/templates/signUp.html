@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <link rel="stylesheet" th:href="@{/css/signup.css}">
+</head>
+<body>
+<div class="signup-container">
+    <h1>회원가입</h1>
+
+    <!-- 기존 form 태그에서 th:action, method 제거 + id 부여 -->
+    <form id="signupForm">
+        <label for="email">이메일
+            <input type="email" id="email" required placeholder="example@email.com">
+        </label>
+
+        <label for="name">이름
+            <input type="text" id="name" required placeholder="홍길동">
+        </label>
+
+        <label for="password">비밀번호
+            <input type="password" id="password" required
+                   pattern="^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$"
+                   title="영문, 숫자, 특수문자를 포함한 8~15자">
+        </label>
+
+        <label for="code">관리자 코드 (선택)
+            <input type="text" id="code" placeholder="관리자만 입력">
+        </label>
+
+        <button type="submit">회원가입</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById("signupForm").addEventListener("submit", function (e) {
+        e.preventDefault(); // 기본 form 전송 막기
+
+        const data = {
+            email: document.getElementById("email").value,
+            name: document.getElementById("name").value,
+            password: document.getElementById("password").value,
+            code: document.getElementById("code").value
+        };
+
+        fetch("/auth/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+            .then(res => {
+                if (res.ok) {
+                    alert("회원가입 성공");
+                    window.location.href = "/loginPage";
+                } else {
+                    return res.json().then(err => {
+                        const msg = err?.message || "회원가입 실패";
+                        alert(msg);
+                    });
+                }
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                alert("오류가 발생했습니다.");
+            });
+    });
+</script>
+</body>
+</html>
