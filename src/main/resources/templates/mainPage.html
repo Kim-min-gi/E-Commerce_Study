@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<div class="main-container">
+    <h1>메인 페이지</h1>
+    <p id="user-info">로그인 정보를 불러오는 중...</p>
+
+    <div class="btn-group" id="button-group"></div>
+</div>
+
+<script>
+    function getEmailFromToken(token) {
+        try {
+            const payload = token.split('.')[1];
+            const decoded = JSON.parse(atob(payload));
+            return decoded.sub || decoded.email || "알 수 없음";
+        } catch (e) {
+            return null;
+        }
+    }
+
+    const token = localStorage.getItem("accessToken");
+    const userInfo = document.getElementById("user-info");
+    const buttonGroup = document.getElementById("button-group");
+
+    if (token) {
+        const email = getEmailFromToken(token);
+        if (email) {
+            userInfo.textContent = `로그인 중: ${email}`;
+
+            buttonGroup.innerHTML = `
+                <button onclick="logout()">로그아웃</button>
+                <button onclick="location.href='/cartPage'">장바구니로 이동</button>
+            `;
+        } else {
+            // 토큰은 있지만 파싱 실패
+            localStorage.removeItem("accessToken");
+            renderLoginButton();
+        }
+    } else {
+        renderLoginButton();
+    }
+
+    function logout() {
+        localStorage.removeItem("accessToken");
+        alert("로그아웃 되었습니다.");
+        window.location.href = "/loginPage";
+    }
+
+    function renderLoginButton() {
+        userInfo.textContent = "로그인이 필요합니다.";
+        buttonGroup.innerHTML = `<button onclick="location.href='/loginPage'">로그인하기</button>`;
+    }
+</script>
+</body>
+</html>

@@ -26,6 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 
 @Configuration
 @EnableWebSecurity
@@ -47,10 +49,16 @@ public class SecurityConfig {
             @Override
             public void customize(WebSecurity web) {
                 web.ignoring().requestMatchers("/favicon.ico","/error")
+                        .requestMatchers("/css/**", "/js/**", "/images/**")
                         .requestMatchers(PathRequest.toH2Console());
             }
         };
     }
+
+    public static final List<String> PERMIT_ALL_URIS = List.of(
+            "/", "/cartPage", "/signUpPage", "/loginPage",
+            "/auth/login", "/auth/signup", "/auth/signup/admin", "/auth/reissue"
+    );
 
 
 
@@ -68,17 +76,19 @@ public class SecurityConfig {
         http.formLogin(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
 
-        http.authorizeHttpRequests((request) -> request
-                .requestMatchers("/auth/login","/auth/signup","/","/auth/signup/admin","/auth/reissue").permitAll()
-                .requestMatchers("/user").hasAnyRole("USER","ADMIN")
+        http.authorizeHttpRequests(request -> request
+                .requestMatchers(PERMIT_ALL_URIS.toArray(String[]::new)).permitAll()
+                .requestMatchers("/user").hasAnyRole("USER", "ADMIN")
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         );
 
+
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.addFilterBefore(new JwtFilter(jwtUtil,blackListTokenRepository), LoginFilter.class);
+        http.addFilterBefore(new JwtFilter(jwtUtil, blackListTokenRepository), UsernamePasswordAuthenticationFilter.class);
+        //http.addFilterBefore(new JwtFilter(jwtUtil,blackListTokenRepository), LoginFilter.class);
         http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling(e -> e.accessDeniedHandler(new Http403Handler(objectMapper))
@@ -109,20 +119,6 @@ public class SecurityConfig {
 
         return filter;
     }
-
-
-
-
-
-//
-//    @Bean
-//    public AuthenticationManager authenticationManager(){
-//        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-//        provider.setUserDetailsService(new CustomUserDetailsService(memberRepository));
-//        provider.setPasswordEncoder(passwordEncoder());
-//
-//        return new ProviderManager(provider);
-//    }
 
 
 

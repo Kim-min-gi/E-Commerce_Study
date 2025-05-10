@@ -40,73 +40,66 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = authorization.split(" ")[1];
+        String token = authorization.split(" ")[1];
 
-        String category = jwtUtil.getCategory(accessToken);
+        try {
+            // 토큰 카테고리 검증
+            if (!"Authorization".equals(jwtUtil.getCategory(token))) {
+                throw new RuntimeException("Invalid token category");
+            }
 
-        if (!category.equals("Authorization")){
+            String email = jwtUtil.getEmail(token);
+            String role = jwtUtil.getRole(token);
 
-            PrintWriter writer = response.getWriter();
-            writer.print("invalid Authorization token");
+            // 토큰 만료 여부 또는 블랙리스트 확인
+            if (jwtUtil.isExpired(token) || blackListTokenRepository.findById(email).isPresent()) {
+                throw new RuntimeException("Expired or blacklisted token");
+            }
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
+            // 인증객체 생성 및 SecurityContext에 설정
+            Member member = Member.builder()
+                    .email(email)
+                    .password("temppassword")
+                    .role(role)
+                    .build();
+
+            CustomUserDetails userDetails = new CustomUserDetails(member);
+            Authentication auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+        } catch (Exception e) {
+            // 리팩터링: 로그 레벨 DEBUG로 변경하고, SecurityContext 명시적으로 클리어
+            log.debug("[JwtFilter] 토큰 인증 실패: {}", e.getMessage());
+            SecurityContextHolder.clearContext();
         }
-
-        String email = jwtUtil.getEmail(accessToken);
-        String role = jwtUtil.getRole(accessToken);
-
-        Boolean expired = jwtUtil.isExpired(accessToken);// 토큰 유효기간 확인
-        Optional<BlackListAccessToken> byId = blackListTokenRepository.findById(email); //블랙리스트 조회
-
-        if (byId.isPresent() || expired){
-            PrintWriter writer = response.getWriter();
-            writer.print("Authorization token expired");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        Member member = Member.builder()
-                .email(email)
-                .password("temppassword")
-                .role(role)
-                .build();
-
-        CustomUserDetails customUserDetails = new CustomUserDetails(member);
-
-
-        //스프링 시큐리티 인증 토큰 생성
-        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails,null,customUserDetails.getAuthorities());
-
-        //세션에 사용자 등록
-        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
 
-//        String authorization = request.getHeader("Authorization");
+
+//        String accessToken = authorization.split(" ")[1];
+//        String category = jwtUtil.getCategory(accessToken);
 //
+//        if (!category.equals("Authorization")){
 //
-//        //Authorization 헤더 검증
-//        if (authorization == null || !authorization.startsWith("Bearer ")){
+//            PrintWriter writer = response.getWriter();
+//            writer.print("invalid Authorization token");
 //
-//            filterChain.doFilter(request,response);
-//
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 //            return;
 //        }
 //
-//        String token = authorization.split(" ")[1];
+//        String email = jwtUtil.getEmail(accessToken);
+//        String role = jwtUtil.getRole(accessToken);
 //
-//        //토큰 소멸 시간 검증
-//        if (jwtUtil.isExpired(token)){
+//        Boolean expired = jwtUtil.isExpired(accessToken);// 토큰 유효기간 확인
+//        Optional<BlackListAccessToken> byId = blackListTokenRepository.findById(email); //블랙리스트 조회
 //
-//            filterChain.doFilter(request,response);
-//
+//        if (byId.isPresent() || expired){
+//            PrintWriter writer = response.getWriter();
+//            writer.print("Authorization token expired");
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 //            return;
 //        }
-//
-////        Long id = jwtUtil.getId(token);
-//        String email = jwtUtil.getEmail(token);
-//        String role = jwtUtil.getRole(token);
 //
 //        Member member = Member.builder()
 //                .email(email)
@@ -114,11 +107,8 @@ public class JwtFilter extends OncePerRequestFilter {
 //                .role(role)
 //                .build();
 //
-////        member.setId(id);
-//
-//
-//        //UserDetails에 회원 정보 객체 담기
 //        CustomUserDetails customUserDetails = new CustomUserDetails(member);
+//
 //
 //        //스프링 시큐리티 인증 토큰 생성
 //        Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails,null,customUserDetails.getAuthorities());
@@ -126,8 +116,8 @@ public class JwtFilter extends OncePerRequestFilter {
 //        //세션에 사용자 등록
 //        SecurityContextHolder.getContext().setAuthentication(authToken);
 //
-//
 //        filterChain.doFilter(request, response);
+
 
 
     }

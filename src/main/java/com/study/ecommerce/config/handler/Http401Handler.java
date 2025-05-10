@@ -1,6 +1,7 @@
 package com.study.ecommerce.config.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.ecommerce.config.SecurityConfig;
 import com.study.ecommerce.response.ErrorResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,8 +24,19 @@ public class Http401Handler implements AuthenticationEntryPoint { //인증예외
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.info("[인증오류] 로그인이 필요합니다.");
+        String uri = request.getRequestURI();
+        String acceptHeader = request.getHeader("Accept");
+        log.info("요청 Accept 헤더: {}", acceptHeader);
 
+        // HTML 요청인 경우: 로그인 페이지로 리다이렉트
+        if ((acceptHeader == null || acceptHeader.toLowerCase().contains("text/html"))
+                && !SecurityConfig.PERMIT_ALL_URIS.contains(uri)) {
+            response.sendRedirect("/loginPage");
+            return;
+        }
+
+
+        log.info("[인증오류] 로그인이 필요합니다.");
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .code("401")
                 .message("로그인이 필요합니다.")
