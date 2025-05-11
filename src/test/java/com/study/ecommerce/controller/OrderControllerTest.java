@@ -409,7 +409,8 @@ class OrderControllerTest {
                                 fieldWithPath("address.city").description("도시"),
                                 fieldWithPath("address.street").description("거리"),
                                 fieldWithPath("address.zipcode").description("우편번호"),
-                                fieldWithPath("orderStatus").description("주문 상태")
+                                fieldWithPath("orderStatus").description("주문 상태"),
+                                fieldWithPath("itemName").description("상품 결제용 이름")
                         )))
                 .andDo(MockMvcResultHandlers.print());
 
@@ -492,7 +493,8 @@ class OrderControllerTest {
                                 fieldWithPath("totalPrice").description("주문 총금액"),
                                 fieldWithPath("payment").description("주문 결제 방법"),
                                 fieldWithPath("address").description("주소"),
-                                fieldWithPath("orderStatus").description("주문 상태")
+                                fieldWithPath("orderStatus").description("주문 상태"),
+                                fieldWithPath("itemName").description("상품 결제용 이름")
                         )))
                 .andDo(MockMvcResultHandlers.print());
     }

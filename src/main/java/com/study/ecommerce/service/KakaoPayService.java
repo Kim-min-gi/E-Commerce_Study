@@ -1,5 +1,6 @@
 package com.study.ecommerce.service;
 
+import com.study.ecommerce.config.KakaoPayProperties;
 import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.kakao.KakaoPayApproveResponse;
 import com.study.ecommerce.response.kakao.KakaoPayResponse;
@@ -25,15 +26,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class KakaoPayService {
 
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    @Value("${kakao.adminKey}")
-    private String kakaoAdminKey;
+    private final KakaoPayProperties kakaoPayProperties;
 
 
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "SECRET_KEY " + kakaoAdminKey); // 카카오 관리자 키
+        headers.set("Authorization", "SECRET_KEY " + kakaoPayProperties.getAdminKey()); // 카카오 관리자 키
         headers.set("Content-type", "application/json");
 
         return headers;
@@ -41,6 +39,8 @@ public class KakaoPayService {
 
 
     public KakaoPayResponse kakaoPayReady(OrderRequest orderRequest, String partnerOrderId) {
+
+        RestTemplate restTemplate = new RestTemplate();
 
         Map<String, String> params = new HashMap<>();
         params.put("cid", "TC0ONETIME"); // 테스트 CID
