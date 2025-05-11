@@ -1,25 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>장바구니 및 결제</title>
-    <link rel="stylesheet" th:href="@{/css/cart.css}">
+    <link rel="stylesheet" href="/css/cart.css">
 </head>
 <body>
-<h1>상품 등록 및 결제</h1>
+<h1>상품 목록</h1>
 
-<div class="form-section">
-    <label for="item_name">상품명</label>
-    <input type="text" id="item_name">
-
-    <label for="quantity">수량</label>
-    <input type="number" id="quantity" min="1">
-
-    <label for="price">가격</label>
-    <input type="number" id="price" min="1">
-
-    <button onclick="addToCart()">등록</button>
-</div>
+<table>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>카테고리</th>
+        <th>상품명</th>
+        <th>가격</th>
+        <th>재고</th>
+        <th>장바구니</th>
+    </tr>
+    </thead>
+    <tbody id="product-list"></tbody>
+</table>
 
 <h2>장바구니</h2>
 <table>
@@ -30,94 +31,188 @@
         <th>수량</th>
         <th>가격</th>
         <th>총 금액</th>
+        <th>삭제</th>
     </tr>
     </thead>
     <tbody id="cart-body"></tbody>
 </table>
 
-<br/>
-<div style="text-align: center;">
-    <button onclick="submitCart()">결제하기</button>
+<div class="cart-total" id="cart-total">총 합계: 0원</div>
+
+<div class="center-button">
+    <button class="kakao-button" onclick="submitCart()">카카오로 결제하기</button>
 </div>
 
 <script>
     let cart = [];
+    let productMap = {};
 
-    function addToCart() {
-        const name = document.getElementById("item_name").value;
-        const quantity = parseInt(document.getElementById("quantity").value);
-        const price = parseInt(document.getElementById("price").value);
-
-        if (!name || quantity <= 0 || price <= 0) {
-            alert("모든 항목을 올바르게 입력해주세요.");
-            return;
-        }
-
-        const item = {
-            itemName: name,
-            quantity: quantity,
-            price: price
-        };
-
-        cart.push(item);
-        renderCart();
-        clearForm();
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+        alert("로그인이 필요합니다.");
+        location.href = "/loginPage";
     }
 
-    function clearForm() {
-        document.getElementById("item_name").value = '';
-        document.getElementById("quantity").value = '';
-        document.getElementById("price").value = '';
+    window.onload = function () {
+        fetch('/product/products', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(res => res.json())
+            .then(products => {
+                const tbody = document.getElementById("product-list");
+                products.forEach((product, index) => {
+                    productMap[product.id] = product;
+                    const row = `<tr>
+                        <td>${index + 1}</td>
+                        <td>${product.categoryName}</td>
+                        <td>${product.name}</td>
+                        <td>${product.price}</td>
+                        <td>${product.quantity}</td>
+                        <td><button onclick="addToCart(${product.id})">추가</button></td>
+                    </tr>`;
+                    tbody.insertAdjacentHTML("beforeend", row);
+                });
+            });
+    };
+
+    function addToCart(id) {
+        const product = productMap[id];
+        const existing = cart.find(item => item.id === id);
+
+        if (existing) {
+            if (existing.quantity >= product.quantity) {
+                alert("재고보다 많이 담을 수 없습니다.");
+                return;
+            }
+            existing.quantity += 1;
+        } else {
+            cart.push({ id, itemName: product.name, quantity: 1, price: product.price });
+        }
+
+        renderCart();
+    }
+
+    function changeQuantity(index, delta) {
+        const item = cart[index];
+        const product = productMap[item.id];
+        const newQty = item.quantity + delta;
+
+        if (newQty > product.quantity) {
+            alert("재고를 초과할 수 없습니다.");
+            return;
+        }
+        if (newQty <= 0) {
+            cart.splice(index, 1);
+        } else {
+            item.quantity = newQty;
+        }
+
+        renderCart();
+    }
+
+    function removeItem(index) {
+        cart.splice(index, 1);
+        renderCart();
     }
 
     function renderCart() {
         const tbody = document.getElementById("cart-body");
+        const totalDisplay = document.getElementById("cart-total");
         tbody.innerHTML = "";
+
+        let total = 0;
 
         cart.forEach((item, index) => {
             const row = `<tr>
                 <td>${index + 1}</td>
                 <td>${item.itemName}</td>
-                <td>${item.quantity}</td>
+                <td>
+                    <div class="quantity-controls">
+                        <button onclick="changeQuantity(${index}, -1)">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="changeQuantity(${index}, 1)">+</button>
+                    </div>
+                </td>
                 <td>${item.price}</td>
-                <td>${item.quantity * item.price}</td>
+                <td>${item.price * item.quantity}</td>
+                <td><button class="delete-button" onclick="removeItem(${index})">삭제</button></td>
             </tr>`;
             tbody.insertAdjacentHTML("beforeend", row);
+            total += item.price * item.quantity;
         });
+
+        totalDisplay.textContent = `총 합계: ${total.toLocaleString()}원`;
     }
 
     function submitCart() {
         if (cart.length === 0) {
-            alert("장바구니가 비어있습니다.");
+            alert("장바구니가 비어 있습니다.");
             return;
         }
 
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            alert("로그인이 필요합니다.");
-            window.location.href = "/loginPage";
-            return;
+        const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+        const orderItemRequestList = cart.map(item => ({
+            productId: item.id,
+            quantity: item.quantity,
+            price: item.price
+        }));
+
+        const address = {
+            city: "서울",
+            street: "강남대로",
+            zipcode: "12345"
+        };
+
+        let itemName = cart[0].itemName;
+        if (cart.length > 1) {
+            itemName += ` 외 ${cart.length - 1}개`;
         }
 
-        fetch("/pay/ready", {
-            method: "POST",
+        const orderRequest = {
+            memberId: 1, // TODO: 실제 사용자 ID로 교체
+            orderItemRequestList,
+            payment: "KAKAO_PAY",
+            totalPrice,
+            address,
+            orderStatus: "ORDER_COMPLETE",
+            itemName
+        };
+
+        fetch('/payment/ready', {
+            method: 'POST',
             headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
             },
-            body: JSON.stringify(cart)
+            body: JSON.stringify(orderRequest)
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.redirectUrl) {
-                    window.location.href = data.redirectUrl;
-                } else {
-                    alert("결제 요청 실패: " + (data.message || "서버 오류"));
-                }
+            .then(response => {
+                if (!response.ok) throw new Error("결제 준비 실패");
+                return response.json();
             })
-            .catch(err => {
-                console.error("결제 요청 오류:", err);
-                alert("결제 요청 중 오류 발생");
+            .then(data => {
+                const popup = window.open(
+                    data.next_redirect_pc_url,
+                    'kakaoPayPopup',
+                    'width=500,height=700,scrollbars=yes'
+                );
+
+                const checkPopupClosed = setInterval(() => {
+                    if (popup.closed) {
+                        clearInterval(checkPopupClosed);
+                        // 결제 후 메인 창에서 주문 완료 페이지로 이동하거나 새로고침
+                        location.href = "/order/complete";
+                    }
+                }, 500);
+            })
+            .catch(error => {
+                console.error("카카오페이 결제 실패:", error);
+                alert("결제 준비 중 오류가 발생했습니다.");
             });
     }
 </script>

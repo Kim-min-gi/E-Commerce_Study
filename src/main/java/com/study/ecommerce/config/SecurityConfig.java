@@ -57,7 +57,8 @@ public class SecurityConfig {
 
     public static final List<String> PERMIT_ALL_URIS = List.of(
             "/", "/cartPage", "/signUpPage", "/loginPage",
-            "/auth/login", "/auth/signup", "/auth/signup/admin", "/auth/reissue"
+            "/auth/login", "/auth/signup", "/auth/signup/admin", "/auth/reissue","/productPage","/orderPage",
+            "/payment/**"
     );
 
 

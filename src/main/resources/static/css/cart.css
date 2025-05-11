@@ -10,48 +10,13 @@ h1, h2 {
     color: #222;
 }
 
-form, .form-section, table {
-    margin: 0 auto;
-    max-width: 600px;
-}
-
-label {
-    display: block;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
-
-input[type="text"],
-input[type="number"] {
-    width: 100%;
-    padding: 8px 10px;
-    margin-top: 4px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-}
-
-button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
 table {
     width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
     border-collapse: collapse;
     background-color: #fff;
-    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
 }
 
 th, td {
@@ -62,5 +27,77 @@ th, td {
 
 th {
     background-color: #e9ecef;
+    font-weight: bold;
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+/* 일반 버튼 (상품추가 등) */
+button:not(.delete-button):not(.kakao-button) {
+    background-color: #007bff;
+    color: white;
+}
+
+button:not(.delete-button):not(.kakao-button):hover {
+    background-color: #0056b3;
+}
+
+/* 삭제 버튼 */
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+/* 카카오 결제 버튼 */
+.kakao-button {
+    background-color: #FEE500;
+    color: #3c1e1e;
+    font-weight: bold;
+    border: 1px solid #e0c200;
+}
+
+.kakao-button:hover {
+    background-color: #f7d800;
+}
+
+.center-button {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.quantity-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-controls button {
+    padding: 4px 10px;
+    font-size: 14px;
+    background-color: #6c757d;
+    color: white;
+}
+
+.quantity-controls button:hover {
+    background-color: #5a6268;
+}
+
+.cart-total {
+    max-width: 900px;
+    margin: 10px auto;
+    text-align: right;
+    font-size: 18px;
     font-weight: bold;
 }

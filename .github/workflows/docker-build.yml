@@ -24,9 +24,11 @@ jobs:
           touch ./application-jwt.yml
           touch ./application-redis.yml
           touch ./application-aws.yml
+          touch ./application-payment.yml
           echo "${{ secrets.JWT }}" > ./application-jwt.yml
           echo "${{ secrets.REDIS }}" > ./application-redis.yml
           echo "${{ secrets.AWS }}" > ./application-aws.yml
+          echo "${{ secrets.PAYMENT }}" > ./application-payment.yml
 
       - name: Give gradlew permission
         run: chmod +x ./gradlew

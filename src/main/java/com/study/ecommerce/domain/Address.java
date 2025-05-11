@@ -2,27 +2,25 @@ package com.study.ecommerce.domain;
 
 import com.study.ecommerce.response.AddressResponse;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Embeddable
 @Getter
-public class Address {
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Address implements Serializable {
 
     private String city;
     private String street;
     private String zipcode;
 
-    protected Address(){
 
-    }
-
-    @Builder
-    public Address(String city, String street, String zipcode) {
-        this.city = city;
-        this.street = street;
-        this.zipcode = zipcode;
-    }
 
     public static AddressResponse form(Address address){
         return AddressResponse.builder()

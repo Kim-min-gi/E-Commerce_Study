@@ -14,11 +14,13 @@ public class OrderProductResponse {
 
     private String name;
     private int price;
+    private int quantity;
 
     public static OrderProductResponse form(OrderProduct orderProduct){
         return OrderProductResponse.builder()
                 .name(orderProduct.getProduct().getName())
                 .price(orderProduct.getProduct().getPrice())
+                .quantity(orderProduct.getQuantity())
                 .build();
     }
 

@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>회원가입</title>
-    <link rel="stylesheet" th:href="@{/css/signup.css}">
+    <link rel="stylesheet" href="/css/signup.css">
 </head>
 <body>
 <div class="signup-container">
     <h1>회원가입</h1>
 
-    <!-- 기존 form 태그에서 th:action, method 제거 + id 부여 -->
     <form id="signupForm">
         <label for="email">이메일
             <input type="email" id="email" required placeholder="example@email.com">
@@ -35,7 +34,7 @@
 
 <script>
     document.getElementById("signupForm").addEventListener("submit", function (e) {
-        e.preventDefault(); // 기본 form 전송 막기
+        e.preventDefault();
 
         const data = {
             email: document.getElementById("email").value,
