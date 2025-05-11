@@ -17,11 +17,6 @@ public class ProductCategoryResponse {
 
 
 
-
-    public void setProductCount(){
-
-    }
-
     public static ProductCategoryResponse from(ProductCategory productCategory){
         return ProductCategoryResponse.builder()
                 .id(productCategory.getId())

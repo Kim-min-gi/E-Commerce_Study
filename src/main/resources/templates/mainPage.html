@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <title>Main Page</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
 <div class="main-container">
@@ -24,21 +24,39 @@
         }
     }
 
+    function getRoleFromToken(token) {
+        try {
+            const payload = token.split('.')[1];
+            const decoded = JSON.parse(atob(payload));
+            return decoded.role || "";
+        } catch (e) {
+            return "";
+        }
+    }
+
     const token = localStorage.getItem("accessToken");
     const userInfo = document.getElementById("user-info");
     const buttonGroup = document.getElementById("button-group");
 
     if (token) {
         const email = getEmailFromToken(token);
+        const role = getRoleFromToken(token);
+
         if (email) {
             userInfo.textContent = `로그인 중: ${email}`;
 
-            buttonGroup.innerHTML = `
+            let buttons = `
                 <button onclick="logout()">로그아웃</button>
-                <button onclick="location.href='/cartPage'">장바구니로 이동</button>
+                <button onclick="location.href='/cartPage'">장바구니</button>
+                <button onclick="location.href='/orderPage'">구매 내역</button>
             `;
+
+            if (role === "ROLE_ADMIN") {
+                buttons += `<button onclick="location.href='/productPage'">상품 추가</button>`;
+            }
+
+            buttonGroup.innerHTML = buttons;
         } else {
-            // 토큰은 있지만 파싱 실패
             localStorage.removeItem("accessToken");
             renderLoginButton();
         }

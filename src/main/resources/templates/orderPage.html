@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 목록</title>
+    <link rel="stylesheet" href="/css/order.css">
+</head>
+<body>
+
+<h1>나의 주문 내역</h1>
+
+<h2>주문 기간 조회</h2>
+<form id="dateFilterForm">
+    <label>시작일: <input type="date" id="startDate" required></label>
+    <label>종료일: <input type="date" id="endDate" required></label>
+    <button type="submit">조회</button>
+</form>
+<hr>
+
+<div id="order-container"></div>
+
+<script>
+    const token = localStorage.getItem('accessToken'); // 토큰 필요 시
+
+    window.onload = function () {
+        fetchOrders('/orders');
+    };
+
+    function fetchOrders(url) {
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            }
+        })
+            .then(res => res.json())
+            .then(orders => renderOrders(orders))
+            .catch(err => {
+                console.error('주문 목록 로딩 실패:', err);
+                alert('주문 목록을 불러오는 데 실패했습니다.');
+            });
+    }
+
+    function renderOrders(orders) {
+        const container = document.getElementById("order-container");
+        container.innerHTML = "";
+
+        if (orders.length === 0) {
+            container.innerHTML = "<p>주문 내역이 없습니다.</p>";
+            return;
+        }
+
+        orders.forEach(order => {
+            const html = `
+                <div class="order-card">
+                    <h2>주문 번호: ${order.id}</h2>
+                    <p>주문일: ${order.orderDate.replace('T', ' ').substring(0, 16)}</p>
+                    <p>결제 수단: ${order.payment}</p>
+                    <p>주문 상태: ${order.orderStatus}</p>
+                    <p>총 금액: ${order.totalPrice}원</p>
+
+                    <div class="address-section">
+                        <h4>배송지 정보</h4>
+                        <p>${order.address.city}, ${order.address.street}, ${order.address.zipcode}</p>
+                    </div>
+
+                    <h3>상품 목록</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>상품명</th>
+                                <th>수량</th>
+                                <th>개별 가격</th>
+                                <th>총 가격</th>
+                                <th>리뷰</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${order.orderProductResponse.map(item => `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td>${item.quantity}</td>
+                                    <td>${item.price}</td>
+                                    <td>${item.price * item.quantity}</td>
+                                    <td><a href="/reviews/write?productName=${item.name}" class="review-btn">리뷰 작성</a></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="order-actions">
+                        <a href="/order/${order.id}" class="detail-btn">상세 보기</a>
+                        ${order.orderStatus === 'ORDER_COMPLETE' ? `<button class="cancel-btn" onclick="cancelOrder(${order.id})">주문 취소</button>` : ''}
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', html);
+        });
+    }
+
+    function cancelOrder(orderId) {
+        if (!confirm("주문을 취소하시겠습니까?")) return;
+
+        fetch(`/orderCancel/${orderId}`, {
+            method: 'PATCH',
+            headers: { 'Authorization': 'Bearer ' + token }
+        }).then(res => {
+            if (res.status === 204) {
+                alert("주문이 취소되었습니다.");
+                fetchOrders('/orders');
+            } else {
+                alert("주문 취소 실패");
+            }
+        });
+    }
+
+    document.getElementById("dateFilterForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        const startDate = document.getElementById("startDate").value;
+        const endDate = document.getElementById("endDate").value;
+        fetchOrders(`/ordersDate?startDate=${startDate}&endDate=${endDate}`);
+    });
+</script>
+
+</body>
+</html>

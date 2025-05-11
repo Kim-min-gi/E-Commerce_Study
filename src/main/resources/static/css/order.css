@@ -1,0 +1,127 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    padding: 30px;
+    background-color: #f8f9fa;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.order-card {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.order-card h2 {
+    margin-bottom: 10px;
+    color: #444;
+}
+
+.order-card p {
+    margin: 5px 0;
+}
+
+.address-section {
+    margin-top: 10px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 0.95rem;
+}
+
+table th, table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+table th {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.review-btn {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.review-btn:hover {
+    background-color: #45a049;
+}
+
+.order-actions {
+    margin-top: 10px;
+}
+
+.detail-btn,
+.cancel-btn {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.detail-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+}
+
+.detail-btn:hover {
+    background-color: #0056b3;
+}
+
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.cancel-btn:hover {
+    background-color: #b02a37;
+}
+
+form#dateFilterForm {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+form#dateFilterForm input[type="date"] {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form#dateFilterForm button {
+    padding: 6px 12px;
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+form#dateFilterForm button:hover {
+    background-color: #138496;
+}

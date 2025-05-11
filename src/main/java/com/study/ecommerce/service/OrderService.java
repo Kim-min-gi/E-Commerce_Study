@@ -105,12 +105,6 @@ public class OrderService {
 
         Member member = memberRepository.findByEmail(getMemberEmail()).orElseThrow(NotFoundMemberException::new);
 
-//        List<Cart> carts = cartRepository.findAllByMember(member);
-
-//        if (carts.isEmpty()){
-//            throw new CartEmptyException();
-//        }
-
         long totalPrice = 0;
 
         ArrayList<OrderProduct> orderProducts = new ArrayList<>();

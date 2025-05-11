@@ -44,3 +44,6 @@ application-redis.yml
 
 ### aws ###
 application-aws.yml
+
+### payment ###
+application-payment.yml
