@@ -3,6 +3,7 @@ package com.study.ecommerce.service;
 import com.study.ecommerce.config.KakaoPayProperties;
 import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.kakao.KakaoPayApproveResponse;
+import com.study.ecommerce.response.kakao.KakaoPayCancelResponse;
 import com.study.ecommerce.response.kakao.KakaoPayResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -86,6 +87,28 @@ public class KakaoPayService {
                 "https://open-api.kakaopay.com/online/v1/payment/approve",
                 request,
                 KakaoPayApproveResponse.class
+        );
+    }
+
+    public KakaoPayCancelResponse cancel(String tid, OrderRequest orderRequest) throws IllegalAccessException {
+        RestTemplate restTemplate = new RestTemplate();
+
+        if (tid == null || orderRequest == null) {
+            throw new IllegalAccessException("잘못된 접근입니다.");
+        }
+
+        Map<String, String> params = new HashMap<>();
+        params.put("cid", "TC0ONETIME");
+        params.put("tid", tid);
+        params.put("cancel_amount",String.valueOf(orderRequest.getTotalPrice()));
+        params.put("cancel_tax_free_amount", "0");
+
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(params, this.getHeaders());
+
+        return restTemplate.postForObject(
+                "https://open-api.kakaopay.com/online/v1/payment/cancel",
+                request,
+                KakaoPayCancelResponse.class
         );
     }
 

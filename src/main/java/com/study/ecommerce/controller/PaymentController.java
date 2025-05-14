@@ -2,6 +2,7 @@ package com.study.ecommerce.controller;
 
 import com.study.ecommerce.request.OrderRequest;
 import com.study.ecommerce.response.kakao.KakaoPayApproveResponse;
+import com.study.ecommerce.response.kakao.KakaoPayCancelResponse;
 import com.study.ecommerce.response.kakao.KakaoPayResponse;
 import com.study.ecommerce.service.KakaoPayService;
 import jakarta.servlet.http.HttpSession;
@@ -60,8 +61,11 @@ public class PaymentController {
     }
 
     @GetMapping("/cancel")
-    public String kakaoCancel() {
-        return "결제가 취소되었습니다.";
+    public ResponseEntity<KakaoPayCancelResponse> kakaoCancel(@RequestBody OrderRequest orderRequest,@RequestParam("tid") String tid) throws IllegalAccessException {
+
+        KakaoPayCancelResponse cancel = kakaoPayService.cancel(tid, orderRequest);
+
+        return ResponseEntity.ok(cancel);
     }
 
     @GetMapping("/fail")
