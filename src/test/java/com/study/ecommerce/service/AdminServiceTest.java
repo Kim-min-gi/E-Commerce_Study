@@ -13,6 +13,8 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @ActiveProfiles("test")
 @SpringBootTest
 class AdminServiceTest {
@@ -87,6 +89,12 @@ class AdminServiceTest {
         Assertions.assertEquals(member.getId(),findMember.getId());
         Assertions.assertEquals("testing@gmail.com",findMember.getEmail());
         Assertions.assertEquals("name",findMember.getName());
+
+
+        //assertJ 사용
+//        assertThat(findMember.getId()).isEqualTo(member.getId());
+//        assertThat(findMember.getEmail()).isEqualTo("testing@gmail.com");
+//        assertThat(findMember.getName()).isEqualTo("name");
 
     }
 
