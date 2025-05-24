@@ -11,8 +11,8 @@ public enum Payment implements Serializable {
     CASH,
 
     @JsonProperty("KAKAO_PAY")
-    KAKAO_PAY,
+    KAKAO_PAY(),
 
-    NAVAER_PAY
+    NAVER_PAY
 
 }

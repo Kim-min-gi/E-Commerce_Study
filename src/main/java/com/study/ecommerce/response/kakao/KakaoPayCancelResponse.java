@@ -1,5 +1,6 @@
 package com.study.ecommerce.response.kakao;
 
+import com.study.ecommerce.response.PaymentResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class KakaoPayCancelResponse {
+public class KakaoPayCancelResponse implements PaymentResponse {
 
     private String aid; // 요청 고유 번호
     private String tid; // 결제 고유 번호
@@ -27,6 +28,8 @@ public class KakaoPayCancelResponse {
     private String approved_at; // 결제 승인 시각
     private String canceled_at; // 결제 취소 시각
     private String payload; // 취소 요청 시 전달한 값
+
+
 
 
     @Getter

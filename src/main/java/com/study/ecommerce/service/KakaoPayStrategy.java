@@ -1,33 +1,32 @@
 package com.study.ecommerce.service;
 
 import com.study.ecommerce.config.KakaoPayProperties;
+import com.study.ecommerce.domain.type.Payment;
 import com.study.ecommerce.request.OrderRequest;
+import com.study.ecommerce.request.PaymentRequest;
 import com.study.ecommerce.response.kakao.KakaoPayApproveResponse;
 import com.study.ecommerce.response.kakao.KakaoPayCancelResponse;
 import com.study.ecommerce.response.kakao.KakaoPayResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KakaoPayService {
+public class KakaoPayStrategy implements PaymentStrategy {
 
     private final KakaoPayProperties kakaoPayProperties;
+
 
 
     private HttpHeaders getHeaders() {
@@ -39,17 +38,19 @@ public class KakaoPayService {
     }
 
 
-    public KakaoPayResponse kakaoPayReady(OrderRequest orderRequest, String partnerOrderId) {
+    public KakaoPayResponse ready(PaymentRequest paymentRequest) {
 
         RestTemplate restTemplate = new RestTemplate();
+        String partnerOrderId = UUID.randomUUID().toString();
+
 
         Map<String, String> params = new HashMap<>();
         params.put("cid", "TC0ONETIME"); // 테스트 CID
         params.put("partner_order_id", partnerOrderId);
-        params.put("partner_user_id", String.valueOf(orderRequest.getMemberId()));
-        params.put("item_name", orderRequest.getItemName());
-        params.put("quantity", String.valueOf(orderRequest.getOrderItemRequestList().size()));
-        params.put("total_amount", String.valueOf(orderRequest.getTotalPrice()));
+        params.put("partner_user_id", String.valueOf(paymentRequest.getOrderRequest().getMemberId()));
+        params.put("item_name", paymentRequest.getOrderRequest().getItemName());
+        params.put("quantity", String.valueOf(paymentRequest.getOrderRequest().getOrderItemRequestList().size()));
+        params.put("total_amount", String.valueOf(paymentRequest.getOrderRequest().getTotalPrice()));
         params.put("tax_free_amount", "0");
         params.put("approval_url", "http://localhost:8080/payment/success");
         params.put("cancel_url", "http://localhost:8080/payment/cancel");
@@ -60,26 +61,28 @@ public class KakaoPayService {
                 body,
                 KakaoPayResponse.class
         );
+        KakaoPayResponse response = kakaoPayResponseResponseEntity.getBody();
+        Objects.requireNonNull(response).setPartner_order_id(partnerOrderId);
 
-        return kakaoPayResponseResponseEntity.getBody();
+        return response;
 
     }
 
 
-    public KakaoPayApproveResponse approve(String pgToken, String tid, String partnerOrderId, String partnerUserId) throws IllegalAccessException {
+    public KakaoPayApproveResponse approve(PaymentRequest paymentRequest) throws IllegalAccessException {
         RestTemplate restTemplate = new RestTemplate();
 
-        if (tid == null || partnerOrderId == null) {
+        if (paymentRequest.getTid() == null || paymentRequest.getPartnerOrderId() == null) {
             throw new IllegalAccessException("잘못된 접근입니다.");
         }
 
 
         Map<String, String> params = new HashMap<>();
         params.put("cid", "TC0ONETIME");
-        params.put("tid", tid);
-        params.put("partner_order_id", partnerOrderId);
-        params.put("partner_user_id", partnerUserId);
-        params.put("pg_token", pgToken);
+        params.put("tid", paymentRequest.getTid());
+        params.put("partner_order_id", paymentRequest.getPartnerOrderId());
+        params.put("partner_user_id", paymentRequest.getPartnerUserId());
+        params.put("pg_token", paymentRequest.getPgToken());
 
         HttpEntity<Map<String, String>> request = new HttpEntity<>(params, this.getHeaders());
 
@@ -90,17 +93,17 @@ public class KakaoPayService {
         );
     }
 
-    public KakaoPayCancelResponse cancel(String tid, OrderRequest orderRequest) throws IllegalAccessException {
+    public KakaoPayCancelResponse cancel(PaymentRequest paymentRequest) throws IllegalAccessException {
         RestTemplate restTemplate = new RestTemplate();
 
-        if (tid == null || orderRequest == null) {
+        if (paymentRequest.getTid() == null || paymentRequest.getPartnerOrderId() == null) {
             throw new IllegalAccessException("잘못된 접근입니다.");
         }
 
         Map<String, String> params = new HashMap<>();
         params.put("cid", "TC0ONETIME");
-        params.put("tid", tid);
-        params.put("cancel_amount",String.valueOf(orderRequest.getTotalPrice()));
+        params.put("tid", paymentRequest.getTid());
+        params.put("cancel_amount",String.valueOf(paymentRequest.getOrderRequest().getTotalPrice()));
         params.put("cancel_tax_free_amount", "0");
 
         HttpEntity<Map<String, String>> request = new HttpEntity<>(params, this.getHeaders());
@@ -112,7 +115,10 @@ public class KakaoPayService {
         );
     }
 
-
+    @Override
+    public Payment getPaymentType() {
+        return Payment.KAKAO_PAY;
+    }
 
 
 }

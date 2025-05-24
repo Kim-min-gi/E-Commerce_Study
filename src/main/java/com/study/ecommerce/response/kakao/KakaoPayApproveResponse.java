@@ -1,6 +1,7 @@
 package com.study.ecommerce.response.kakao;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.study.ecommerce.response.PaymentResponse;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-public class KakaoPayApproveResponse {
+public class KakaoPayApproveResponse implements PaymentResponse {
 
     private String aid;                 // 요청 고유 번호
     private String tid;                 // 결제 고유 번호
@@ -24,4 +25,5 @@ public class KakaoPayApproveResponse {
     private String created_at;          // 결제 준비 요청 시각
     private String approved_at;         // 결제 승인 시각
     private String payload;             // 결제 승인 요청에 대해 저장한 값, 요청 시 전달된 내용
+
 }
