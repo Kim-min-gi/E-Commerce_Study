@@ -39,7 +39,7 @@
 - 전략패턴을 사용하여 결제 시스템 유연화
 - 카카오페이 단건 결제 API 연동
 - CI/CD 구축, Spring Boot 앱을 Docker 이미지로 자동 빌드 및 배포
-- JUnit5 와 H2 DB로 Test 작업 후 API 문서 자동 생성하도록 구현
+- JUnit5 와 H2 DB로 Test 작업 후 Spring Rest Docs를 사용하여 API 문서 자동 생성하도록 구현
 - 리뷰 이미지 업로드 및 URL 저장 기능 구현 (MultipartFile + S3 연동)
 
 <br/>
